@@ -75,7 +75,7 @@ def hexNeighbors(limit):
                 pass
     return neighbour
 
-def ep128(index):
+def pe128(index):
     """
     Using patterns found in hexNeighbors()
     """
@@ -93,7 +93,7 @@ def ep128(index):
                     return 3*i*(i+1)+1
         i += 1
 
-def ep136(n=50000000):
+def pe136(n=50000000):
     """
     The problem can be reducted to following form:
     
@@ -120,7 +120,7 @@ def ep136(n=50000000):
                 c += 1
     return c
 
-def ep147(n=47, m=43):
+def pe147(n=47, m=43):
     """
     It's possible to find a recursion formula from n*m to n*(m+1).
     """
@@ -161,7 +161,7 @@ def ep147(n=47, m=43):
             c += (1 + (j <= m) * (i != j)) * cdict[(j, i)]
     return c
 
-def ep151():
+def pe151():
     """
     It's possible to find a delicate data structure to model the situation.
     """
@@ -190,3 +190,47 @@ def ep151():
 
     expection = sum(p * n for (_, n), p in week_new.items())
     return float(expection)
+
+def pe154(N=200000):
+    """
+    semi-brute-force, using Legendre Theorem to accelerate cycling
+    """
+
+    from . formulas import padic
+
+    def ndivisor(n, d):
+        x = 0
+        while n:
+            n /= d
+            x += n
+        return x
+    
+    seq2 = [ndivisor(n, 2) for n in xrange(N)]
+    n2 = ndivisor(N, 2) - 12
+    
+    d5 = {}
+    s5 = [sum(map(int, padic(i, 5, 'l'))) for i in xrange(N+1)]
+    for i in range(1, 30):
+        d5[i] = [n for n,s in enumerate(s5) if s==i]
+    
+    n5 = 12 * 4 + s5[N]
+    c = 0
+    for i in xrange(1, N/3+1):
+        jk5 = n5 - s5[i]
+        for dj in xrange(max(1, jk5-29), 30):
+            for j in d5[dj]:
+                if j < i:
+                    continue
+                if j > (N - i) / 2:
+                    break
+                
+                k = N - i - j
+                if s5[k] + dj < jk5:
+                    continue
+                
+                if seq2[i] + seq2[j] + seq2[k] <= n2:
+                    c += 3 if (i==j or j==k) else 6
+
+#         if i % 1000 == 0:
+#             print i, c
+    return c
