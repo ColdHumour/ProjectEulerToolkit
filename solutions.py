@@ -262,4 +262,4 @@ def pe155(N=18):
         c |= fcircuits[i]
     
     # answer: 3857447
-    return c
+    return len(c)
