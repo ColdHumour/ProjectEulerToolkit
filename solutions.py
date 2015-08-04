@@ -231,6 +231,35 @@ def pe154(N=200000):
                 if seq2[i] + seq2[j] + seq2[k] <= n2:
                     c += 3 if (i==j or j==k) else 6
 
-#         if i % 1000 == 0:
-#             print i, c
+        # if i % 1000 == 0:
+        #     print i, c
+    return c
+
+def pe155(N=18):
+    """
+    brute-force
+    """
+
+    from fractions import Fraction
+
+    def sep(n):
+        for i in range(1, n/2+1):
+            yield i, n-i
+    
+    fcircuits = [{Fraction(1, 1),}, {Fraction(1, 2), Fraction(2, 1)}]
+    for n in range(3, N+1):
+        new = set([])
+        for i,j in sep(n):
+            for f1 in fcircuits[i-1]:
+                for f2 in fcircuits[j-1]:
+                    new.add(f1+f2)
+                    new.add(1 / (1 / f1 + 1 / f2))
+        fcircuits.append(new)
+        # print n
+        
+    c = fcircuits[-1]
+    for i in range(N-1):
+        c |= fcircuits[i]
+    
+    # answer: 3857447
     return c
