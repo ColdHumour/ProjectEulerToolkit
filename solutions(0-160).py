@@ -273,15 +273,15 @@ def pe156():
 
     G = [0] + [d*10**(d-1) for d in range(1, 12)]
 
-    def f(n, b, minus_n=True):
+    def f(n, d, minus_n=True):
         s = map(int, str(n))
         d, count = len(s), 0
         for i,a in enumerate(s):
             tb = 10**(d-i-1)
             if i + 1 < d:
-                count += a * G[d-i-1] + (a > b) * tb + (a == b) * (n % tb + 1)
+                count += a * G[d-i-1] + (a > d) * tb + (a == d) * (n % tb + 1)
             else:
-                count += (a >= b)
+                count += (a >= d)
         return count - n * minus_n
 
     def nbSearch(d, n, detail=True):
