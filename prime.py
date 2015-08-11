@@ -252,6 +252,9 @@ def primeDivisorDecomp(n, rand=False):
         clist.append(c)
 
 def divisorDecomp(n, rand=False):
+    if n == 1:
+        return [1]
+
     primefactors = primeDivisorDecomp(n, rand)
     d = len(primefactors)
     clist = [0] * d

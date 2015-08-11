@@ -9,7 +9,7 @@ Some interesting solutions for problems 0-160 in Project Euler
 """
 
 from math import sqrt
-from . prime import isprime, atkin_sieve
+import ProjectEuler.prime as pep
 
 
 def pe128(index):
@@ -82,12 +82,12 @@ def pe128(index):
 
     x = i = 2
     while 1:
-        if isprime(6*i-1):
-            if isprime(6*i+1) and isprime(12*i+5):
+        if pep.isprime(6*i-1):
+            if pep.isprime(6*i+1) and pep.isprime(12*i+5):
                 x += 1
                 if x == index:
                     return 3*i*(i-1)+2
-            if isprime(6*i+5) and isprime(12*i-7):
+            if pep.isprime(6*i+5) and pep.isprime(12*i-7):
                 x += 1
                 if x == index:
                     return 3*i*(i+1)+1
@@ -106,7 +106,7 @@ def pe136(n=50000000):
     3) 16*p, where p is prime (2 included)
     """
 
-    plist = iter(atkin_sieve(50000000))
+    plist = iter(pep.atkin_sieve(50000000))
     c = 1    # n = 4
     for p in plist:
         if p == 2:
@@ -412,3 +412,71 @@ def pe156():
     # Final sum: 21295121502550 
 
     return res
+
+def pe157():
+    """
+    It can be shown that a and b can be only written as:
+        a = 2**x1 * 5**y1 * g
+        b = 2**x2 * 5**y2 * g
+    where g is a positive number not contain 2 or 5 as divisors.
+    Then we can discuss different relationships between x1, x2, y1, y2:
+    (1) x1 <= x2 & y1 <= y2
+    (2) (x1 - x2) * (y1 - y2) < 0 & a < b
+    and finally get the answer.
+    """
+
+    c, gdict1, gdict2 = 0, {}, {}
+    for n in range(1, 10):
+        cn = 0
+        for s in range(n+1):
+            for t in range(n+1):
+                # case1: x1 <= x2 & y1 <= y2
+                # need to find all divisors of (2**s * 5**t + 1)
+                # it may have 2 or 5 in divisors
+                if (s, t) in gdict1:
+                    g, p2, p5 = gdict1[(s, t)]
+                else:
+                    x = 2**s * 5**t + 1
+                    p2 = 0
+                    while x%2 == 0:
+                        x /= 2
+                        p2 += 1
+                    p5 = 0
+                    while x%5 == 0:
+                        x /= 5
+                        p5 += 1
+                    g = len(pep.divisorDecomp(x))
+                    gdict1[(s, t)] = (g, p2, p5)
+                
+                g, p2, p5 = gdict1[(s, t)]
+                cn += g * (n - s + p2 + 1) * (n - t + p5 + 1)
+
+                # case2: (x1 - x2) * (y1 - y2) < 0
+                # need to find all divisors of (2**s + 5**t)
+                # it won't have 2 or 5 in divisors
+                # it only happens when s >= 1 and t >= 1
+                if s and t:
+                    if (s, t) in gdict2:
+                        g = gdict2[(s, t)]
+                    else:
+                        g = len(pep.divisorDecomp(2**s + 5**t))
+                        gdict2[(s, t)] = g
+                    
+                    cn += g * (n - s + 1) * (n - t + 1)
+        print 'Number of sols when n = {0}: {1}'.format(n, cn)
+        c += cn
+    print '\nFinal sum: {}\n'.format(c)
+    
+    # Number of sols when n = 1: 20
+    # Number of sols when n = 2: 102
+    # Number of sols when n = 3: 356
+    # Number of sols when n = 4: 958
+    # Number of sols when n = 5: 2192
+    # Number of sols when n = 6: 4456
+    # Number of sols when n = 7: 8260
+    # Number of sols when n = 8: 14088
+    # Number of sols when n = 9: 23058
+
+    # Final sum: 53490
+    
+    return c
