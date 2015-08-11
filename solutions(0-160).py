@@ -9,6 +9,7 @@ Some interesting solutions for problems 0-160 in Project Euler
 """
 
 from math import sqrt
+import ProjectEuler.combinatorics as pec
 import ProjectEuler.prime as pep
 
 
@@ -480,3 +481,11 @@ def pe157():
     # Final sum: 53490
     
     return c
+
+def pe158():
+    """
+    Proven close form p(n) = C(26, n) * (2**n - n - 1)
+    So easy. 
+    """
+    
+    return max(pec.C(26, n) * (2**n - n - 1) for n in range(1, 27))
