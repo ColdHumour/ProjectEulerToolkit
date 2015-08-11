@@ -275,11 +275,11 @@ def pe156():
 
     def f(n, d, minus_n=True):
         s = map(int, str(n))
-        d, count = len(s), 0
+        t, count = len(s), 0
         for i,a in enumerate(s):
-            tb = 10**(d-i-1)
-            if i + 1 < d:
-                count += a * G[d-i-1] + (a > d) * tb + (a == d) * (n % tb + 1)
+            tb = 10**(t-i-1)
+            if i + 1 < t:
+                count += a * G[t-i-1] + (a > d) * tb + (a == d) * (n % tb + 1)
             else:
                 count += (a >= d)
         return count - n * minus_n
