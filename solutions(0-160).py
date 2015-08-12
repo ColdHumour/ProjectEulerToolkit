@@ -489,3 +489,63 @@ def pe158():
     """
     
     return max(pec.C(26, n) * (2**n - n - 1) for n in range(1, 27))
+
+def pe159(N=1000000):
+    """
+    (1) get digital root formula from Wikipedia
+    (2) mdrs (max digital root sum) of a prime number p is just dr(p), and it must in [1, 2, 4, 5, 7, 8]
+    (3) it's easy to see that all composite numbers except 6, 8, 9 can have a larger drs when decompsited 
+    (4) it makes sense to replace prime divisors of n to those dr when compute mdrs of n
+    (5) using sieve method to get all prime divisors of 1 < n < 1000000, no need to keep amount of each divisors
+    (6) when n contains prime divisor p>7 with dr(p) = 1 or 8, keep divide n by p until n doesn't have p, and add dr(p) to mdrs on each cycle
+    (7) when n contains prime divisor p>7 with dr(p) = 2, 5 or 7, replace all p to dr(p), namely doing n / p * dr(p) all the time when n%p == 0
+    (8) after (5) and (6), when n contains prime divisor p with dr(p) = 4, keep divide n by 2*p until n doesn't have 2*p, and add 8 to mdrs on each cycle; then keep divide n by p>7 until n doesn't have p, and add 4 to mdrs on each cycle 
+    (9) for d from 9 to 2, keep divide n by d until n doesn't have d, and add d to mdrs on each cycle, then the mdrs is the final result of n
+    """
+
+    def dr(n):
+        return 1 + (n-1) % 9
+
+    z = [0] * N
+    pdict = {}
+    for n in iter(pep.p1m()):
+        pdict[n] = dr(n)
+        i = 1
+        while n*i < N:
+            if z[n*i]:
+                z[n*i] += [n]
+            else:
+                z[n*i] = [n]
+            i += 1
+
+    smdrs = 0
+    for n in xrange(2, N):
+        checktwice = []
+        for p in z[n]:
+            if p > 7:
+                q = pdict[p]
+                if q == 1 or q == 8:
+                    while n % p == 0:
+                        n /= p
+                        smdrs += q
+                elif q == 4:
+                    checktwice.append(p)
+                else:    
+                    while n % p == 0:
+                        n = n / p * q
+
+        for p in checktwice:
+            while n % (2*p) == 0:
+                n /= 2*p
+                smdrs += 8
+            while n % p == 0:
+                n /= p
+                smdrs += 4
+
+        for p in range(9, 1, -1):
+            while n % p == 0:
+                n /= p
+                smdrs += p
+    
+    # answer: 14489159
+    return smdrs
