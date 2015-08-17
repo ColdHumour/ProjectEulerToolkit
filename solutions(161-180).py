@@ -63,3 +63,23 @@ def pe162():
 
     # answer: 3D58725572C62302
     return s
+
+def pe163(n=36):
+    def backdiff3_120(n):
+        return 3 * ( 1 + [0,1,1,1][n % 4] + 2*[0,1][n % 2] )
+
+    def backdiff3_90(n):
+        return 6 * ( 1 + [1,2][n % 2] + [0,1,1][n % 3] + [0,2,1,1,2][n % 5] )
+
+    def backdiff3_60(n):
+        return 1 + [0,1][n % 2] + 6 * [0,1,1][n % 3] + 2 * (n>1)
+
+    d0 = d1 = d2 = 0
+    for i in range(n):
+        d3 = backdiff3_120(i) + backdiff3_60(i) + backdiff3_90(i)
+        d2 = d2 + d3
+        d1 = d1 + d2
+        d0 = d0 + d1
+    
+    # answer: 343047
+    return d0
