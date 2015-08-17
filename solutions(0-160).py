@@ -8,10 +8,71 @@ Some interesting solutions for problems 0-160 in Project Euler
 @author: Jasper Wu
 """
 
-from math import sqrt
+from math import sqrt, log
+from collections import deque
+from itertools import takewhile, count
+
 import ProjectEuler.combinatorics as pec
+import ProjectEuler.equations as peq
+import ProjectEuler.formulas as pef
 import ProjectEuler.prime as pep
 
+
+def pe121(r):
+    # semi-close-form + brute-force 
+
+    n = 1
+    for i in range(1, (r+1)/2):
+        for p in pec.combinations(range(1, r+1), i):
+            n += pef.cprod(p)
+    return int(pef.factorial(r+1) * 1. / n)
+
+def pe122(n, constraint=2):
+    # brute-force
+    
+    t = {1:[], 2:[1], 3:[1,2], 4:[1,2]}
+    k = int(log(n) / log(2)) + 2 + constraint
+    to_search = deque([[1,2,4], [1,2,3]])
+    while to_search:
+        cur = to_search.popleft()
+        lc = len(cur)
+        for a in cur:
+            b = cur[-1] + a
+            if b > n:
+                continue
+            if b not in t or len(t[b]) > lc:
+                t[b] = cur
+            if lc < k:
+                to_search.append(cur+[b])
+        if len(t) == n: break
+
+    x = 0
+    for v in t.itervalues():
+        x += len(v)
+    return x
+    
+def pe123():
+    # brute-force using primes under 1 million
+
+    p = pep.p1m()
+    i = 8001
+    while 1:
+        if p[i-1]*2*i > 1e10:
+            break
+        else:
+            i += 2
+    return i
+
+def pe124(n=100000, m=10000):
+    # brute-force
+
+    n += 1
+    x = [[1, i] for i in xrange(n)]
+    for i in xrange(2, n):
+        if x[i][0] == 1:
+            for j in xrange(i, n, i):
+                x[j][0] *= i
+    return sorted(x[1:])[m-1][1]
 
 def pe128(index):
     """
@@ -120,6 +181,52 @@ def pe136(n=50000000):
             if 16 * p < 50000000:
                 c += 1
     return c
+
+def pe137():
+    # equivalent to solve generalized pell equation x**2 - 5 * y**2 = -4 and find the 15th x satisfying x%5 = -1
+
+    sol = []
+    for x,y in peq.generalizedPellEquation(5, -4, nsol=35):
+        if x%5 == 1 and (x-1)/5:
+            sol.append((x-1)/5)
+    return sol[14]
+
+def pe139():
+    # equivalent to solve pell equation x**2 - 2 * y**2 = -1 satisfying x+y < 100 million
+
+    n = 100000000
+    count = 0
+    for x,y in peq.generalizedPellEquation(2, -1, nsol=15):
+        if x > 1 and x+y < n:
+            count += (n-1) / (x+y)
+    return count  
+
+def ep140():
+    # equivalent to solve generalized pell equation x**2 - 5 * y**2 = 44 and find the first 30 x satisfying (x-7)%5 = 0
+
+    sol = []
+    for x,y in peq.generalizedPellEquation(5, 44, nsol=65):
+        if x > 7 and (x-7)%5 == 0:
+            sol.append((x-7)/5)
+    return sum(sol[:30])
+
+def pe141():
+    def f(k, t, c):
+        return k*k*k * t * (c*c*c + t)
+
+    N = 1000000000000
+    s = set([])
+    for k in takewhile(lambda k: f(k, 1, k+1) < N, count(1)):
+        for t in takewhile(lambda t: f(k, t, t*k+1) < N, count(1)):
+            for c in takewhile(lambda c: f(k, t, c) < N, count(t*k+1)):
+                n = f(k, t, c)
+                if n in s:
+                    continue
+                sn = int(sqrt(n))
+                if sn*sn == n:
+                    print k*k*k*t*t, k*c*c, n
+                    s.add(n)
+    return sum(s)
 
 def pe147(n=47, m=43):
     """
@@ -549,3 +656,57 @@ def pe159(N=1000000):
     
     # answer: 14489159
     return smdrs
+
+def pe160(N=10**12, b=5):
+    m = 10**b
+
+    def tfwithout5(start, end):
+        """
+        product from start to end without numbers containing 5 divisors
+        """
+
+        t = 1
+        for n in range(start, end+1):
+            if n % 5:
+                t = (t * n) % m
+        return t
+    
+    # get amount of 5 as divisors in N!
+    c, nlist = 0, [N]
+    while N:
+        N /= 5
+        c += N
+        if N > 10000:
+            nlist = [N] + nlist
+
+    # compute tail digits and nlist[0]! without all 5 as divisors
+    r1 = 2
+    for i in range(3, nlist[0]+1):
+        while i % 5 == 0:
+            i /= 5
+        r1 = (r1 * i) % m
+
+    for n in nlist[1:]:
+        # 9376 = tfwithout5(1, 10000)
+        # noticing that (9376 * 9376) % 100000 = 9376
+        r1 = (r1 * 9376) % m
+        if n % 10000:
+            t = tfwithout5(n / 10000 * 10000, n)
+            r1 = (r1 * t) % m
+
+    # the final result r satisfying:
+    # r * s  = 0  (mod m)
+    # r * r2 = r1 (mod m)
+    # need to solve the equation set
+
+    s = pef.powerMod(5, c, m)
+    _, s, _ = peq.linearModularEquation(s, 0, m)
+
+    r2 = pef.powerMod(2, c, m)
+    r, d, _ = peq.linearModularEquation(r2, r1, m)
+
+    while r % s:
+        r += d
+
+    # answer 16576
+    return r

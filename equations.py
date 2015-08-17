@@ -21,11 +21,13 @@ def linearModularEquation(a, b, n):
         (a * x) % n = b
     or written in modular arithmatic
          a * x = b (mod n)
+    Return (smallest non-negative solution, step, n)
     """
     
     a, b, n = int(a), int(b), int(n)
     d = gcd(a, n)
-    if b%d: return ((), n)
+    if b % d:
+        raise ValueError('No Solution for ({} * x) % {} = {}!'.format(a, n, b))
     
     aa = a/d
     bb = b/d
@@ -39,10 +41,10 @@ def linearModularEquation(a, b, n):
         x0 = -x0
     if x0 < 0:
         x0 = nn + x0
-    output = [(x0 * bb) % n]
-    for i in range(1, d):
-        output.append((output[-1] + nn) % n)
-    return (tuple(sorted(output)), n)
+    sol = (x0 * bb) % n
+    while sol > nn:
+        sol = (sol + nn) % n
+    return sol, nn, n
 
 def pqa(d, p, q):
     """
@@ -68,6 +70,12 @@ def pqa(d, p, q):
         PQ.append((p, q))
 
 def generalizedPellEquation(d, n=1, nsol=1):
+    """
+    Solve generalized Pell equation 
+        x**2 - d * y**2 = n
+    Return smallest positive basic solution set, or enough solutions according to nsol
+    """
+
     d, n = int(d), int(n)
     if d <= 0:
         raise ValueError("D must be positive non-perfect-square integer!")
@@ -75,10 +83,8 @@ def generalizedPellEquation(d, n=1, nsol=1):
     if sd * sd == d:
         raise ValueError("D must be positive non-perfect-square integer!")
         
-    """
-    Classical Pell Equation: x**2 - d * y**2 = 1 (or -1)
-    Using continued fraction expansion of d to solve 
-    """
+    # Classical Pell Equation: x**2 - d * y**2 = 1 (or -1)
+    # Using continued fraction expansion of d to solve 
 
     if abs(n) == 1:
         l, X, Y, Q = pqa(d, 0, 1)
@@ -104,23 +110,21 @@ def generalizedPellEquation(d, n=1, nsol=1):
             sols.append((x*xk + y*yk*d, y*xk + x*yk))
         return sols
 
-    """
-    Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
-    Using Lagrange-Matthews-Mollin (LMM) algorithm
+    # Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
+    # Using Lagrange-Matthews-Mollin (LMM) algorithm
 
-    1. Find all int f > 0 satisfying:
-        n % (f*f) == 0
-    Note: need high efficient prime divisor decompsition algorithm when n is large.
+    # 1. Find all int f > 0 satisfying:
+    #     n % (f*f) == 0
+    # Note: need high efficient prime divisor decompsition algorithm when n is large.
 
-    2. For each f, set m = abs(n / (f*f)).
+    # 2. For each f, set m = abs(n / (f*f)).
     
-    3. For each m, find all int z satisfying:
-        (z*z) % m = d % m
-        -m/2 < z <= m/2 
-    Note: need high efficient quadratic residue algorithm to solve the first modular equation when m is large.
+    # 3. For each m, find all int z satisfying:
+    #     (z*z) % m = d % m
+    #     -m/2 < z <= m/2 
+    # Note: need high efficient quadratic residue algorithm to solve the first modular equation when m is large.
 
-    Here we just use brute-search to find all value of z.
-    """
+    # Here we just use brute-search to find all value of z.
 
     f, zdict = 1, {}
     while f < sqrt(abs(n)/2):
@@ -140,23 +144,21 @@ def generalizedPellEquation(d, n=1, nsol=1):
     if f*f == abs(n):
         zdict[(f, n/abs(n))] = [0]
     
-    """
-    4. For each z according to each (f, m), run pqa(d, z, abs(m)).
+    # 4. For each z according to each (f, m), run pqa(d, z, abs(m)).
 
-    5. Search for first Qi = 1 or -1.
+    # 5. Search for first Qi = 1 or -1.
 
-    6. If Xi**2 - d * Y**2 = m, (f * Xi, f * Yi) is a fundamental solution.
+    # 6. If Xi**2 - d * Y**2 = m, (f * Xi, f * Yi) is a fundamental solution.
 
-    7. Let (t, u) be the minimal positive solution of x**2 - d * y**2 = -1.
-       If Xi**2 - d * Y**2 = -m, then (f*(t*X[i] + d*u*Y[i]), f*(u*X[i] + t*Y[i])) is a fundamental solution.
+    # 7. Let (t, u) be the minimal positive solution of x**2 - d * y**2 = -1.
+    #    If Xi**2 - d * Y**2 = -m, then (f*(t*X[i] + d*u*Y[i]), f*(u*X[i] + t*Y[i])) is a fundamental solution.
 
-    8. Let (r, s) be the minimal positive solution of x**2 - d * y**2 = 1.
-       If some fundmental solution (x, y) are not positive, we can use transformation:
-        x' + y'*sqrt(d) = (x + y*sqrt(d)) * (1 or -1) * (r + s*sqrt(d))**k
-       to find the minimal positive solution (x', y') in the equivalent class of (x, y)
+    # 8. Let (r, s) be the minimal positive solution of x**2 - d * y**2 = 1.
+    #    If some fundmental solution (x, y) are not positive, we can use transformation:
+    #    x' + y'*sqrt(d) = (x + y*sqrt(d)) * (1 or -1) * (r + s*sqrt(d))**k
+    #    to find the minimal positive solution (x', y') in the equivalent class of (x, y)
 
-    9. When all z are done, then we have a set of fundmental solutions (or minimal positive solutions) which are all in different equivalent classes.
-    """
+    # 9. When all z are done, then we have a set of fundmental solutions (or minimal positive solutions) which are all in different equivalent classes.
 
     r, s = generalizedPellEquation(d, 1)
     t, u = generalizedPellEquation(d, -1)
@@ -187,10 +189,8 @@ def generalizedPellEquation(d, n=1, nsol=1):
                         sols.append((xg, yg))
                     break
 
-    """
-    10. Let (r, s) be the minimal positive solution of x**2 - d * y**2 = 1.
-        We can expand the solution set. 
-    """
+    # 10. Let (r, s) be the minimal positive solution of x**2 - d * y**2 = 1.
+    #     We can expand the solution set. 
 
     sols = sorted(sols)
 

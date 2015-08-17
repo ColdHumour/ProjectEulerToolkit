@@ -49,3 +49,17 @@ def pe161():
     
     # answer: 20574308184277971
     return all_states.values()[0][-1]
+
+def pe162():
+    c = 0
+    for n in range(3, 17):
+        c += 15*16**(n-1) - 43*15**(n-1) + 41*14**(n-1) - 13**n
+
+    slist = '0123456789ABCDEF'
+    s = ''
+    while c:
+        c, q = divmod(c, 16)
+        s = slist[q] + s
+
+    # answer: 3D58725572C62302
+    return s
