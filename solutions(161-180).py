@@ -83,3 +83,28 @@ def pe163(n=36):
     
     # answer: 343047
     return d0
+
+def pe164(limit=20):
+    situation = {}
+    for i in range(10):
+        for j in range(i, 10-i):
+            situation[(i, j)] = situation[(j, i)] = 1
+
+    for _ in range(3, limit):
+        temp = {}
+        for (i, j), n in situation.iteritems():
+            for k in range(10-i-j):
+                if (j, k) in temp:
+                    temp[(j, k)] += n
+                else:
+                    temp[(j, k)] = n
+        situation = temp
+
+    c = 0
+    for (i, j), n in situation.iteritems():  
+        if i + j < 9: 
+            for k in range(1, 10-i-j):
+                c += n
+
+    # answer: 378158756814587
+    return c
