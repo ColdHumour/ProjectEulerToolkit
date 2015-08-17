@@ -1,0 +1,930 @@
+Counting problems in the triangular grid.             Torsten Sillke, 1998-03-24
+  
+This is a collection of counting problems. Given a sequence of figures which
+are subsets of the triangluar grid some objects are to be counted. That means
+finding a formular for this type. The objects that can be found in the grid
+are triangles (which are equilateral), and several different quadrangels.
+The quadrangels are rhombi, parallelograms, and trapezoids. If self crossings
+are allowed there are double triangles. Another regular figure is the 
+equilateral hexagon. 
+If further lines are added we get a bunsh of new objects. The set of triangles
+get larger and much care is needed to get the numbers right.
+
+
+Problem A: How many triangles do you count?
+  See [Hal62], [Bri66], [Mar71], [MoP73], [CaS74], [CoE76],
+  [Lar89], [ArM93 problem1a], or [CoG96].
+     
+           *
+  n=1     / \
+         *---*
+
+           *
+  n=2     / \
+         *---*
+        / \ / \
+       *---*---*
+
+           *
+  n=3     / \
+         *---*
+        / \ / \
+       *---*---*
+      / \ / \ / \
+     *---*---*---*
+
+           *
+  n=4     / \
+         *---*
+        / \ / \
+       *---*---*
+      / \ / \ / \
+     *---*---*---*
+    / \ / \ / \ / \
+   *---*---*---*---*
+
+           *
+  n=5     / \
+         *---*
+        / \ / \
+       *---*---*
+      / \ / \ / \
+     *---*---*---*
+    / \ / \ / \ / \
+   *---*---*---*---*
+  / \ / \ / \ / \ / \
+ *---*---*---*---*---*
+
+
+Differences:
+
+  Up-Triangles(n) = U3(n) = Binomial(n+2, 3)
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------
+    0   0   0   1   4  10  20  35  56  84 120
+      0   0   1   3   6  10  15  21  28  36
+        0   1   2   3   4   5   6   7   8
+          1   1   1   1   1   1   1   1
+
+  Down-Triangles(n) = D3(n) 
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------
+    0   0   0   0   1   3   7  13  22  34  50
+      0   0   0   1   2   4   6   9  12  16
+        0   0   1   1   2   2   3   3   4
+          0   1   0   1   0   1   0   1
+
+  All-Triangles(n) = A3(n) = U3(n) + D3(n)
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------
+    0   0   0   1   5  13  27  48  78 118 170
+      0   0   1   4   8  14  21  30  40  52
+        0   1   3   4   6   7   9  10  12
+          1   2   1   2   1   2   1   2
+
+  Up-Tetrahedra(n) = U4(n) = Binomial(n+3, 4)
+
+   -3  -2  -1   0   1   2   3   4   5   6   7   8
+  ------------------------------------------------
+    0   0   0   0   1   5  15  35  70 126 210 330
+      0   0   0   1   4  10  20  35  56  84 120
+        0   0   1   3   6  10  15  21  28  36
+          0   1   2   3   4   5   6   7   8
+            1   1   1   1   1   1   1   1
+
+  Down-Tetrahedra(n) = D4(n)
+
+   -3  -2  -1   0   1   2   3   4   5   6   7   8
+  ------------------------------------------------
+    0   0   0   0   0   0   1   4  10  21  39  66
+      0   0   0   0   0   1   3   6  11  18  27
+        0   0   0   0   1   2   3   5   7   9
+          0   0   0   1   1   1   2   2   2
+            0   0   1   0   0   1   0   0
+
+  All-Tetrahedra(n) = A4(n) = U4(n) + D4(n)
+
+   -3  -2  -1   0   1   2   3   4   5   6   7   8
+  ------------------------------------------------
+    0   0   0   0   1   5  16  39  80 147 249 396
+      0   0   0   1   4  11  23  41  67 102 147
+        0   0   1   3   7  12  18  26  35  45
+          0   1   2   4   5   6   8   9  10
+            1   1   2   1   1   2   1   1
+
+Combinatorial Interpretations:
+
+  The relation
+      U3(n) = Binomial(n+2, 3)
+  can be interpreted in the following way:
+
+  Select three integers x, y, z with repetition from 1..n.
+  Let x<=y<=z. Then truncate the triangle by (n-z), (z-y),
+  and (y-x). What is let is a triangle of size x.
+
+  Example: The combination (2, 4, 5) from 1..5 selects
+           the following triagnle
+
+                 *
+                
+               *   *
+              / \ 
+             *   *   *
+   indent   /     \         indent
+   n-z=0   *---*---*   *    z-y=1
+          
+         *   *   *   *   *
+        
+       *   *   *   *   *   *
+      
+           indent y-x=2
+
+  In the same way U4(n) = Binomial(n+3, 4) can be understood.
+
+
+Counting by the inclusion-exclusion principle:
+
+  The number of up-triangles with all vertices on the boarder is
+
+  U3(n) - 3 U3(n-1) + 3 U3(n-2) - U3(n-3)  =  1
+
+  This expression is that of the 3rd row of the difference scheme.
+  Direct counting gives the sum
+
+  U3(n) = Binomial(2,2)     #triangles of size n
+	+ Binomial(3,2)     #triangles of size n-1
+	...
+	+ Binomial(n,2)     #triangles of size 2
+	+ Binomial(n+1,2)   #triangles of size 1
+
+  Similar relations hold for the number of tetrahedra.
+  U4(n) - 4 U4(n-1) + 6 U4(n-2) - 4 U4(n-3) + U4(n-4)  =  1
+
+  The number of down-triangles with all vertices on the boarder is
+  D3(n) - 3 D3(n-1) + 3 D3(n-2) - D3(n-3)  =  [2 | n]
+
+  The number of down-tetrahedra with all vertices on the surface is
+  D4(n) - 4 D4(n-1) + 6 D4(n-2) - 4 D4(n-3) + D4(n-4)  =  [3 | n]
+
+  The function [p | q] is the charateristic function of p divides q.
+
+
+Recurrence Relations:
+
+  With the inclusion-exclusion principle we know that:
+
+  A3(n) - 3 A3(n-1) + 3 A3(n-2) - A3(n-3)  
+    =  periodic function of period-length 2.
+
+  A4(n) - 4 A4(n-1) + 6 A4(n-2) - 4 A4(n-3) + A4(n-4)  
+    =  periodic function of period-length 3.
+
+  This means:
+
+  A3(n) - 3 A3(n-1) + 3 A3(n-2) - A3(n-3)  
+    = A3(n-2) - 3 A3(n-3) + 3 A3(n-4) - A3(n-5)  
+
+  A4(n) - 4 A4(n-1) + 6 A4(n-2) - 4 A4(n-3) + A4(n-4)  
+    = A4(n-3) - 4 A4(n-4) + 6 A4(n-5) - 4 A4(n-6) + A4(n-7)  
+
+  and the generating functions are:
+
+  g_A3(x) = (x^3 - 3x^2 + 3x - 1)(x^2 - 1)
+	  = (x - 1)^4 (x + 1)
+
+  g_A4(x) = (x^4 - 4x^3 + 6x^2 - 4x + 1)(x^3 - 1)
+	  = (x - 1)^5 (x^2 + x + 1)
+
+  We can conclude that 
+  g_A3(n) is a polynomial of order 3 with a 2-periodic constant term and
+  g_A4(n) is a polynomial of order 4 with a 3-periodic constant term.
+
+
+Functions:
+
+  A3(n) =  floor( n*(n+2)*(2n+1)/8 )    the solution for problem A
+
+        =  n*(n+2)*(2n+1)/8       for n even
+          (n*(n+2)*(2n+1) - 1)/8  for n odd
+
+
+Problem B: How many parallelograms do you count?
+  See  [Lev78][CMO91 prob 5][ArM93 problem3][Zer96].
+
+
+Solution B:
+  Maximal parallelograms for n=3, with no horizontal side.
+
+           *               *
+          / \             / \
+         *   *           *   *
+        /   /             \   \
+       *   *   *       *   *   *
+        \ /                 \ /  
+     *   *   *   *   *   *   *   *
+
+  P(n) = 3*U4(n-1) = 3*Binomial(n+2, 4)
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------   P(n)/3
+    0   0   0   0   1   5  15  35  70 126 210 330
+      0   0   0   1   4  10  20  35  56  84 120
+        0   0   1   3   6  10  15  21  28  36
+          0   1   2   3   4   5   6   7   8   <-  maximal parallelograms
+            1   1   1   1   1   1   1   1         having the top vertex
+
+
+Problem C: [Col27] [Pea07, No 74] [mathpuzzle]
+  Triangular array with n on a side, but with all the altitudes also drawn.
+  How many triangles do you count?
+
+                      O 
+                     /:\
+                    / : \
+                   /  :  \
+                  /   :   \
+                 /    :    \
+                H     :     H          n = 1
+               /  `-. : .-'  \
+              /       O       \
+             /    .-' : `-.    \
+            /  .-'    :    `-.  \
+           /.-'       :       `-.\
+          O-----------H-----------O
+
+
+                      O
+                     /:\
+                    / : \
+                   H. : .H
+                  /  `O'  \
+                 /.-' : `-.\
+                O-----H-----O          n = 2
+               /:\`-. : .-'/:\
+              / : \  .O.  / : \
+             H. : .H' : `H. : .H
+            /  `O'  \ : /  `O'  \
+           /.-' : '-.\:/.-' : `-.\
+          O-----H-----O-----H-----O
+
+
+Solution C:                                 Torsten Sillke, 1999-12-06
+
+            119  3       79  2     11
+  T(n)  =  6--- n   +  12-- n   +  -- n  -  delta(n)
+            120          80        30
+
+        = T60(n) + T90(n) + T120(n)
+
+        = floor( (2 n^3 + 5 n^2 + 2 n)/8 ) + 2*floor( (n^3 - 1/3 n)/2 )
+
+          + 6*(  n*(n+1)*(n+2)/6               
+               + floor( (2 n^3 + 5 n^2 + 2 n)/8 ) 
+               + floor( (2 n^3 + 3 n^2 - 3 n)/18 )
+               + floor( (2 n^3 + 3 n^2 - 3 n)/10 )  )
+
+          + 3 * floor( (22 n^3 + 45 n^2 - 4 n)/48 )
+
+  with 0 <= delta(n) <= 1831/240 a periodic function with period length 60.
+    T(100) = 7,121,577 
+   T(1000) = 7,004,654,532
+  T(10000) = 6,992,965,420,332. 
+  Bill Daly [mathpuzzle] independently computed the same values. So they seem to be correct.
+  The first values and their differences are
+
+   -2  -1   0   1   2   3   4    5    6    7    8    9   10    11    12    13    14    15    16    17    18
+  ---------------------------------------------------------------------------------------------------------  T(n)
+    0   0   0  16 104 303 653 1196 1978 3032 4410 6148 8292 10875 13955 17556 21730 26522 31966 38104 44988
+      0   0  16  88 199 350  543  782 1054 1378 1738 2144  2583  3080  3601  4174  4792  5444  6138  6884
+        0  16  72 111 151  193  239  272  324  360  406   439   497   521   573   618   652   694   746
+         16  56  39  40   42   46   33   52   36   46    33    58    24    52    45    34    42    52
+
+  Now we are counting the three types of triangles in detail.
+  It is sufficient to count the maximal triangles which gives us the 3rd differeces.
+
+  Case - the equilateral triangles T60(n):
+    T60(n) = U3(n) + D3(n) + 2*R60(n)
+    where R60(n) is the number of equilateral triangles pointing right.
+
+  Determine R60(n), the equilateral triangles pointing right.
+  The vertices of the triangle can be of different type.
+    O  :  a point in the original triangluar grid
+    U  :  a middle point of an triangle pointing up
+    D  :  a middle point of an triangle pointing down.
+
+       *
+       U
+     *   O
+       D
+   *   *   *   R1(n)
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  R1(n)
+    0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   1   2   3   5   7   9  12
+        0   0   1   1   1   2   2   2   3
+          0   1   0   0   1   0   0   1     <- period length 3
+
+         *
+
+       *   *
+         D
+     *   *   O     R2(n)
+         U
+   *   *   *   *
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  R2(n)
+    0   0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   0   1   2   3   5   7   9  12
+        0   0   0   1   1   1   2   2   2   3
+          0   0   1   0   0   1   0   0   1     <- period length 3
+
+           *
+
+         *   *
+         U
+       *   *   *      R3(n)
+               U
+     *   *   *   *
+         U
+   *   *   *   *   *
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9  10
+  ----------------------------------------------------  R3(n)
+    0   0   0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   0   0   1   2   3   5   7   9  12
+        0   0   0   0   1   1   1   2   2   2   3
+          0*  0   0   1   0   0   1   0   0   1     <- period length 3
+
+             *
+
+           *   *
+
+         *   *   *
+           D
+       *   *   *   *      R4(n)
+                 D
+     *   *   *   *   *
+           D
+   *   *   *   *   *   *
+
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9  10  11
+  --------------------------------------------------------  R4(n)
+    0   0   0   0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   0   0   0   1   2   3   5   7   9  12
+        0   0   0   0   0   1   1   1   2   2   2   3
+          0   0*  0   0   1   0   0   1   0   0   1     <- period length 3
+
+         *
+
+       O   *
+
+     *   *   O     R5(n)
+
+   *   O   *   *
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  R5(n)
+    0   0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   0   1   2   3   5   7   9  12
+        0   0   0   1   1   1   2   2   2   3
+          0   0   1   0   0   1   0   0   1     <- period length 3
+
+  We have stared values in the sequences R3 and R4.
+  The star indicates an exception in the periodic 3rd differences.
+  These are triangles of size zero we have to ommit.
+
+  R60(n) = 3*(R1(n) + R2(n)) + R3(n) + R4(n) + R5(n).
+         = floor( (n^3 - 1/3 n)/2 )
+
+  T60(n) = 5/4 n^3 + 5/8 n^2 - 1/12 n - delta60(n)  with 0 <= delta60 <= 35/24
+         = floor( n*(n+2)*(2n+1)/8 ) + 2*floor( (n^3 - 1/3 n)/2 )
+
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  T60(n)
+    0   0   0   1  11  39  89 170 292 458 678 961
+      0   0   1  10  28  50  81 122 166 220 283
+	0   1   9  18  22  31  41  44  54  63
+	  1*  8*  9   4   9  10   3  10   9     <- period length 6 
+
+
+  Case - the isosceles triangles (but not equilateral) T120(n):
+
+    T120(n) = 3*( S1(n) + S2(n) + 2*S3(n) )
+
+       *
+      
+     *   *
+       o
+   o   *   o   S1(n) = n*(n+1)*(n+2)/6
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  S1(n) = U3(n)
+    0   0   0   1   4  10  20  35  56  84 120
+      0   0   1   3   6  10  15  21  28  36
+        0   1   2   3   4   5   6   7   8
+          1   1   1   1   1   1   1   1
+
+       *
+      
+     o   o
+       o
+   *   *   *   S2(n) = floor( (2 n^3 + 3 n^2 - 4 n)/8 )
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  S2(n)
+    0   0   0   0   1   4  10  19  32  50  74
+      0   0   0   1   3   6   9  13  18  24
+	0   0   1   2   3   3   4   5   6
+	  0   1   1   1   0   1   1   1     <- period length 4
+
+       o
+      
+     *   o
+        
+   *   o   *   S3(n) = floor( (2 n^3 + 3 n^2 - 2 n)/24 )
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  S3(n) = D3(n)
+    0   0   0   0   1   3   7  13  22  34  50
+      0   0   0   1   2   4   6   9  12  16
+        0   0   1   1   2   2   3   3   4
+          0   1   0   1   0   1   0   1     <- period length 2
+
+
+    T120(n)= 3*floor( (22 n^3 + 45 n^2 - 4 n)/48 )
+
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  T120(n)
+    0   0   0   3  21  60 132 240 396 606 882 1227
+      0   0   3  18  39  72 108 156 210 276 345
+        0   3  15  21  33  36  48  54  66  69
+          3  12   6  12   3  12   6  12   3     <- period length 4
+
+
+  Case - the right triangles T90(n):
+
+    T90(n) = 6*( T1(n) + T2(n) + T3(n) + T4(n) )
+
+       o
+      
+     *   *
+        
+   o   o   *   T1(n) = n*(n+1)*(n+2)/6
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  T1(n) = U3(n)
+    0   0   0   1   4  10  20  35  56  84 120
+      0   0   1   3   6  10  15  21  28  36
+        0   1   2   3   4   5   6   7   8
+          1   1   1   1   1   1   1   1
+
+       *
+      
+     *   o
+        
+   o   * o *   T2(n) = floor( (2 n^3 + 5 n^2 + 2 n)/8 )
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  T2(n) = A3(n)
+    0   0   0   1   5  13  27  48  78 118 170
+      0   0   1   4   8  14  21  30  40  52
+        0   1   3   4   6   7   9  10  12
+          1   2   1   2   1   2   1   2     <- period length 2
+
+       *
+      
+     o   o
+        o
+   *   *   *   T3(n) = floor( (2 n^3 + 3 n^2 - 3 n)/18 )
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  -----------------------------------------------  T3(n)
+    0   0   0   0   1   4   9  17  29  45  66  93
+      0   0   0   1   3   5   8  12  16  21  27
+        0   0   1   2   2   3   4   4   5   6
+          0   1   1   0   1   1   0   1   1     <- period length 3
+
+       *
+      
+     o   o
+         o
+   *   *   *   T4(n) = floor( (2 n^3 + 3 n^2 - 3 n)/10 )
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9  10  11
+  -------------------------------------------------------  T4(n)
+    0   0   0   0   2   7  16  31  52  81 119 167 227 299
+      0   0   0   2   5   9  15  21  29  38  48  60  72
+        0   0   2   3   4   6   6   8   9  10  12  12
+          0   2   1   1   2   0   2   1   1   2   0    <- period length 5
+
+  T90(n) = 6*(   n*(n+1)*(n+2)/6               
+               + floor( (2 n^3 + 5 n^2 + 2 n)/8 ) 
+               + floor( (2 n^3 + 3 n^2 - 3 n)/18 )
+               + floor( (2 n^3 + 3 n^2 - 3 n)/10 )  )
+
+
+
+Problem D: [Mos87][ArM93, problem1b]
+  How many equilateral triangles have there vertices on
+  the lattice points of problem A?
+
+
+Solution D:
+  Binomial(n+3,4).
+
+  The 3rd difference is n.
+  The relation to U4(n):
+  - there are k tetrahedra with their top point on level k.
+    
+
+Problem E: [Gib77][ArM93, problem2a]
+  How many regular 6-gons are in the figure of problem A?
+
+
+Solution E:
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  H(n)
+    0   0   0   0   0   1   3   6  11  18  27  39
+      0   0   0   0   1   2   3   5   7   9  12
+        0   0   0   1   1   1   2   2   2   3
+          0   0   1   0   0   1   0   0   1     <- period length 3
+
+   It is obvious that H and R5 (problem C) are the same sequence.
+   H(n) = floor( ( n^3 - 3n + 2 )/18 ).
+
+
+Problem F: [ArM93, problem4]
+  How many rhombi are in the figure of problem A?
+
+
+Solution F: [ArM93]
+
+   -2  -1   0   1   2   3   4   5   6   7   8
+  --------------------------------------------  R(n)/3
+    0   0   0   0   1   3   7  13  22  34  50
+      0   0   0   1   2   4   6   9  12  16
+        0   0   1   1   2   2   3   3   4
+          0   1   0   1   0   1   0   1
+
+  Each rhombi has a down-triangle. And every such 
+  down-triangle can be extended by a neighbour 
+  up-triangle to a rhombi. Therefore R(n) = 3 D3(n),
+  with D3 from problem A.
+
+
+Problem G: (Sillke)
+  How many triangles are in this sequence of rhombi?
+   
+           *
+  n=1     / \
+         *---*
+          \ /
+           *
+
+           *
+  n=2     / \
+         *---*
+        / \ / \
+       *---*---*
+        \ / \ /
+         *---*
+          \ /
+           *
+
+           *
+  n=3     / \
+         *---*
+        / \ / \
+       *---*---*
+      / \ / \ / \
+     *---*---*---*
+      \ / \ / \ /
+       *---*---*
+        \ / \ /
+         *---*
+          \ /
+           *
+
+Solution G: (Sillke)
+  The number of rombi, pointing upwards, in this figure is the
+  same as the number of squares in the square grid [ArM93, partII].
+  It is R(n) = 1*1 + 2*2 + 3*3 + ... + n*n = n(n+1)(2n+1)/6.
+  As each rhombi contains an up and a down triangle and 
+  each each triangle is contained in an up-rhombi we see,
+  the number of triangles is 2*R(n).
+
+
+Problem H: (Sillke)
+  How many trapezoids are in the figure of problem A?
+
+
+Solution H: (Sillke)
+  First of all it is sufficient to count the trapezoids with horizontal
+  parallel sides. There are two types of trapezoids. They are called up and down
+  according their circumscribed triangle points upwards or downwards.
+
+  Maximal trapezoids for n=3. There are 2 up and 1 down.
+
+           *               *               *
+                                             
+         *   *           *---*           *   *
+                        /     \                
+       *---*---*       *   *   *       *---*---*
+      /         \     /         \       \     /  
+     *---*---*---*   *---*---*---*   *   *---*   *
+
+  The up-trapoziods are in one to one relation to parallelograms of problem B.
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  TU(n)/3
+    0   0   0   0   1   5  15  35  70 126 210 330
+      0   0   0   1   4  10  20  35  56  84 120
+        0   0   1   3   6  10  15  21  28  36
+          0   1   2   3   4   5   6   7   8       <-- maximal up-trapezoids
+            1   1   1   1   1   1   1   1
+
+  Up-Trapezoids(n)/3 = TU(n)/3 = Binomial(n+2, 4)
+  The down trapezoids have an even-odd pattern.
+  This have we already seen for the down triangles in puzzle A.
+
+   -2  -1   0   1   2   3   4   5   6   7   8   9
+  ------------------------------------------------  TD(n)/3
+    0   0   0   0   0   1   4  11  24  46  80 130
+      0   0   0   0   1   3   7  13  22  34  50
+        0   0   0   1   2   4   6   9  12  16
+          0   0   1   1   2   2   3   3   4       <-- maximal down-trapezoids
+            0   1   0   1   0   1   0   1
+
+
+
+Problem I: [Ran55 n=2]
+   (a) How many triangles can you count in this sequence of interated triangles?
+   (b) Then add the three heights in the large triangle. How many triangle are there?
+
+           *
+  n=0     / \
+         *---*
+
+           *
+  n=1     / \
+         *---*
+        / \ / \
+       *---*---*
+
+           *
+  n=2     / \
+         /   \
+        /     \
+       *---*---*
+      / \ / \ / \
+     /   *---*   \
+    /     \ /     \
+   *-------*-------*
+
+
+                   *
+  n=3             / \
+                 /   \
+                /     \
+               /       \
+              /         \
+             /           \
+            /             \
+           *-------*-------*
+          / \     / \     / \
+         /   \   *---*   /   \
+        /     \ / \ / \ /     \
+       /       *---*---*       \
+      /         \     /         \
+     /           \   /           \
+    /             \ /             \
+   *---------------*---------------*
+
+
+Solution I: (Sillke)
+(a) Let T(n) the number of triangles. Then we see T(0) = 1.
+    Further we have the recurrence T(n) = T(n-1) + 4. 
+    This is obvious, as there are T(n-1) triangles inside the
+    inner triangle and there are 4 triangles having at least
+    one corner of the outer triangle. So we have
+    T(n) = 4n + 1.
+(b) Let T(n) the number of triangles. There are three type of
+    triangles T60, T90, T120. The number gives the greatest
+    angle (in degree) of the triangle.
+    As in (a) we have T60(n) = T60(n-1) + 4 and T60(0) = 1.
+    The same reasoning also works for the other triangle types.
+    T90(n) = T90(n-1) + 6*3 and T90(0) = 6*2.
+    T120(n) = T120(n-1) + 3*3 and T120(0) = 3*1.
+    This gives the formulas
+    T60(n) = 4n + 1, T90(n) = 6(3n+2), and T120(n) = 3(3n+1)
+    T(n) = T60(n) + T90(n) + T120(n) = 31n + 16.
+    In [Ran55] the T(2) case is considered.
+
+
+References:
+
+ArM93: Y. Arzoumanian, W. O. J. Moser;
+   enumerating 3-, 4-, 6-gons with vertices at lattice points,
+   Crux Mathematicorum 19:9  (Nov 1993) 249-254 Part I
+   - Problems A, B, D, E, F
+   problem1a: How many equilateral triangles have vertices at the lattice
+     points of T_n and sides on lattice lines?
+   solution1a: n(n+2)(2n+1)/8      if n is even,
+               (n+1)(2n^2+3n-1)/8  if n is odd.
+   problem1b: How many equilateral triangles have vertices at the lattice
+     points of T_n? The sides need not lie on lattice lines.
+   solution1b: C(n+3,4) = n(n+1)(n+2)(n+3)/24
+   problem2a: How many regular hexagons have vertices at the lattice
+     points of T_n and sides on lattice lines?
+   solution2a: n(n^2 - 3)/18    if n = 0 mod 3,
+               (n-1)^2(n+2)/18  if n = 1 mod 3,
+               (n+1)^2(n-2)/18  if n = 2 mod 3.
+   problem2b: How many regular hexagons have vertices at the lattice
+     points of T_n? The sides need not lie on lattice lines.
+   solution2b: n(n+3)(n^2 + 3n - 6)/6^3  if n = 0 mod 3,
+               (n-1)n(n+2)(n+5)/6^3      if n = 1 mod 3,
+               (n-2)(n+1)(n+3)(n+4)/6^3  if n = 2 mod 3.
+   problem3: How many parallelograms have vertices at lattice points 
+     of T_n and the sides along lattice lines?
+   solution3: 3 C(n+2,4) = (n-1)n(n+1)(n+2)/8
+   problem4: How many rhombi have vertices at lattice points 
+     of T_n and the sides along lattice lines?
+   solution4: n(n+2)(2n-1)/8      if n is even,
+              (n-1)(n+1)(2n+3)/8  if n is odd.
+   problem5a: How many regular hexagons have vertices at the lattice
+     points of H_n and sides on lattice lines?
+   solution5a: n^3
+   problem5b: How many regular hexagons have vertices at the lattice
+     points of H_n? The sides need not lie on lattice lines.
+   solution5b: C(n+3,4) + 4 C(n+2,4) + C(n+1,4)
+
+ArM93: Y. Arzoumanian, W. O. J. Moser;
+   enumerating 3-, 4-, 6-gons with vertices at lattice points,
+   Crux Mathematicorum 19:10 (Dec 1993) 279-284 Part II
+   - problems in the square grid 
+
+Bri66: J. E. Brider;
+   A mathematical adventure,
+   MTg (1966) 17-21
+   - Problem A: the sequence A3
+
+CMO91:
+   Canadian Mathematical Olympiad 1991,
+   Problem 5: count the number of parallelogramms in the triangular grid.
+
+CaS74: L. Carlitz, R. Scoville;
+   Solution to Problem 889,
+   Mathematics Magazine 47 (1974) 290-291
+   - Problem A: the sequence A3
+
+Col27: Collins. 
+   Book of Puzzles.  1927.
+   The swarm of triangles, pp. 97-98.  (Same as Pearson No. 74.)
+   - Problem C:
+   He says there are  653  triangles and that starting with 5 on a side gives  
+   1196 and  10,000  on a side gives  6,992,965,420,332.  When I gave August's
+   problem in the Weekend Telegraph, F. R. Gill wrote that the puzzle with 5 
+   on a side was given out as a competition problem by a furniture shop in 
+   north Lancashire in the late 1930s, with a three piece suite as a prize 
+   for the first correct solution.
+
+CoG96: John H. Conway, Richard K. Guy;
+   The Book in Numbers,
+   Copernicus an imprint of Springer Verlag, 1996
+   (german: Zahlenzauber, Birkh\"auser, 1997)
+   - Chapter 3: What comes next?
+     - Section: How many Triangles are there? (Problem A)
+
+CoE76: Romae J. Cormier, Roger B. Eggleton;
+   Counting by Correspondence,
+   Mathematics Magazine 49:4 (Sep 1976) 181-186
+   - Problem A: the sequence A3
+
+Ger70: F. Gerrish;
+   How many triangles?,
+   Mathematical Gazette 54 (1970) 241-246
+   - Problem A: the sequence A3
+
+Gib77: R. A. Gibbs;
+   Solution to Problem 975,
+   Mathematics Magazine 50 (1977) 266
+   - Problem E:
+
+Hal62: J. Halsall;
+   An interesting series,
+   Mathematical Gazette 46 (No. 355) (Feb 1962) 55-56
+   - Problem A: the sequence A3
+
+Lar89: Mogens Esrom Larsen;
+   The eternal triangle - a history of a counting problem,
+   College Math. Journal 20:5 (Nov. 1989) 370-384
+   - Problem A: the sequence A3
+
+Lev78: J. I. Levy;
+   Solution of Problem 1001,
+   Mathematics Magazine 51 (1978) 246
+   - Problem B:
+
+Loy14: Sam Loyd;
+   Sam Loyd's Cyclopedia of 5000 Puzzles, Tricks and 
+   Conundrums with Answers,
+   Corwin Books, New York (1914) 
+   King Solomon's seal, p284, 378
+   (= MPSL2, No. 142, pp. 100 & 165)
+
+Mar71: B. W. Martin;
+   Mathematical Notes 3316. How many triangles?
+   Mathematical Gazette 55 (1971) 438-441
+   - Problem A: the sequence A3
+
+MoP73: J. W. Moon, N. J. Pullman;
+   The number of triangles in a triangular lattice,
+   Delta 3 (1973) 28-31
+   - Problem A: the sequence A3
+
+Mos87: W. Moser;
+   Comment on problem 976,
+   Crux Mathematicorum 13 (1987) 16-17
+   - Problem D:
+
+mathpuzzle: Ed Pegg Jr.;
+   How many triangles are in this figure?
+   Problem: David Singmaster - Problem C
+   http://www.mathpuzzle.com/Solution.htm
+   Solutions: Bill Daly (general case)
+   Solutions: James Boyes
+   http://www.mathpuzzle.com/bdalytriangles.html
+   Solutions: Wei-Hwa Huang
+   http://www.mathpuzzle.com/singmast.pdf
+
+Pea07: Pearson.
+   1907.  Part II.
+   No. 74: A triangle of triangles, p. 74.
+   - Triangular array with four on a side, but with all the altitudes also drawn.
+     Gets  653  triangles of various shapes.
+   No. 75: Pharoah's seal, pp. 75 & 174.
+   - Isoceles right triangles in a square pattern with some diagonals.
+
+Ran55: William R. Ransom;
+   One Hundred Mathematical Curiosities,
+   (One Hundred Curious Mathematical Problems),
+   Weston Walch Publ., Portland Maine, 1955
+   - Problem I: Triangle Counting, p98-99
+
+Sin99: David Singmaster;
+   SOURCES IN RECREATIONAL MATHEMATICS, AN ANNOTATED BIBLIOGRAPHY
+   7th preliminary Edition, 1999,
+   Section 5.X.1 COUNTING TRIANGLES
+
+Smi93: L. M. Smiley;
+   A quick solution of triangle counting,
+   Mathematics Magazine 66 (1993) 40
+   - Problem A: the sequence A3
+
+Zer96: Monte J. Zerger
+   Count the Parallelograms,
+   Journal of Recreational Puzzles 28:2 (1996) 140, 142 Problem 2331
+   Journal of Recreational Puzzles 29:2 (1998) 147-148  Solution 2331 (by Brian Barwell)
+   - a) how may parallelograms will be formed?
+   - b) show that this is always a triangular number.
+
+
+Appendix: a program calculating the numbers T(n) = d0 = aa written in Python.
+
+#  Counting Grid Triangles with barycenters 
+
+def backdiff3_120(n):
+  return 3 * ( 1 + [0,1,1,1][n % 4] + 2*[0,1][n % 2] )
+
+def backdiff3_90(n):
+  return 6 * ( 1 + [1,2][n % 2] + [0,1,1][n % 3] + [0,2,1,1,2][n % 5] )
+
+def backdiff3_60(n):
+  return 1 + [0,1][n % 2] + 6 * [0,1,1][n % 3] + 2 * (n>1)
+
+d0 = d1 = d2 = 0
+for i in range(0,180):
+  d3 = backdiff3_120(i) + backdiff3_60(i) + backdiff3_90(i)
+  d2 = d2 + d3
+  d1 = d1 + d2
+  d0 = d0 + d1
+  n = i+1
+  ap = ((n * 839./120. + 1039./80.) * n + 11./30.) * n
+  a60 = n*(n+2)*(2*n+1)/8 + 2*((3*n*n - 1)*n/6)        ## exact with int
+  a120= 3*(((22*n+45)*n-4)*n/48)                       ## exact with int
+  a90 = 6*(n*(n+1)*(n+2)/6 + (((2*n+5)*n+2)*n)/8 + (((2*n+3)*n-3)*n)/18 + ((2*n+3)*n-3)*n/10) ## exact
+  aa = a60 + a90 + a120
+  print "%5d %4d %6d %8d %10d  %10d %12.3f %12.3f" % (n, d3, d2, d1, d0, aa, ap, ap-d0)
+
+--
+mailto:Torsten.Sillke@uni-bielefeld.de
+http://www.mathematik.uni-bielefeld.de/~sillke/
