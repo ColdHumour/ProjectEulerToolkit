@@ -19,7 +19,9 @@ import ProjectEuler.prime as pep
 
 
 def pe121(r):
-    # semi-close-form + brute-force 
+    """
+    semi-close-form + brute-force 
+    """
 
     n = 1
     for i in range(1, (r+1)/2):
@@ -28,8 +30,10 @@ def pe121(r):
     return int(pef.factorial(r+1) * 1. / n)
 
 def pe122(n, constraint=2):
-    # brute-force
-    
+    """
+    brute-force
+    """
+
     t = {1:[], 2:[1], 3:[1,2], 4:[1,2]}
     k = int(log(n) / log(2)) + 2 + constraint
     to_search = deque([[1,2,4], [1,2,3]])
@@ -52,7 +56,9 @@ def pe122(n, constraint=2):
     return x
     
 def pe123():
-    # brute-force using primes under 1 million
+    """
+    brute-force using primes under 1 million
+    """
 
     p = pep.p1m()
     i = 8001
@@ -183,7 +189,9 @@ def pe136(n=50000000):
     return c
 
 def pe137():
-    # equivalent to solve generalized pell equation x**2 - 5 * y**2 = -4 and find the 15th x satisfying x%5 = -1
+    """
+    equivalent to solve generalized pell equation x**2 - 5 * y**2 = -4 and find the 15th x satisfying x%5 = -1
+    """
 
     sol = []
     for x,y in peq.generalizedPellEquation(5, -4, nsol=35):
@@ -192,7 +200,9 @@ def pe137():
     return sol[14]
 
 def pe139():
-    # equivalent to solve pell equation x**2 - 2 * y**2 = -1 satisfying x+y < 100 million
+    """
+    equivalent to solve pell equation x**2 - 2 * y**2 = -1 satisfying x+y < 100 million
+    """
 
     n = 100000000
     count = 0
@@ -202,7 +212,9 @@ def pe139():
     return count  
 
 def ep140():
-    # equivalent to solve generalized pell equation x**2 - 5 * y**2 = 44 and find the first 30 x satisfying (x-7)%5 = 0
+    """
+    equivalent to solve generalized pell equation x**2 - 5 * y**2 = 44 and find the first 30 x satisfying (x-7)%5 = 0
+    """
 
     sol = []
     for x,y in peq.generalizedPellEquation(5, 44, nsol=65):
@@ -518,7 +530,6 @@ def pe156():
     # Sum of all solutions of f(n, 9) = n: 360000000000
 
     # Final sum: 21295121502550 
-
     return res
 
 def pe157():
@@ -586,7 +597,6 @@ def pe157():
     # Number of sols when n = 9: 23058
 
     # Final sum: 53490
-    
     return c
 
 def pe158():
