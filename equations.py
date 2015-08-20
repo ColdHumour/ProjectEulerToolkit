@@ -7,12 +7,16 @@ Functions using to solve various equations.
 Function list: 
     linearModularEquation
     generalizedPellEquation
+    GaussJordanElimination
 
 @author: Jasper Wu
 """
 
 from math import sqrt
+from copy import deepcopy
 from fractions import gcd
+
+import numpy as np
 
 
 def linearModularEquation(a, b, n):
@@ -202,3 +206,42 @@ def generalizedPellEquation(d, n=1, nsol=1):
         to_expand = [(r*x + d*s*y, s*x + r*y) for x,y in to_expand]
         sols += to_expand
     return sols[:nsol]
+
+def GaussJordanElimination(coeffs):
+    """
+    Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
+    coeffs: 2D list, all elements float
+    """
+    
+    w, d = len(coeffs[0]), len(coeffs)
+    coefmat = np.matrix(coeffs)
+
+    for i in range(d):
+        flag = 0    
+        if coefmat[i, i] == 0:
+            flag = 1
+            for j in range(i+1, d):
+                if abs(coefmat[j, i]) > 0.001:
+                    flag = 0
+                    coefmat[j], coefmat[i] = \
+                        deepcopy(coefmat[i]), deepcopy(coefmat[j])
+                    break
+        if flag: continue
+            
+        if coefmat[i, i] != 1:
+            coefmat[i] /= coefmat[i, i]
+        
+        for j in range(i+1, d):
+            if coefmat[j, i]:
+                coefmat[j] = coefmat[j] - coefmat[j, i] * coefmat[i]
+
+    for j in range(1, d):
+        for i in range(w):
+            if abs(coefmat[j, i]) > 0.001:
+                break
+        
+        for k in range(j):
+            if coefmat[k, i]:
+                coefmat[k] = coefmat[k] - coefmat[k, i] * coefmat[i]
+
+    return coefmat

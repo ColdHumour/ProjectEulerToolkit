@@ -30,7 +30,7 @@ def pe161():
     def transform(state, n):
         tm_avail = filter(None, [t(n) for t in triominoes])
         for tm in tm_avail:
-            if not (state & tm):
+            if not state & tm:
                 new_state = state | tm
                 i = n
                 while i+1 in new_state:
@@ -181,3 +181,81 @@ def pe165():
     
     # answer: 2868868
     return len(c) - 1
+
+def pe166():
+    """
+    Using Gauss-Jordan eliminate algorithm to simplify to 7 variables.
+    Enumerating all possible 1e7 permutations, checking possible magic sum, and counting.
+    """
+    
+    magicsum = {}
+    for a in range(37):
+        bmax = min(a+10, 37)
+        for b in range(a, bmax):
+            magicsum[(a, b)] = range(b, bmax)
+    
+    # v and (9-n for n in v) are symmetric.
+    # so look up to 4999999 is enough.
+    def vecgen(n):
+        v = [0] * (n-1) + [1]
+        while v < [5] + [0] * (n-1):
+            yield v
+
+            i = 1
+            while v[-i] == 9:
+                i += 1
+            v = v[:-i] + [v[-i]+1] + [0]*(i-1)
+
+    def check(v, (a, b, c), nlist):
+        # using the reduced matrix and magic sum to 
+        # check the validation of vector
+        
+        # VARMAT = [[-1.,  0.,  0., -1., -1., -1., -1.],
+        #           [-1.,  1., -1., -1.,  0., -1., -2.],
+        #           [ 1., -1.,  1.,  1.,  1.,  2.,  2.],
+        #           [ 1.,  0.,  0.,  1.,  0.,  0.,  1.],
+        #           [ 1., -1., -1.,  0.,  0.,  0.,  0.],
+        #           [ 1.,  0.,  1.,  1.,  1.,  1.,  2.],
+        #           [-1.,  1.,  0., -1., -1., -1., -2.],
+        #           [ 0.,  1.,  1.,  1.,  0.,  0.,  0.],
+        #           [ 0.,  0.,  0.,  0.,  1.,  1.,  1.]]
+        # RHSCOEF = [ 1.,  1., -2., -1., 0., -2.,  1., -1., -1.] 
+        
+        count = 0
+        for n in nlist:
+            if not 0 <= n - a <= 9:
+                continue
+            if not 0 <= n - b <= 9:
+                continue
+            if not 0 <= n - c <= 9:
+                continue
+            if not 0 <= v[0] + v[3] + b - n <= 9:
+                continue
+            if not 0 <= b + c - v[1] - n <= 9:
+                continue
+            if not 0 <= 2*n - b - c - v[2] <= 9:
+                continue
+            if not 0 <= 2*n - b - c + v[1] - v[2] - v[5] <= 9:
+                continue
+            if not 0 <= c - v[1] + v[2] + v[5] + v[6] - n <= 9:
+                continue
+            count += 1
+        return count
+        
+    # there's only 1 sol for all-0s and all-9s, count from 2
+    c = 2
+    for v in vecgen(7):
+        if not 0 <= v[1] + v[2] - v[0] <= 9:
+            continue
+        
+        vsum = (v[1] + v[2] + v[3], 
+                v[4] + v[5] + v[6], 
+                v[0] + v[3] + v[6])
+        vmin, vmax = min(vsum), max(vsum)
+        if vmax - vmin > 9:
+            continue
+
+        c += 2 * check(v, vsum, magicsum[(vmin, vmax)])
+    
+    # answer: 7130034
+    return c
