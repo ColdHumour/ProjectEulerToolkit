@@ -188,12 +188,6 @@ def pe166():
     Enumerating all possible 1e7 permutations, checking possible magic sum, and counting.
     """
     
-    magicsum = {}
-    for a in range(37):
-        bmax = min(a+10, 37)
-        for b in range(a, bmax):
-            magicsum[(a, b)] = range(b, bmax)
-    
     # v and (9-n for n in v) are symmetric.
     # so look up to 4999999 is enough.
     def vecgen(n):
@@ -241,7 +235,14 @@ def pe166():
                 continue
             count += 1
         return count
-        
+    
+    # precalculate restricted magic sums by vmin and vmax
+    magicsum = {}
+    for a in range(37):
+        bmax = min(a+10, 37)
+        for b in range(a, bmax):
+            magicsum[(a, b)] = range(b, bmax)
+
     # there's only 1 sol for all-0s and all-9s, count from 2
     c = 2
     for v in vecgen(7):
