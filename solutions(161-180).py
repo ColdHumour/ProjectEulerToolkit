@@ -260,3 +260,69 @@ def pe166():
     
     # answer: 7130034
     return c
+
+def pe167():
+    """
+    See reference articles.
+    """
+    
+    def descUlam(v):
+        """
+        To get useful information for 1-addtive (Ulam) sequence U(2, v).
+        Output: uncycled part, cycling differences
+        """
+
+        a = (v+7) / 2
+        b = 2 * v + 2
+
+        # initialize Ulam sequence till 2*v+5
+        s = [2, v, v+2]
+        while s[-1] < 2*v - 3:
+            s.append(s[-1] + 2)
+        s += [2*v - 1, 2*v + 1, 2*v + 2, 2*v + 3, 2*v + 5]
+
+        head, diff, cycle, c = s[:a], [2], [], 0
+
+        # just keep a reasonable length to get next U(2, v)
+        s = [n for n in s if n%2]
+        while 1:
+            if s[0] + b == s[-1] + 2:
+                n = s[1] + b
+                d = n - s[-1]
+                s[:2] = []
+            else:
+                n = s[-1] + 2
+                d = 2
+            s.append(n)
+
+            # try to find shortest cycling part
+            diff.append(d)
+            if len(diff) > v:
+                while c and d != diff[c]:
+                    cycle[:1] = []
+                    c -= 1
+
+                if d == diff[c]:
+                    cycle.append(d)
+                    c += 1
+
+                if c * 2 == len(diff):
+                    return head, cycle
+
+    def nUlam(v, n):
+        """
+        Using periodicity to find nth U(2, v).
+        """
+        
+        head, cycle = descUlam(v)
+        d1, d2, csum = len(head), len(cycle), sum(cycle)
+        nc = (n - d1) / d2
+        nr = n - d1 - nc * d2
+        return 2 * v + 3 + csum * nc + sum(cycle[:nr-1])
+
+    c = 0
+    for v in range(5, 22, 2):
+        c += nUlam(v, 10**11)
+        
+    # answer: 3916160068885
+    return c
