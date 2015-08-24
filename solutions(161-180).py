@@ -370,3 +370,76 @@ def pe169(N=10**25):
     
     # answer: 178653872807
     return a + b
+
+def pe170():
+    from itertools import permutations
+    
+    """
+    Properties of the first integer
+    1) contains at most 2 digits
+    2) must be less than 49
+    3) 2, 5, 10*k, 11*k can be eliminated by hand
+    4) 9 gives out a naive lower bound 9768352140, which can be used to eliminate 7 and 8
+    """
+    
+    res = '1234567890'
+    
+    # test 9 as the first number
+    for n in permutations('2345678', 7):
+        n = int(''.join(n))
+        c = str(n * 9)
+        if len(c) == 8 and set(c) == set('12345678'):
+            res = max(res, '9{}0'.format(c))
+    
+    # 9 * 0 = 0
+    # 9 * 1 = 9
+    # 9 * 8537246 = 76835214
+    # This gives out a lower bound 9768352140
+    
+    # 20+ is enough, so I'm lazy to test 10+.
+    # 21, 23 do not need to test
+    for n in range(24, 30):
+        sp = [s for s in '0456789' if s != str(n%10)]
+        for m in permutations(sp):
+            for i in range(5):
+                a = int('1' + ''.join(m[:i]))
+                b = int('3' + ''.join(m[i:]))
+                c = str(a * n) + str(b * n)
+                if len(c) <= 10:
+                    if set(c) == set('0123456789'):
+                        res = max(res, c, str(b * n) + str(a * n))
+
+                a = int('1' + ''.join(m[i:]))
+                b = int('3' + ''.join(m[:i]))
+                c = str(a * n) + str(b * n)
+                if len(c) <= 10:
+                    if set(c) == set('0123456789'):
+                        res = max(res, c, str(b * n) + str(a * n))
+    
+    # 31, 32, 41, 42 do not need to test
+    for n in range(34, 40) + range(43, 50):
+        if n == 44:
+            continue
+
+        t = '4' if n < 40 else '3'
+        sp = [s for s in '056789'+t if s != str(n%10)]
+        for m in permutations(sp):
+            for i in range(5):
+                a = int('1' + ''.join(m[:i]))
+                b = int('2' + ''.join(m[i:]))
+                c = str(a * n) + str(b * n)
+                if len(c) <= 10:
+                    if set(c) == set('0123456789'):
+                        res = max(res, c, str(b * n) + str(a * n))
+
+                a = int('1' + ''.join(m[i:]))
+                b = int('2' + ''.join(m[:i]))
+                c = str(a * n) + str(b * n)
+                if len(c) <= 10:
+                    if set(c) == set('0123456789'):
+                        res = max(res, c, str(b * n) + str(a * n))
+
+    # 27 * 36508 = 985716
+    # 27 * 149   = 4023 
+    # answer: 9857164023
+    return res
