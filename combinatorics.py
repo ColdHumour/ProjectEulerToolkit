@@ -5,7 +5,8 @@ combinatorics.py
 
 Functions using to dealing with combinatorics problems.
 Function list: 
-    permutations, combinations, combinations_with_replacement
+    permutations, multisetPermutations
+    C, combinations, combinations_with_replacement
     allPartitions, seqPartitions
 
 @author: Jasper Wu
@@ -25,6 +26,46 @@ def C(n, k):
     for i in range(2, k+1):
         x /= i
     return x
+
+def multisetPermutations(multiset):
+    """
+    List out all permutations of a multiset [a, a, ..., b, b, ..., c, c, ...]
+    """
+
+    class Node(object):
+        def __init__(self, v, to=None):
+            self.val = v
+            self.to = to
+
+    def visit(n):
+        vlist = [n.val]
+        while n.to:
+            n = n.to
+            vlist.append(n.val)
+        return vlist
+    
+    multiset = sorted(multiset, reverse=True)
+    d = len(multiset) - 1
+    
+    E = [Node(n) for n in multiset]
+    for i,n in enumerate(E[:-1]):
+        n.to = E[i+1]
+
+    head, i, afteri = E[0], E[-2], E[-1]
+    yield visit(head)
+    
+    while afteri.to or afteri.val < head.val:
+        if afteri.to and i.val >= afteri.to.val:
+            beforek = afteri
+        else:
+            beforek = i
+        k = beforek.to
+        beforek.to = k.to
+        k.to = head
+        if k.val < head.val:
+            i = k
+        head, afteri = k, i.to
+        yield visit(head)
 
 def allPartitions(n, s, init=1):
     """
