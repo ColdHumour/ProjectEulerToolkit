@@ -326,3 +326,47 @@ def pe167():
         
     # answer: 3916160068885
     return c
+
+def pe168():
+    """
+    easy brute-force with a, c, k, n satisfying:
+    c*10**(n-1) + a*10**(n-2) + b = k * (a*10**(n-1) + b*10 + c)
+    where b must be integer less and equal than n-2 digit.
+    """
+    
+    csum = sum(range(11, 100, 11))
+    for n in range(3, 101):
+        for k in range(1, 10):
+            for a in range(1, 10):
+                for c in range(a, 10):
+                    s = 10 * k - 1
+                    t = (10**(n-1) - k) * c - 10**(n-2) * s * a
+                    if t % s == 0:
+                        b = t / s
+                        if len(str(b)) <= n - 2:
+                            csum += (a*10**(n-1) + b*10 + c) % 100000
+    
+    # answer: 59206
+    return csum % 100000
+
+def pe169(N=10**25):
+    """
+    After represent N in binary, then we can get a list of powers of 2
+    [pn, p(n-1), ... , p1], where N = 2**an + ... + 2**a1
+    Then for [pn, p(n-1), ... , p1, 0], final amount of expression
+    E(N) = a0 + b0, where a, b can be calculated recursivly:
+    an = 0, bn = 1
+    a(i-1) = ai + bi, b(i-1) = ai * (pi-p(i-1)-1) + bi * (pi-p(i-1))
+    """
+    
+    s = bin(N)[2:]
+    m = len(s) - 1
+    p2 = [m-i for i,n in enumerate(s) if n=='1'] + [0]
+
+    a, b = 0, 1
+    for i,n in enumerate(p2[1:]):
+        k = p2[i] - n
+        a, b = a + b, a * (k - 1) + b * k
+    
+    # answer: 178653872807
+    return a + b
