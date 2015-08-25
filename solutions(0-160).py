@@ -211,7 +211,7 @@ def pe139():
             count += (n-1) / (x+y)
     return count  
 
-def ep140():
+def pe140():
     """
     equivalent to solve generalized pell equation x**2 - 5 * y**2 = 44 and find the first 30 x satisfying (x-7)%5 = 0
     """
