@@ -8,6 +8,7 @@ Some interesting solutions for problems 161-180 in Project Euler
 @author: Jasper Wu
 """
 
+import ProjectEuler.combinatorics as pec
 import ProjectEuler.formulas as pef
 
 
@@ -372,8 +373,6 @@ def pe169(N=10**25):
     return a + b
 
 def pe170():
-    from itertools import permutations
-    
     """
     Properties of the first integer
     1) contains at most 2 digits
@@ -381,11 +380,11 @@ def pe170():
     3) 2, 5, 10*k, 11*k can be eliminated by hand
     4) 9 gives out a naive lower bound 9768352140, which can be used to eliminate 7 and 8
     """
-    
+
     res = '1234567890'
     
     # test 9 as the first number
-    for n in permutations('2345678', 7):
+    for n in pec.permutations('2345678', 7):
         n = int(''.join(n))
         c = str(n * 9)
         if len(c) == 8 and set(c) == set('12345678'):
@@ -400,7 +399,7 @@ def pe170():
     # 21, 23 do not need to test
     for n in range(24, 30):
         sp = [s for s in '0456789' if s != str(n%10)]
-        for m in permutations(sp):
+        for m in pec.permutations(sp):
             for i in range(5):
                 a = int('1' + ''.join(m[:i]))
                 b = int('3' + ''.join(m[i:]))
@@ -423,7 +422,7 @@ def pe170():
 
         t = '4' if n < 40 else '3'
         sp = [s for s in '056789'+t if s != str(n%10)]
-        for m in permutations(sp):
+        for m in pec.permutations(sp):
             for i in range(5):
                 a = int('1' + ''.join(m[:i]))
                 b = int('2' + ''.join(m[i:]))
@@ -443,3 +442,73 @@ def pe170():
     # 27 * 149   = 4023 
     # answer: 9857164023
     return res
+
+def pe171(N=20):
+    """
+    Make transformation from state to state. 
+    Record states at each level.
+    """
+    
+    digits = range(10)
+    squares = [n**2 for n in range(41)]
+
+    nsum = 45
+    sdict = {n**2: (n, 1) for n in range(1, 10)}
+    for _ in range(N-1):
+        temp = {}
+        for n, (s1, i1) in sdict.iteritems():
+            for m in digits:
+                t = n + m * m            
+                s0, i0 = temp.get(t, (0, 0))
+                temp[t] = (s0 + 10 * s1 + m * i1, i0 + i1)
+        sdict = temp
+
+        for n in squares:
+            nsum += sdict.get(n, (0, 0))[0]
+        nsum %= 10**9
+    
+    # answer: 142989277
+    return nsum
+
+def pe172(N=18):
+    """
+    Split 18 digits to 10 piles, each pile contains at most 3 digits.
+    Get all permutations of all partitions, find out whether it contains 0.
+    And then count the possible permutations of those digits.
+    """
+    
+    from copy import deepcopy
+
+    def countnum(partition):
+        ap = pec.MP(partition) # all permutations
+
+        sdict = {}
+        for n in partition:
+            if n in sdict:
+                sdict[n] += 1
+            else:
+                sdict[n] = 1
+
+        c = 0
+        for n in sdict:
+            # count how many permutations containing n 0s
+            temp = deepcopy(sdict)
+            temp[n] -= 1
+            k = pec.MP(temp.values())
+
+            if n == 0: # if not containing any 0
+                c += k * ap
+            else:      # else get rid off numbers starting with 0
+                temp = deepcopy(partition)
+                temp.remove(n)
+                temp.append(n-1)
+                c += k * (ap - pec.MP(temp))
+        return c
+
+    c = 0
+    for r in pec.allPartitions(10, N, init=0):
+        if all([n < 4 for n in r]):
+            c += countnum(r)
+    
+    # answer: 227485267000992000
+    return c

@@ -14,6 +14,8 @@ Function list:
 
 from itertools import permutations, combinations, combinations_with_replacement
 
+from . formulas import factorial
+
 
 def C(n, k):
     if k == 0: return 1
@@ -26,6 +28,18 @@ def C(n, k):
     for i in range(2, k+1):
         x /= i
     return x
+
+def MP(amounts):
+    """
+    Calculate number of permutations of multiset, which defined by
+    amounts = [amount1, amount2, ...]
+    """
+
+    s, p = 0, 1
+    for v in amounts:
+        s += v
+        p *= factorial(v)
+    return factorial(s) / p
 
 def multisetPermutations(multiset):
     """
