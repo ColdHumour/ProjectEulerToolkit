@@ -8,6 +8,8 @@ Some interesting solutions for problems 161-180 in Project Euler
 @author: Jasper Wu
 """
 
+import math
+
 import ProjectEuler.combinatorics as pec
 import ProjectEuler.formulas as pef
 
@@ -503,4 +505,16 @@ def pe172(N=18):
             c += countnum(r)
     
     # answer: 227485267000992000
+    return c
+
+def pe173():
+    """
+    Easy to calculate a upper bound and a counting formula.
+    """
+    
+    c = 0
+    for n in range(1, 250000):
+        c += int((math.sqrt(n*n + 1000000) - n) / 2)
+        
+    # answer: 1572729
     return c
