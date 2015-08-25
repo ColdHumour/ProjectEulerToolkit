@@ -482,25 +482,17 @@ def pe172(N=18):
     def countnum(partition):
         ap = pec.MP(partition) # all permutations
 
-        sdict = {}
-        for n in partition:
-            if n in sdict:
-                sdict[n] += 1
-            else:
-                sdict[n] = 1
-
         c = 0
-        for n in sdict:
+        for n in set(partition):
             # count how many permutations containing n 0s
-            temp = deepcopy(sdict)
-            temp[n] -= 1
-            k = pec.MP(temp.values())
+            temp = deepcopy(partition)
+            
+            temp.remove(n)
+            k = pec.MP([temp.count(x) for x in set(temp)])
 
             if n == 0: # if not containing any 0
                 c += k * ap
             else:      # else get rid off numbers starting with 0
-                temp = deepcopy(partition)
-                temp.remove(n)
                 temp.append(n-1)
                 c += k * (ap - pec.MP(temp))
         return c
