@@ -360,6 +360,9 @@ def pe169(N=10**25):
     E(N) = a0 + b0, where a, b can be calculated recursivly:
     an = 0, bn = 1
     a(i-1) = ai + bi, b(i-1) = ai * (pi-p(i-1)-1) + bi * (pi-p(i-1))
+
+    It seems that E(n) follows the Stern-Brocot sequence:
+    E(0) = 0, E(1) = 1; for n > 0: E(2*n) = E(n), E(2*n+1) = E(n) + E(n+1).
     """
     
     s = bin(N)[2:]
@@ -517,4 +520,31 @@ def pe173():
         c += int((math.sqrt(n*n + 1000000) - n) / 2)
         
     # answer: 1572729
+    return c
+
+def pe174():
+    """
+    Use the result of pe173.
+    """
+    
+    c, H = 0, {}
+    for n in range(1, 250000):
+        for m in range(1, int((math.sqrt(n*n + 1000000) - n) / 2) + 1):
+            x = n + 2 * m
+            y = x * x - n * n
+            if y in H:
+                H[y] += 1
+            else:
+                H[y] = 1
+        
+        # save space
+        for i in range(4*n, 4*n+4):
+            if H.get(i, 11) <= 10:
+                c += 1
+                del H[i]
+                
+    for v in H.values():
+        c += v <= 10
+    
+    # answer: 209566
     return c
