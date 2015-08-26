@@ -548,3 +548,32 @@ def pe174():
     
     # answer: 209566
     return c
+
+def pe175(a=987654321, b=123456789):
+    """
+    Using the amazing relationship between Calkin-Wilf Tree,
+    Stern's Diatomic Series and hyperbinary representation.
+    """
+    
+    from collections import deque
+    from fractions import gcd
+    
+    g = gcd(a, b)
+    a /= g
+    b /= g
+    
+    s = deque([])
+    while a and b:
+        if a > b:
+            s.appendleft(a / b)
+            a %= b
+        else:
+            s.appendleft(b / a)
+            b %= a
+    
+    if a:
+        s[0] -= 1
+        s.appendleft(1)
+        
+    # answer: 1,13717420,8
+    return ','.join(map(str, s))
