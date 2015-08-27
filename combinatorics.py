@@ -57,29 +57,38 @@ def multisetPermutations(multiset):
             n = n.to
             vlist.append(n.val)
         return vlist
-    
-    multiset = sorted(multiset, reverse=True)
-    d = len(multiset) - 1
-    
-    E = [Node(n) for n in multiset]
-    for i,n in enumerate(E[:-1]):
-        n.to = E[i+1]
 
-    head, i, afteri = E[0], E[-2], E[-1]
-    yield visit(head)
-    
-    while afteri.to or afteri.val < head.val:
-        if afteri.to and i.val >= afteri.to.val:
-            beforek = afteri
+    if len(multiset) == 1:
+        yield multiset
+    elif len(multiset) == 2:
+        if multiset[0] == multiset[1]:
+            yield multiset
         else:
-            beforek = i
-        k = beforek.to
-        beforek.to = k.to
-        k.to = head
-        if k.val < head.val:
-            i = k
-        head, afteri = k, i.to
+            yield multiset
+            yield multiset[::-1]
+    else:
+        multiset = sorted(multiset, reverse=True)
+        d = len(multiset) - 1
+        
+        E = [Node(n) for n in multiset]
+        for i,n in enumerate(E[:-1]):
+            n.to = E[i+1]
+
+        head, i, afteri = E[0], E[-2], E[-1]
         yield visit(head)
+        
+        while afteri.to or afteri.val < head.val:
+            if afteri.to and i.val >= afteri.to.val:
+                beforek = afteri
+            else:
+                beforek = i
+            k = beforek.to
+            beforek.to = k.to
+            k.to = head
+            if k.val < head.val:
+                i = k
+            head, afteri = k, i.to
+            yield visit(head)
 
 def allPartitions(n, s, init=1):
     """
@@ -89,12 +98,11 @@ def allPartitions(n, s, init=1):
     """
 
     if n == 1:
-        return [[s]]
+        yield [s]
     else:
-        output = []
         for i in range(init, s / n + 1):
-            output += [[i] + result for result in allPartitions(n-1, s-i, i)]
-        return output
+            for result in allPartitions(n-1, s-i, i):
+                yield [i] + result
 
 def seqPartitions(sequence, p):
     """
