@@ -217,31 +217,38 @@ def GaussJordanElimination(coeffs):
     coefmat = np.matrix(coeffs)
 
     for i in range(d):
-        flag = 0    
-        if coefmat[i, i] == 0:
-            flag = 1
-            for j in range(i+1, d):
-                if abs(coefmat[j, i]) > 0.001:
-                    flag = 0
-                    coefmat[j], coefmat[i] = \
-                        deepcopy(coefmat[i]), deepcopy(coefmat[j])
-                    break
-        if flag: continue
-            
-        if coefmat[i, i] != 1:
-            coefmat[i] /= coefmat[i, i]
+        flag = 1
+        j = i
+        while flag and j < d:
+            if abs(coefmat[i, j]) < 0.001:
+                for k in range(i+1, d):
+                    if abs(coefmat[k, j]) > 0.001:
+                        flag = 0
+                        coefmat[k], coefmat[i] = \
+                            deepcopy(coefmat[i]), deepcopy(coefmat[k])
+                        break
+                if flag:
+                    j += 1
+            else:
+                flag = 0
         
-        for j in range(i+1, d):
-            if coefmat[j, i]:
-                coefmat[j] = coefmat[j] - coefmat[j, i] * coefmat[i]
+        if j == d:
+            break
+        
+        if coefmat[i, j] != 1:
+            coefmat[i] /= coefmat[i, j]
+        
+        for k in range(i+1, d):
+            if coefmat[k, j]:
+                coefmat[k] = coefmat[k] - coefmat[k, j] * coefmat[i]
 
-    for j in range(1, d):
-        for i in range(w):
-            if abs(coefmat[j, i]) > 0.001:
+    for i in range(1, d):
+        for j in range(w):
+            if abs(coefmat[i, j]) > 0.001:
                 break
         
-        for k in range(j):
-            if coefmat[k, i]:
-                coefmat[k] = coefmat[k] - coefmat[k, i] * coefmat[i]
+        for k in range(i):
+            if coefmat[k, j]:
+                coefmat[k] = coefmat[k] - coefmat[k, j] * coefmat[i]
 
     return coefmat
