@@ -577,3 +577,46 @@ def pe175(a=987654321, b=123456789):
         
     # answer: 1,13717420,8
     return ','.join(map(str, s))
+
+def pe176(P=47547):
+    """
+    N = 2**a0 * p1**a1 * p2**a2 * ... * pk**ak
+    A = (2*a1 + 1) * (2*a2 + 1) * ... * (2*ak + 1) 
+    P(N) = (A - 1) / 2,              if a0 = 0;
+         = ((2*a0 - 1) * A - 1) / 2, if a0 > 0.
+    """
+    
+    ODDPRIMES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+    
+    def F(plist):
+        return pef.cprod([2*n+1 for n in plist])
+
+    cmin, info = 10**40, []
+    for i in range(1, 100):
+        for j in range(1, 10):
+            for r in pec.allPartitions(j, i):
+                r = filter(None, r)[::-1]
+                a = F(r)
+                if (a - 1) / 2 == P:
+                    c = 1
+                    for x, y in zip(ODDPRIMES[:len(r)], r):
+                        c *= x**y
+                        if c > cmin:
+                            break
+                    if c < cmin:
+                        cmin, info = c, [0] + r
+                elif (P*2 + 1) % a == 0:
+                    b = (P*2 + 1) / a
+                    if b % 2 == 1 and b / 2 + 1 <= 40:
+                        c = 2**(b / 2 + 1)
+                        for x, y in zip(ODDPRIMES[:len(r)], r):
+                            c *= x**y
+                            if c > cmin:
+                                break
+                        if c < cmin:
+                            cmin, info = c, [b / 2 + 1] + r
+                elif (a - 1) / 2 > 47547:
+                    break
+
+    # answer: 96818198400000 = 2**10 * 3**6 * 5**5 * 7**3 * 11**2
+    return cmin, info
