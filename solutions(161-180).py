@@ -620,3 +620,98 @@ def pe176(P=47547):
 
     # answer: 96818198400000 = 2**10 * 3**6 * 5**5 * 7**3 * 11**2
     return cmin, info
+
+def pe177():
+    """
+       A *       For a quarilateral, if we get 4 angles BAC, DAC, ACB, ACD,
+        /|\      we can set AC to 1, and calculate AB and AD by Sine Theorem.
+       / | \     Then using Cosine Theorem, BD = AB**2 + AD**2 - 2*AB*AD*cosA.
+    B *--+--* D  Using Cosine Theorem again, we can get angle ABD, then the
+       \ | /     left 3 corners CBD, ADB, CDB can be easily calculated.
+        \|/
+         * C
+    """
+    
+    from math import pi, sqrt, sin, cos, asin, acos
+
+    D2R = pi / 180
+    DIVS = {n:[(i, n-i) for i in xrange(1, n/2+1)] for n in xrange(2, 179)}
+
+    def solve(a, b, c, d):
+        # solve 4 remaining angles
+        
+        ra = a * D2R
+        rb = b * D2R
+        rc = c * D2R
+        rd = d * D2R
+
+        e, f = sin(rc)*100, sin(rd)*100 
+        g, h, i = sin(ra + rc)*100, sin(rb + rd)*100, cos(ra + rb)
+
+        AB2, AD2 = e*e*h*h, f*f*g*g
+        BD2 = AB2 + AD2 - 2*e*f*g*h*i
+        cosX = (AB2 + BD2 - AD2) / (2*e*h*sqrt(BD2))
+
+        if cosX <= -1 or cosX >= 1:
+            return 0
+
+        x1 = acos(cosX) / D2R
+        if abs(x1 - round(x1)) > 1e-9:
+            return 0
+
+        x1 = round(x1)
+        x2 = 180 - a - c - x1
+        x3 = x2 + c - b
+        x4 = x1 + a - d
+
+        # rearrange x1~x4 to get the different representation 
+        # of the quadrilateral
+        if x3 + x4 < x1 + x2:
+            x1, x2, x3, x4 = x3, x4, x1, x2
+        if x1 + x2 == x3 + x4 and min(x3, x4) < min(x1, x2):
+            x1, x2, x3, x4 = x3, x4, x1, x2
+        if x1 > x2:
+            x1, x2, x3, x4 = x2, x1, x4, x3
+        if x1 == x2 and x3 > x4:
+            x3, x4 = x4, x3
+
+        return x1, x2, x3, x4
+
+    count, visited = 0, set()
+    for n1 in xrange(2, 179):
+        for n2 in xrange(n1, 179):
+            for i,(a,b) in enumerate(DIVS[n1]):
+                # carefully distinguish different situation
+                if n1 == n2:
+                    SN2 = DIVS[n1][i:]
+                else:
+                    SN2 = DIVS[n2]
+
+                for c,d in SN2:
+                    if a + c > 178:
+                        break
+
+                    if b + d <= 178:
+                        if (a, b, c, d) in visited:
+                            visited.remove((a, b, c, d))
+                        else:
+                            sol = solve(a, b, c, d)
+                            if sol:
+                                count += 1
+                                if sol != (a, b, c, d):
+                                    visited.add(sol)
+
+                    # sometimes it needs to check (a, b, d, c)
+                    if a < b and c < d and a + d <= 178 and b + c <= 178:
+                        if (a, b, d, c) in visited:
+                            visited.remove((a, b, d, c))
+                        else:
+                            sol = solve(a, b, d, c)
+                            if sol:
+                                count += 1
+                                if sol != (a, b, d, c):
+                                    visited.add(sol)
+    assert len(visited) == 0
+
+    # answer: 129325
+    return count
