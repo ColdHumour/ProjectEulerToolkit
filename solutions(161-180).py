@@ -715,3 +715,66 @@ def pe177():
 
     # answer: 129325
     return count
+
+def pe178(N=40):
+    """
+    state i: (start digit, end digit, min digit, max digit) of i-digit number
+    state i -> state i+1: add one digit to the tail of i-digit numbers
+    """
+    
+    c = 0
+    state = {(i, i, i, i): 1 for i in range(1, 10)}
+    for k in range(N-1):
+        temp = {}
+        for (i, j, a, b), n in state.iteritems():
+            if j == 0:
+                if (i, 1, a, b) in temp:
+                    temp[(i, 1, a, b)] += n
+                else:
+                    temp[(i, 1, a, b)] = n
+            elif j == 9:
+                a = min(a, 8)
+                if (i, 8, a, 9) in temp:
+                    temp[(i, 8, a, 9)] += n
+                else:
+                    temp[(i, 8, a, 9)] = n
+            else:
+                aa = min(a, j-1)
+                if (i, j-1, aa, b) in temp:
+                    temp[(i, j-1, aa, b)] += n
+                else:
+                    temp[(i, j-1, aa, b)] = n
+
+                bb = max(b, j+1)
+                if (i, j+1, a, bb) in temp:
+                    temp[(i, j+1, a, bb)] += n
+                else:
+                    temp[(i, j+1, a, bb)] = n
+        state = temp
+
+        # k = 8 means add 9 digits, therefore 10 digits already
+        if k > 7:
+            for (i, j, a, b), n in state.iteritems():
+                if (a, b) == (0, 9):
+                    c += n
+
+    # answer: 126461847755
+    return c
+
+def pe179(N=10**7):
+    """
+    factors sieve method
+    """
+    
+    c = 0
+    ndiv = [2] * (N + 1)
+    for i in xrange(2, N):
+        if ndiv[i] == ndiv[i+1]:
+            c += 1
+        j = i + i
+        while j < N + 1:
+            ndiv[j] += 1
+            j += i
+    
+    # answer: 986262
+    return c
