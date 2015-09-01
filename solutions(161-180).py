@@ -778,3 +778,57 @@ def pe179(N=10**7):
     
     # answer: 986262
     return c
+
+def pe180(order=35):
+    """
+    Simplify the expression to x**n + y**n = z**n.
+    By Fermat Last Theorem, n = -2, -1, 1, 2. Then brute-force.
+    """
+    
+    from fractions import Fraction
+    from math import sqrt
+
+    RNS = sorted([Fraction(a, b) for b in range(2, order+1) for a in range(1, b)])
+
+    fset = set()
+    for i,x in enumerate(RNS):
+        for y in RNS[i:]:
+            x1, y1 = x**(-1), y**(-1)
+            x2, y2 = x*x, y*y
+            x3, y3 = x2**(-1), y2**(-1)
+
+            s = x + y
+
+            # n = 1
+            if s.numerator < s.denominator < 36:
+                t = s + s
+                fset.add((t.numerator, t.denominator))
+
+            # n = -1
+            z = x1 + y1
+            if z.denominator < z.numerator < 36:
+                t = s + z**(-1)
+                fset.add((t.numerator, t.denominator))
+
+            # n = 2
+            z = x2 + y2
+            a2, b2 = z.numerator, z.denominator
+            a, b = int(sqrt(a2)), int(sqrt(b2))
+            if a * a == a2 and b * b == b2 and a < b < 36:
+                t = s + Fraction(a, b)
+                fset.add((t.numerator, t.denominator))
+
+            # n = -2
+            z = x3 + y3
+            a2, b2 = z.numerator, z.denominator
+            a, b = int(sqrt(a2)), int(sqrt(b2))
+            if a * a == a2 and b * b == b2 and b < a < 36:
+                t = s + Fraction(b, a)
+                fset.add((t.numerator, t.denominator))
+
+    c = 0
+    for a, b in fset:
+        c += Fraction(a, b)
+        
+    # answer: 285196020571078987
+    return c.numerator + c.denominator
