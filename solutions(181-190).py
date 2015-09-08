@@ -155,3 +155,62 @@ def pe181_dp(a=40, b=60):
                 for l in range(j, b+1):
                     Q[k][l] += Q[k-i][l-j]
     return Q[a][b] / 2
+
+def pe182():
+    """
+    Exact number of unconcealed messages: 
+        (1 + gcd(e-1, p-1)) * (1 + gcd(e-1, p-1))
+        
+    (1009 - 1) * (3643 - 1) = 2^5 * 3^3 * 7 * 607
+    Then e = 6 * k + 1 or 5, e % 7 != 0 and e % 607 != 0
+    """
+    
+    from fractions import gcd
+
+    p, q = 1009, 3643
+    emin, edict = p * q, {}
+    for k in xrange(611856):
+        for e in (6 * k + 1, 6 * k + 5):
+            if e % 7 and e % 607:
+                u = (1 + gcd(e-1, p-1)) * (1 + gcd(e-1, q-1))
+                emin = min(emin, u)
+                if u in edict:
+                    edict[u] += e
+                else:
+                    edict[u] = e
+    
+    # answer: 399788195976
+    return edict[emin]
+
+def pe183(N=10000):
+    """
+    When N < delta(k), P(N, k) - P(N, k+1) > 0 always holds.
+    Hence for all N between delta(k-1) and delta(k), P(N, k) is max.
+    """
+
+    from fractions import gcd
+
+    def delta(k):
+        return (1 + 1./k)**k * (k + 1)
+
+    kdict = {}
+    n, k = 5, 2
+    while n <= N:
+        m = int(delta(k))
+        kdict[k] = range(n, min(N, m)+1)
+        n = m + 1
+        k += 1
+
+    c = 0
+    for k,nlist in kdict.iteritems():
+        for n in nlist:
+            denom = k / gcd(n, k)
+            while denom % 2 == 0:
+                denom /= 2
+            while denom % 5 == 0:
+                denom /= 5
+
+            c += -n if denom == 1 else n
+    
+    # answer: 48861552
+    return c
