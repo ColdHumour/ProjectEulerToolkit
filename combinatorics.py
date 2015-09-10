@@ -94,7 +94,7 @@ def allPartitions(n, s, init=1):
     """
     make n partitions of s goods, output all possible partitions
 
-    e.g partition(3, 5) == [[1, 1, 3], [1, 2, 2]]
+    e.g allPartition(3, 5) == [[1, 1, 3], [1, 2, 2]]
     """
 
     if n == 1:
@@ -108,7 +108,7 @@ def seqPartitions(sequence, p):
     """
     list all permutations of the sequence satisfying given partition p
 
-    e.g partition(3, 5) == [[1, 1, 3], [1, 2, 2]]
+    e.g seqPartition([1, 2, 3], [1, 2]) == [[[1], [2, 3]], [[2], [1, 3]], [[3], [1, 2]]]
     """
 
     if len(sequence) != sum(p):

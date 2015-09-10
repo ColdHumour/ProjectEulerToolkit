@@ -214,3 +214,75 @@ def pe183(N=10000):
     
     # answer: 48861552
     return c
+
+def pe184(r=105):
+    """
+    Find all points in first quardrant, then group them by slope (a.k.a. lines).
+    Count how many points between each line and y-axis.
+    There 5 different types of triangles. Count them out.
+    """
+    
+    from fractions import gcd
+
+    def count(p, r):
+        xp, yp = p
+
+        xmax = int(math.sqrt(1. * r*r / (xp*xp + yp*yp)) * xp)
+        yk = 1. * yp * xmax / xp
+        if xmax*xmax + yk*yk < r*r:
+            xmax += 1
+
+        c = 0
+        for x in range(1, xmax):
+            ymax = int(math.sqrt(r*r - x*x))
+            if x*x + ymax*ymax == r*r:
+                ymax -= 1
+
+            ymin = int(1. * x * yp / xp) + 1
+            c += ymax - ymin + 1
+        return c
+
+    nq1, nline = 0, {}
+    for x in range(1, r):
+        for y in range(1, int(math.sqrt(r*r - x*x)) + 1):
+            if x*x + y*y < r*r:
+                nq1 += 1
+                g = gcd(x, y)
+                xr = x / g
+                yr = y / g
+
+                if (xr, yr) in nline:
+                    nline[(xr, yr)] += 1
+                else:
+                    nline[(xr, yr)] = 1
+
+    # a(*4): one apex on y+, one apex on x+
+    # b(*8): one apex on y+, one apex in 1st quardrant
+    # c(*4): one apex on y+, one apex in 2nd quardrant, one apex in 3rd quardrant
+    # d(*4): two apexes in first quardrant
+    # e(*2): three apexes in different quardrants
+
+    a = (r-1) * (r-1) * nq1
+    b = c = d = e = 0
+
+    nty, ntx = {}, {}
+    for (x, y), n in nline.iteritems():
+        nty[(x, y)] = count((x, y), r)
+        ntx[(x, y)] = nq1 - n - nty[(x, y)]
+
+        b += (r-1) * n * nty[(x, y)]
+        c += (r-1) * n * nq1
+        e += 2 * n * n * ntx[(x, y)]
+
+    for (x1, y1), (x2, y2) in pec.combinations(nline.keys(), 2):
+        if 1.*y2/x2 > 1.*y1/x1:
+            x1, y1, x2, y2 = x2, y2, x1, y1
+
+        coeff = nline[(x1, y1)] * nline[(x2, y2)]
+        n = nty[(x2, y2)] - nty[(x1, y1)] - nline[(x1, y1)]
+
+        d += coeff * n
+        e += 2 * coeff * (n + nline[(x2, y2)] + 2 * ntx[(x2, y2)])
+
+    # answer: 1725323624056
+    return a*4 + b*8 + c*4 + d*4 + e*2
