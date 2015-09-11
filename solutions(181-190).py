@@ -286,3 +286,57 @@ def pe184(r=105):
 
     # answer: 1725323624056
     return a*4 + b*8 + c*4 + d*4 + e*2
+
+def pe185():
+    """
+    Modelling as an integer programming problem.
+    Then using PuLP to solve it. It's really fast, just 0.24 seconds. 
+    For details, see https://pythonhosted.org/PuLP/index.html
+    """
+    
+    from pulp import LpProblem, LpVariable, LpMinimize, LpInteger, lpSum, value
+
+    constraints = [
+        ('2321386104303845', 0),
+        ('3847439647293047', 1),
+        ('3174248439465858', 1),
+        ('8157356344118483', 1),
+        ('6375711915077050', 1),
+        ('6913859173121360', 1),
+        ('4895722652190306', 1),
+        ('5616185650518293', 2),
+        ('4513559094146117', 2),
+        ('2615250744386899', 2),
+        ('6442889055042768', 2),
+        ('2326509471271448', 2),
+        ('5251583379644322', 2),
+        ('2659862637316867', 2),
+        ('5855462940810587', 3),
+        ('9742855507068353', 3),
+        ('4296849643607543', 3),
+        ('7890971548908067', 3),
+        ('8690095851526254', 3),
+        ('1748270476758276', 3),
+        ('3041631117224635', 3),
+        ('1841236454324589', 3)
+    ]
+
+    VALs = map(str, range(10))
+    LOCs = map(str, range(16))
+    choices = LpVariable.dicts("Choice", (LOCs, VALs), 0, 1, LpInteger)
+
+    prob = LpProblem("pe185", LpMinimize)
+    prob += 0, "Arbitrary Objective Function"
+
+    for s in LOCs:
+        prob += lpSum([choices[s][v] for v in VALs]) == 1, ""
+
+    for c, n in constraints:
+        prob += lpSum([choices[str(i)][v] for i,v in enumerate(c)]) == n, ""
+
+    prob.writeLP("pe185.lp")
+    prob.solve()
+    res = int(''.join(v for s in LOCs for v in VALs if value(choices[s][v])))
+
+    # answer: 4640261571849533
+    return res
