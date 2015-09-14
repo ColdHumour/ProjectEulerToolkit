@@ -12,6 +12,7 @@ import math
 
 import ProjectEuler.combinatorics as pec
 import ProjectEuler.formulas as pef
+import ProjectEuler.prime as pep
 
 
 def pe181_recursive():
@@ -340,3 +341,81 @@ def pe185():
 
     # answer: 4640261571849533
     return res
+
+def pe186(PM=524287):
+    """
+    Union-Find
+    """
+    
+    idxmap = {i:i for i in xrange(1000000)}
+    size   = {i:1 for i in xrange(1000000)}
+    
+    def find(p):
+        q = idxmap[p]
+        if q != p:
+            q = idxmap[p] = find(q)
+        return q
+    
+    def pairgen():
+        cache, flag = [], True
+        for d in range(1, 56):
+            cache.append((100003 - 200003*d + 300007*d*d*d) % 1000000)
+            if d % 2 == 0:
+                yield cache[-2:]
+            
+        while 1:
+            cache.append((cache[0] + cache[31]) % 1000000)
+            del cache[0]
+            
+            flag = not flag
+            if flag:
+                yield cache[-2:]
+    
+    PG = pairgen()
+    
+    count = 0
+    while size[find(PM)] < 990000:
+        a, b = PG.next()
+        if a != b:
+            count += 1
+            a, b = find(a), find(b)
+            if a == b:
+                pass
+            elif size[a] < size[b]:
+                idxmap[a] = b
+                size[b] += size[a]
+            else:
+                idxmap[b] = a
+                size[a] += size[b]
+                
+    # answer: 2325629
+    return count
+
+def pe187(N=100000000):
+    """
+    Sieve method to enumerate primes up to N/2
+    """
+
+    from collections import OrderedDict
+
+    UB = N/2
+    cdict = OrderedDict()
+    for p in pep.P10K:
+        cdict[p] = 0
+
+    sieve = [1] * UB
+    for n in range(2, UB):
+        if sieve[n]:
+            x = n + n
+            while x < UB:
+                sieve[x] = 0
+                x += n
+
+            for p in cdict:
+                if p <= min(n, int(N/n)):
+                    cdict[p] += 1
+                else:
+                    break
+
+    # answer: 17427258
+    return sum(cdict.values())
