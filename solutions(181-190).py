@@ -419,3 +419,101 @@ def pe187(N=100000000):
 
     # answer: 17427258
     return sum(cdict.values())
+
+def pe188():
+    """
+    By Euler Theorem, phi(100000000) = 40000000,
+    hence 1777^40000000 = 1 (mod 100000000).
+    Then just power modular.
+    """
+    
+    n = 1777
+    for _ in range(1854):
+        n = pow(1777, n, 40000000)
+        
+    # answer: 95962097
+    return pow(1777, n, 100000000)
+
+def pe189(N=8):
+    """
+    For a row with maximum length n (a1 ~ an, b1 ~ b(n-1))
+           .-----.-----.-----.  ...
+          / \ b1/ \ b2/ \ b3/ \
+         / a1\ / a2\ / a3\ / a4\
+        .-----.-----.-----.-----.  ...
+    1) Enumerate all possible [a1, a2, ..., an], 3**n kinds.
+    2) Fill [b1, b2, ..., b(n-1)], at most 2**(n-1) kinds.
+    3) Sum up all ways can be paired with [b1, b2, ..., b(n-1)], record it to state [a1, a2, ..., an]
+    4) Use all states [a1, a2, ..., an], generate all possible pairing state [c1, c2, ..., cn], at most 2**n kinds. Then record map [c...] -> [[a...], [a...], ...], which is used in 3) of next loop.  
+    """
+
+    def rowgen(d):
+        if d == 1:
+            for i in 'RGB':
+                yield i
+        else:
+            for i in 'RGB':
+                for remains in rowgen(d-1):
+                    yield i + remains
+
+    def rowfill(row):
+        if len(row) == 2:
+            for i in [s for s in 'RGB' if s != row[0] and s != row[1]]: 
+                yield i
+        else:
+            for i in [s for s in 'RGB' if s != row[0] and s != row[1]]:
+                for remains in rowfill(row[1:]):
+                    yield i + remains
+
+    def rowavail(row):
+        if len(row) == 1:
+            for i in [s for s in 'RGB' if s != row[0]]: 
+                yield i
+        else:
+            for i in [s for s in 'RGB' if s != row[0]]:
+                for remains in rowavail(row[1:]):
+                    yield i + remains                
+                    
+    states = {'R': 1, 'G': 1, 'B': 1}
+    avails = {'R': 2, 'G': 2, 'B': 2}
+    for d in range(2, N):
+        new_stat = {}
+        for bottom in rowgen(d):
+            for top in rowfill(bottom):
+                if bottom in new_stat:
+                    new_stat[bottom] += avails[top]
+                else:
+                    new_stat[bottom] = avails[top]
+        states = new_stat
+        
+        avails = {}
+        for r1,n in states.iteritems():
+            for r2 in rowavail(r1):
+                if r2 in avails:
+                    avails[r2] += n
+                else:
+                    avails[r2] = n
+    
+    c = 0
+    for bottom in rowgen(N):
+        for top in rowfill(bottom):
+            c += avails[top]
+
+    # answer: 10834893628237824
+    return c
+
+def pe190():
+    """
+    Pm reaches max when x1 = x2 / 2 = x3 / 3 = ... = xm / m.
+    Hence x1 = 2 / (m + 1), then the close-form of Pm can be deducted.
+    """
+    
+    c = 0
+    for m in range(2, 16):
+        x = 1.
+        for i in range(1, m+1):
+            x *= (2. * i / (m+1))**i
+        c += int(x)
+    
+    # answer: 371048281
+    return c
