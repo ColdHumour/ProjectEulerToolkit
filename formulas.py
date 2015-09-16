@@ -213,7 +213,7 @@ def cfracINExpand(d, p=0, q=1, limit=100):
     if int(sd) * int(sd) == d:
         raise ValueError("D is perfect square!")
     
-    a = int((p+sd)/q)
+    a = int((p + sd) / q)
     repetend, pairspq = [a], []
     for _ in xrange(limit):
         p = Fraction(a*q - p, 1)
@@ -226,7 +226,7 @@ def cfracINExpand(d, p=0, q=1, limit=100):
         
         pairspq.append((p, q))
         repetend.append(a)
-    raise ValueError("Repetend is longer than {0:d}, please try higher limit!".format(limit/2))
+    raise ValueError("Repetend is longer than {0:d}, please try higher limit!".format(limit))
 
 def cfracConvergent(cfrac):
     """

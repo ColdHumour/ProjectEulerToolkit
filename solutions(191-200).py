@@ -65,3 +65,63 @@ def pe191(N=30):
     
     # answer: 1918080160
     return late + sum(states.values())
+
+def pe192(N=100000):
+    from math import sqrt
+    from fractions import Fraction
+
+    def sign(a, b, n):
+        """return the sign of a/b - sqrt(n)"""
+        return a * a - n * b * b > 0
+
+    def cfracDenom(n, sn, precision=10**12):
+        """
+        Basically continuous fraction convergence.
+        It still need some tricks to find the best approximation
+        between two known best approximations. For details, see
+        https://en.wikipedia.org/wiki/Continued_fraction#Best_rational_approximations
+        """
+
+        p, q, a = 0, 1, int(sn), 
+        x1, x2, y1, y2 = 1, a, 0, 1
+        while y2 < precision:
+            p = a * q - p
+            q = Fraction(n - p * p, q)
+            a = int((p + sn) / q)
+            x0, x1, x2 = x1, x2, a*x2+x1
+            y0, y1, y2 = y1, y2, a*y2+y1
+
+        ybest = y1
+        if a % 2 == 0:
+            xtmp = (a/2) * x1 + x0
+            ytmp = (a/2) * y1 + y0
+            if ytmp < precision:
+                sn1 = sign(x1, y1, n)
+                sn2 = sign(xtmp, ytmp, n)
+                if sn1 and sn2 and (x1 * ytmp > xtmp * y1):
+                    ybest = ytmp
+                elif sn1 and sign(x1*ytmp + xtmp*y1, y1*ytmp, 4*n):
+                    ybest = ytmp
+                elif sn2 and not sign(x1*ytmp + xtmp*y1, y1*ytmp, 4*n):
+                    ybest = ytmp
+                elif (not sn1) and (not sn2) and (x1 * ytmp < xtmp * y1):
+                    ybest = ytmp
+            else:
+                return ybest
+
+        for aa in range(a/2+1, a):
+            ytmp = aa * y1 + y0
+            if ytmp < precision:
+                ybest = ytmp
+            else:
+                return ybest
+        return ybest
+
+    c = 0
+    for n in xrange(2, 100001):
+        sn = sqrt(n)
+        if int(sn)**2 < n:
+            c += cfracDenom(n, sn)
+    
+    # answer: 57060635927998347
+    return c
