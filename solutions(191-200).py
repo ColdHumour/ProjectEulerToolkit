@@ -125,3 +125,33 @@ def pe192(N=100000):
     
     # answer: 57060635927998347
     return c
+
+def pe193():
+    """
+    Using a formula of square-free numbers and mobius function. 
+    See reference articles PE193.
+    """
+    
+    N = 2**50 - 1
+    sN = 33554431
+    c = N - N / 4
+    
+    p_sieve  = [True, True] + [False, True] * 16777215
+    mu_sieve = [1, 1] + [-1, 1, 0, 1] * 8388607 + [-1, 1]
+    for i in xrange(3, sN+1):
+        if p_sieve[i]:
+            c -= N / (i * i)
+
+            k = i + i
+            while k <= sN:
+                p_sieve[k] = False
+                if k % (i * i):
+                    mu_sieve[k] = -mu_sieve[k]
+                else:
+                    mu_sieve[k] = 0
+                k += i
+        else:
+            c += mu_sieve[i] * (N / (i * i))
+
+    # answer: 684465067343069
+    return c
