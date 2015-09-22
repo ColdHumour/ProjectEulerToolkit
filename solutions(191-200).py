@@ -215,3 +215,41 @@ def pe194(a=25, b=75, c=1984, m=10**8):
     
     # answer: 61190912
     return count
+
+def pe195(R=1053779):
+    def CWgen(a, b):
+        """Using Calkin-Wilf Tree to generate co-prime pairs."""
+
+        return [(a, a+b), (a+b, b)]
+
+    def rgen(m, n):
+        """
+        Using co-prime pairs to generate primitive Eisenstein triplets.
+        See https://en.wikipedia.org/wiki/Integer_triangle
+        """
+
+        if m > 2 * n:
+            a, b = 2*m*n - n*n, m*m - n*n
+        else:
+            a, b = m*m - n*n, 2*m*n - n*n
+
+        g = pef.ggcd((a, b, m*m - m*n + n*n))
+        return g, sqrt(3) / 2 * (m-n) * n / g
+
+    count, to_search = 0, [(1, 3), (3, 2)]
+    triangles = []
+
+    while to_search:
+        m, n = to_search.pop()
+        if m < n:
+            m, n = n, m
+
+        g, r = rgen(m, n)
+        if g * r > R * 3:
+            continue  
+        elif r <= R:
+            count += int(R / r)
+        to_search += CWgen(m, n)
+
+    # answer: 75085391
+    return count / 2
