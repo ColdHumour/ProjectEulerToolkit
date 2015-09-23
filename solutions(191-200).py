@@ -253,3 +253,52 @@ def pe195(R=1053779):
 
     # answer: 75085391
     return count / 2
+
+def pe196():
+    """
+    Basically enumerate all primes from row n-2 to row n+2.
+    Using 6k+1, 6k+5 rule and gmpy2 to accelerate.
+    Details see https://gmpy2.readthedocs.org/en/latest/index.html
+    """
+
+    from gmpy2 import is_prime
+    
+    MIDDLE = {
+        (1, 0): lambda x,r: {x-r: (x-2, ), x+r: (x+2*r, )},
+        (1, 1): lambda x,r: {x-r+1: (x-2*r+2, ), x+r-1: (x-2, )},
+        (1, 2): lambda x,r: {x-r: (x-2*r+2, x-2), x-r+2: (x-2*r+4, )},
+        (1, 3): lambda x,r: {x-r+1: (x-2*r+4, ), x+r+1: ()},
+        (1, 4): lambda x,r: {x-r+2: (), x+r: (x+2*r+2, )},
+        (1, 5): lambda x,r: {x+r-1: (x-2, x+2*r), x+r+1: (x+2*r+2, )},
+        (5, 0): lambda x,r: {x-r: (x-2*r+2, ), x-r+2: (x+2, ), x+r: (x+2*r, x+2*r+2)},
+        (5, 1): lambda x,r: {x-r+1: (x-2*r+2, x-2*r+4), x+r-1: (x+2*r, ), x+r+1: (x+2, )},
+        (5, 2): lambda x,r: {x-r+2: (x-2*r+4, x+2), x+r: (x+2*r+2, )},
+        (5, 3): lambda x,r: {x+r-1: (x+2*r, )},
+        (5, 4): lambda x,r: {x-r: (x-2*r+2, )},
+        (5, 5): lambda x,r: {x-r+1: (x-2*r+4, ), x+r+1: (x+2, x+2*r+2)}
+    }
+
+    def S(n):
+        res, xmin = 0, (n-1) * n / 2
+        for i in xrange(1+(xmin%2), n+1, 2):
+            x = xmin + i
+            if x % 3 and x % 7 and x % 11 and is_prime(x):
+                univ = MIDDLE[(x%6, n%6)](x, n)        
+                check = filter(is_prime, univ.keys())
+                d = len(check)
+
+                if d > 1:
+                    res += x
+                elif d:
+                    try:
+                        for y in check:
+                            for z in univ[y]:
+                                if is_prime(z):
+                                    res += x
+                                    raise ValueError
+                    except:
+                        pass
+        return res
+    
+    # answer: 322303240771079935
+    return S(5678027) + S(7208785)
