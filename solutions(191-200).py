@@ -321,6 +321,15 @@ def pe197():
     return x + f(x)
 
 def pe198(N=10**8):
+    """
+    Every number equals to (a + b) / 2 is an ambiguous number, 
+    where a and b are two adjacent leaves of Farey sequence.
+    Farey sequence can be implemented as a binary tree, beginning
+    with [(0, 1), (1, 1)] and insert (a+c, b+d) between (a, b) 
+    and (c, d). When keeping b+d <= n, then it's all reduced 
+    rational numbers 0 <= p/q <= 1 with 0 <= p <= q <= n.
+    """
+
     to_search = [(0, 1, 1, 1)]
     count = 0
     while to_search:
