@@ -302,3 +302,20 @@ def pe196():
     
     # answer: 322303240771079935
     return S(5678027) + S(7208785)
+
+def pe197():
+    """
+    Oscillating between 1.029461839 and 0.681175878. Since
+    f(0.681175878) = 1.029461839
+    f(1.029461839) = 0.681175878
+    """
+    
+    def f(x):
+        return int(2**(30.403243784-x*x)) * 1e-9
+
+    x = 1
+    for _ in xrange(1000):
+        x = f(x)
+        
+    # answer: 1.710637717
+    return x + f(x)
