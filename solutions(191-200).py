@@ -395,3 +395,66 @@ def pe199(N=10):
     
     # answer: 0.00396087
     return round(1 - s, 8)
+
+def pe200(N=200, limit=10**12):
+    """
+    squbes -> squbes with 200 -> prime-proof squbes
+    """
+
+    from itertools import combinations
+    from heapq import heappush, heappop
+
+    from gmpy2 import is_prime
+
+    def isprimeproof(n):
+        if n % 2 == 0:
+            n = str(n)[:-1]
+            for s in '13579':
+                if is_prime(int(n + s)):
+                    return False
+            return True
+        else:
+            n = str(n)
+            for s in '123456789':
+                if is_prime(int(s + n[1:])):
+                    return False
+            for i in range(1, len(n)-1):
+                for s in '0123456789':
+                    if is_prime(int(n[:i] + s + n[i+1:])):
+                        return False
+            for s in '13579':
+                if is_prime(int(n[:-1] + s)):
+                    return False
+            return True
+
+    plist = pep.p1m()
+    d = len(plist)
+    
+    squbes = []
+    for i,p in enumerate(plist[:-1]):
+        if p*p > limit:
+            break
+
+        while 1:
+            i += 1
+            q = plist[i]
+
+            x = p*p*q*q*q
+            if x < limit and '200' in str(x):
+                heappush(squbes, x)
+
+            x = x / q * p
+            if x < limit and '200' in str(x):
+                heappush(squbes, x)
+
+            if x >= limit or i == d-1:
+                break
+
+    c = 0
+    while c < 200:
+        n = heappop(squbes)
+        if isprimeproof(n):
+            c += 1
+    
+    # answer: 229161792008
+    return n
