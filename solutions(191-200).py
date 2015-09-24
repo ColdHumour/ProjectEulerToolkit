@@ -341,3 +341,48 @@ def pe198(N=10**8):
     
     # answer: 52374475
     return count
+
+def pe199(N=10):
+    from math import sqrt
+
+    def DT(k1, k2, k3):
+        """
+        Descartes's Theorem, for details see 
+        https://en.wikipedia.org/wiki/Descartes'_theorem
+        
+        Notice that the curvature of a circle is -1/r when 
+        inscribed and 1/r when tangent.
+        """
+
+        return k1 + k2 + k3 + 2 * sqrt(k1*k2 + k1*k3 + k2*k3)
+
+    # special cases
+    k1 = 1 / (2*sqrt(3) - 3) # 3 largest circles
+    k2 = DT(-1, k1, k1)      # 3 2nd largest circles
+    k3 = DT(k1, k1, k1)      # 1 circle in the middle
+    s = 3 / (k1 * k1) + 3 / (k2 * k2) + 1 / (k3 * k3)
+
+    states1 = [(k1, k2)] # inscribed the outer circle
+    states2 = [(k1, k1, k2), (k1, k1, k3)] # 3 kissing circles
+    for _ in range(N-1):
+        new_stat1, new_stat2 = [], []
+        for k1, k2 in states1:
+            k4 = DT(-1, k1, k2)
+            s += 6 / (k4 * k4)
+            new_stat1.extend([(k1, k4), (k2, k4)])
+            new_stat2.append((k1, k2, k4))
+
+        for k1, k2, k3 in states2:
+            k4 = DT(k1, k2, k3)
+            if k1 == k2:
+                s += 3 / (k4 * k4)
+                new_stat2.extend([(k1, k1, k4), (k1, k3, k4)])
+            else:
+                s += 6 / (k4 * k4)
+                new_stat2.extend([(k1, k2, k4), 
+                                  (k1, k3, k4),
+                                  (k2, k3, k4)])
+        states1, states2 = new_stat1, new_stat2
+    
+    # answer: 0.00396087
+    return round(1 - s, 8)
