@@ -319,3 +319,25 @@ def pe197():
         
     # answer: 1.710637717
     return x + f(x)
+
+def pe198(N=10**8):
+    to_search = [(0, 1, 1, 1)]
+    count = 0
+    while to_search:
+        a, b, c, d = to_search.pop()
+        e, f = a+c, b+d
+        
+        x, y = a*d+b*c, 2*b*d
+        if x > 1:
+            g = gcd(x, y)
+            x /= g
+            y /= g
+
+        if a * 100 < b and y <= N:
+            to_search.append((a, b, e, f))
+            if e * 100 < f:
+                count += 1
+                to_search.append((e, f, c, d))
+    
+    # answer: 52374475
+    return count
