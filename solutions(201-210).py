@@ -47,28 +47,26 @@ def pe201():
 
 def pe202():
     """
-     | \| \| \| \| \| \|   Expand triangle mirrors infinitely,
-     +--+--+--+--+--+--+-  then every possible path is a C-C
-    C|\B|\A|\C|\B|\A|\C|\  line from bottomleft, and doesn't
-     | \| \| \| \| \| \|   cross any vertex.
-     +--+--+--+--+--+--+-
-    B|\A|\C|\B|\A|\C|\B|\  From the table can easity see that
-     | \| \| \| \| \| \|   C-C lines are symmetric and lie on
-     +--+--+--+--+--+--+-  y = x + 3k.
+     | \| \| \| \| \| \|   Expand triangle mirrors infinitely, then every 
+     +--+--+--+--+--+--+-  possible path is a C-C line from bottomleft to
+    C|\B|\A|\C|\B|\A|\C|\  somewhere upright and doesn't cross any vertex.
+     | \| \| \| \| \| \|   
+     +--+--+--+--+--+--+-  From the table can easity see that C-C lines are
+    B|\A|\C|\B|\A|\C|\B|\  symmetric and lie on y = x + 3k. Without loss of
+     | \| \| \| \| \| \|   generality, we just need to count all (a, b) with
+     +--+--+--+--+--+--+-  a > b.
     A|\C|\B|\A|\C|\B|\A|\  
-     | \| \| \| \| \| \|   Also, from (0, 0) to (a, b), there 
-     +--+--+--+--+--+--+-  are following amount of cross points,
-    C  B  A  C  B  A  C    to horizontal, vertical and diagonal
-    
-    lines: (a-1) + (b-1) + (a+b-1) = 2a + 2b - 3 
+     | \| \| \| \| \| \|   Also, from (0, 0) to (a, b), the amount of cross
+     +--+--+--+--+--+--+-  points with horizontal, vertical and diagonal
+    C  B  A  C  B  A  C    lines is (a-1) + (b-1) + (a+b-1) = 2a + 2b - 3.
     
     Therefore to bounce N times, we need to find all (a, b) that:
-    (1) a + b = (N + 3) / 2
-    (2) gcd(a, b) = 1
-    (3) a - b = 3k
+        (1) a + b = (N + 3) / 2
+        (2) gcd(a, b) = 1
+        (3) a - b = 3k
     
-    Recording to reference articles PE202, the number of solutions
-    of (1), (2) and (3) is:
+    Recording to reference articles PE202, the number of solutions of (1), (2)
+    and (3) is:
     
         sum m(d) * f(n/d) for all d satisfying d|n
     
@@ -94,3 +92,38 @@ def pe202():
     
     # answer: 1209002624
     return count * 2
+
+def pe203(N=51):
+    """
+    Use prime divisors to decide whether a combination number is square-free.
+    """
+    
+    def oprfac(n1, n2, direction=1):
+        for n,a in n2.iteritems():
+            if n in n1:
+                n1[n] += direction * a
+            else:
+                n1[n] = a
+        return n1
+
+    NFACS = {n: dict(pep.primeDivisorDecomp(n)) for n in range(2, N)}
+
+    def squarefreeC(n):
+        c, f, sfc = n, NFACS[n], set()
+        if all(v==1 for v in f.values()):
+            sfc.add(c)
+
+        for i in range(2, n/2+1):
+            c = c * (n+1-i) / i
+            f = oprfac(f, NFACS[n+1-i], 1)
+            f = oprfac(f, NFACS[i], -1)
+            if all(v==1 for v in f.values()):
+                sfc.add(c)
+        return sfc
+
+    distinct_sf = {1, 2}
+    for i in xrange(3, N):
+        distinct_sf |= squarefreeC(i)
+
+    # answer: 34029210557338
+    return sum(list(distinct_sf))
