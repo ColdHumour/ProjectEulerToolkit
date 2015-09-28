@@ -127,3 +127,27 @@ def pe203(N=51):
 
     # answer: 34029210557338
     return sum(list(distinct_sf))
+
+def pe204(N=10**9):
+    """
+    Recursive brute-froce.
+    """
+
+    p100 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 
+            43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+
+    def f(n, plist):
+        
+        if len(plist) == 1:
+            return int(math.log(N / n, plist[0]))
+        else:
+            c = 0
+            for i,p in enumerate(plist):
+                q = p
+                while q * n <= N:
+                    c += 1 + f(q * n, plist[i+1:])
+                    q *= p
+            return c
+    
+    # answer: 2944730
+    return f(1, p100) + 1
