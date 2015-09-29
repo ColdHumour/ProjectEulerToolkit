@@ -205,3 +205,31 @@ def pe206():
             # 1389019170 ** 2 = 1929374254627488900
 
             return int(math.sqrt(int(n))) * 10
+
+def pe207(N=12345):
+    """
+    4^t = 2^t + k  =>  2^t = (1 + sqrt(1+4k)) / 2
+    Let k = n(n+1), then 2^t = n + 1, beginning with n = 1.
+    
+    Therefore:
+    (1) when 2^x - 1 <= n <= 2^(x+1) - 2, there are n partitions
+        and x perfect partitions.
+    (2) when n(n+1) <= m <= (n+1)(n+2) - 1, P(m) = x / n, where x,n
+        satisfying (1).
+    (3) from (1) and (2), when 2^x - 1 <= n <= 2^(x+1) - 2, P(m)
+        monotonically decreases from x / (2^x-1) to x / (2^(x+1)-2).
+    (4) x / (2^(x+1)-2) < (x+1) / (2^(x+1)-1)
+    
+    The properties above is enough to decide a search algorithm:
+        find x that 2^x - 1 <= x * N <= 2^(x+1) - 2
+        find n that n-1 <= x * N < n, i.e. x * N + 1
+        return n * (n+1)
+    """
+
+    i = 1
+    while 2**(i+1) - 2 <= i * N:
+        i += 1
+    n = int(i * N) + 1
+    
+    # answer: 44043947822
+    return n*(n+1)
