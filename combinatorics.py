@@ -6,7 +6,7 @@ combinatorics.py
 Functions using to dealing with combinatorics problems.
 Function list: 
     permutations, multisetPermutations
-    C, combinations, combinations_with_replacement
+    C, combinations, combinations_with_replacement, limitedCombinations
     allPartitions, seqPartitions
 
 @author: Jasper Wu
@@ -89,6 +89,22 @@ def multisetPermutations(multiset):
                 i = k
             head, afteri = k, i.to
             yield visit(head)
+
+def limitedCombinations(choices):
+    """
+    Generate all combinations [x1, x2, ..., xn] which subjected to
+    limited choices [[possible choices for xi] for i in 1..n]
+    
+    e.g. limitedCombinations([[1, 2], [3, 4]]) == [[1, 3], [1, 4], [2, 3], [2, 4]]
+    """
+    
+    if len(choices) == 1:
+        for x in choices[0]:
+            yield [x]
+    else:
+        for x in choices[0]:
+            for remains in limitedCombinations(choices[1:]):
+                yield [x] + remains
 
 def allPartitions(n, s, init=1):
     """

@@ -151,3 +151,57 @@ def pe204(N=10**9):
     
     # answer: 2944730
     return f(1, p100) + 1
+
+def pe205():
+    def ndicedist(d, n, iscum=True):
+        """
+        probability (or cumulative) distribution of n d-sided dices.
+        """
+
+        dice = range(1, d+1)
+        state = {a:1 for a in dice}
+        for _ in range(n-1):
+            new_stat = {}
+            for a in state.keys():
+                for b in dice:
+                    if a+b in new_stat:
+                        new_stat[a+b] += state[a]
+                    else:
+                        new_stat[a+b] = state[a]
+            state = new_stat
+
+        total = float(sum(state.values()))
+        for m in xrange(min(state), max(state)+1):
+            state[m] = state[m] / total
+            if iscum:
+                state[m] += state.get(m-1, 0)
+        return state
+
+    # peter beats colin
+    peter = ndicedist(4, 9, False)
+    colin = ndicedist(6, 6, True)
+    p = sum(colin.get(i-1, 1) * peter.get(i, 0) \
+            for i in xrange(min(colin)+1, max(peter)+1))
+
+    # answer: 0.5731441
+    return round(p, 7)
+
+def pe206():
+    """
+    Brute-force with little optimization
+    """
+    
+    check = '123456789'
+    choices = [list('3210')] + \
+              [list(check[::-1] + '0') for _ in range(6)] + \
+              [['7', '3']]
+
+    for p in pec.limitedCombinations(choices):
+        n = int('1' + ''.join(p))
+        n = str(n*n)
+        if n[::2] == check:
+
+            # answer: 1389019170
+            # 1389019170 ** 2 = 1929374254627488900
+
+            return int(math.sqrt(int(n))) * 10
