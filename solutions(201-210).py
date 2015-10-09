@@ -233,3 +233,45 @@ def pe207(N=12345):
     
     # answer: 44043947822
     return n*(n+1)
+
+def pe208(N=70):
+    """
+    Record Cartesian coordinates for every step and merge same states.
+    The most difficult part is to deal with precision.
+    Can be optimized from various ways (float caching for instance).
+    There are lots of valuable things in the discussion thread.
+    Definitely worth to review again and again.
+    """
+    
+    # always facing to the direaction whose angle between y-axis is 2pi/5 * k
+    # and directions of next steps are (alpha + pi/5) and (alpha - pi/5)
+    VECMAP = {0: [(4, -0.588,  0.809), (1,  0.588,  0.809)],
+              1: [(0,  0.588,  0.809), (2,  0.951, -0.309)],
+              2: [(1,  0.951, -0.309), (3,  0.000, -1.000)],
+              3: [(2,  0.000, -1.000), (4, -0.951, -0.309)],
+              4: [(3, -0.951, -0.309), (0, -0.588,  0.809)]}
+    
+    # final move must end with facing north
+    FINOPT = {1: (0.588,  0.809), 4: (-0.588,  0.809)}
+
+    ARCLIB = {(4, -0.588,  0.809): 1, (1,  0.588,  0.809): 1}
+    for i in range(2, N):
+        tmplib = {}
+        for (d,x,y),n in ARCLIB.iteritems():
+            for dd, vx, vy in VECMAP[d]:
+                state = (dd, round(x+vx, 3), round(y+vy, 3))        
+                if state in tmplib:
+                    tmplib[state] += n
+                else:
+                    tmplib[state] = n
+        ARCLIB = tmplib
+
+    c = 0
+    for (d,x,y),n in ARCLIB.iteritems():
+        if d in (1, 4):
+            vx, vy = FINOPT[d]
+            if abs(x+vx) + abs(y+vy) < 0.01:
+                c += n
+    
+    # answer: 331951449665644800
+    return c
