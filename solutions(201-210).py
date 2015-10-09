@@ -275,3 +275,48 @@ def pe208(N=70):
     
     # answer: 331951449665644800
     return c
+
+def pe209():
+    """
+    Take input as integer in 0~63. Then it's equivalent to how many binary
+    functions F(x) with 0 <= x <= 63 subjected to F(a) * F(b) = 0 for some
+    a, b which b is determined by a.
+    There are some cycles in the mapping. So we just need to find valid
+    ways of each cycle, which becomes a easy combinatoric problem.
+    """
+
+    def valid_permutations(n):
+        """
+        Count valid permutations of chain with length n. Each element of chain 
+        can only be 0 or 1. No consecutive 1s. Head and tail is regarded as
+        consecutive too.
+        Therefore it would be 0~floor(n/2) possible 1s.
+        For a chain of A 0s and B 1s, there's C(A-1, B-1) chains with head of 1
+        and C(A, B) chains with head of 0.
+        """
+        
+        x = 1
+        for i in range(1, n/2+1):
+            x += pec.C(n-i-1, i-1) + pec.C(n-i, i)
+        return x
+
+    pairs = {}
+    for n in range(64):
+        s = bin(n)[2:]
+        s = '0' * (6-len(s)) + s
+        a, b, c = map(int, s[:3])
+        s = s[1:] + str(a ^ (b & c))
+        pairs[n] = int(s, 2)
+
+    # There are 6 cycles in pairs, started with 0, 1, 3, 5, 9, 21
+    starts, lchains = (0, 1, 3, 5, 9, 21), []
+    for i in starts:
+        z = set([i])
+        n = pairs[i]
+        while n > i:
+            z.add(n)
+            n = pairs[n]
+        lchains.append(len(z))
+    
+    # answer: 15964587728784
+    return pef.cprod(map(valid_permutations, lchains))

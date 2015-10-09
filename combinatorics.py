@@ -18,9 +18,9 @@ from . formulas import factorial
 
 
 def C(n, k):
+    if k > n/2: k = n - k
     if k == 0: return 1
     if k == 1: return n
-    if k > n/2: k = n - k
 
     x = n
     for i in range(n-1, n-k, -1):
