@@ -320,3 +320,70 @@ def pe209():
     
     # answer: 15964587728784
     return pef.cprod(map(valid_permutations, lchains))
+
+def pe210(N=1000000000):
+    """
+    Separating points into 2 parts: rectangles, squares and circle.
+    There's close-form formula for points in first 2 pars:
+        N * N * 3 / 2
+    
+    For the circle part, take symmetry into consideration, only 1/8 sectors
+    need to be counted deliberately.
+    
+    If using Cython, it takes only <7s, while pure Python runs at 120s+.
+    """
+    
+    rx = N / 8
+    r2 = rx * rx * 2
+    r = int(math.sqrt(r2)) + 1
+
+    # points in rectangles
+    c = N * N * 3 / 2
+
+    # points at diagonal radius
+    c += 2 * (rx - 1)
+
+    # points at orthogonal radius
+    c += 4 * (r - 1)
+
+    # points in 1/8 sectors
+    c += 4 * (rx - 1) * rx
+    # c += p_in_sector(rx) # Cython
+    x = rx + 1
+    while x < r:
+        y = max(int(math.sqrt(r2 - x * x)), 1) - 1
+        while x * x + y * y < r2:
+            y += 1
+        if y:
+            y -= 1
+
+        c += 8 * y
+        x += 1
+    
+    # answer: 1598174770174689458
+    return c
+
+# Cython function for pe210
+#
+# %load_ext Cython
+#
+# %%cython
+# from libc.math cimport sqrt
+#
+# cpdef unsigned long long p_in_sector(unsigned long long rx):
+#     cdef:
+#         unsigned long long x = rx + 1
+#         unsigned long long r2  = rx * rx * 2
+#         unsigned long long xmax = int(sqrt(r2)) + 1
+#         long long y, c = 0
+#        
+#     while x < xmax:
+#         y = max(int(sqrt(r2 - x * x)), 1) - 1
+#         while x * x + y * y < r2:
+#             y += 1
+#         if y:
+#             y -= 1
+#
+#         x += 1
+#         c += 8 * y
+#     return c
