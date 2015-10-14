@@ -357,7 +357,7 @@ def pe186(PM=524287):
         return q
     
     def pairgen():
-        cache, flag = [], True
+        cache, flag = [], False
         for d in range(1, 56):
             cache.append((100003 - 200003*d + 300007*d*d*d) % 1000000)
             if d % 2 == 0:
