@@ -157,3 +157,51 @@ def pe212(N=50000):
     
     # answer: 328968937309
     return v
+
+def pe213(N=30, B=50):
+    """
+    Compute out the B-step distribution of each flea.
+    Then compute the vacant probability like birthday problem.
+    """
+    
+    NN = N * N
+
+    NEXTMOVE = {}
+    for i in range(NN):
+        if i < N:
+            move = [i+N]
+        elif i > NN - N - 1:
+            move = [i-N]
+        else:
+            move = [i-N, i+N]
+
+        if i % N == 0:
+            move += [i+1]
+        elif i % N == N - 1:    
+            move += [i-1]
+        else:
+            move += [i-1, i+1]
+
+        NEXTMOVE[i] = dict.fromkeys(move, 1./len(move))
+
+    def jumpdist(n, b):
+        dist = {n: 1}
+        for _ in range(b):
+            temp = {}
+            for i,p in dist.items():
+                for j,q in NEXTMOVE[i].items():
+                    if j in temp:
+                        temp[j] += p * q
+                    else:
+                        temp[j] = p * q
+            dist = temp
+        return dist
+
+    grids = dict.fromkeys(range(NN), 1)
+    for i in range(NN):
+        jd = jumpdist(i, B)
+        for i,p in jd.items():
+            grids[i] *= 1 - p
+
+    # answer: 330.721154
+    return round(sum(grids.values()), 6)
