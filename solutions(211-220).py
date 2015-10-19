@@ -205,3 +205,107 @@ def pe213(N=30, B=50):
 
     # answer: 330.721154
     return round(sum(grids.values()), 6)
+
+# %load_ext Cython
+
+# %%cython
+# import numpy as np
+# cimport numpy as np
+# from libc.math cimport sqrt
+
+# def primes_st_n(unsigned long long n):
+#     """Return primes list for primes < n."""
+    
+#     cdef:
+#         np.ndarray[short, ndim=1] sieve = np.ones(n/3 + (n%6==2), 
+#                                               dtype=np.int16)
+#         unsigned long long i, k
+#         unsigned long long i2max = <unsigned long long>sqrt(n)
+        
+#     for i in range(1, i2max/3+1):
+#         if sieve[i]:
+#             k = (3 * i + 1) | 1
+#             sieve[       k*k/3     ::2*k] = 0
+#             sieve[k*(k-2*(i&1)+4)/3::2*k] = 0
+#     return np.r_[2, 3, (3 * np.nonzero(sieve)[0][1:] + 1) | 1]
+
+# def odd_phis_se_n(unsigned long long n):
+#     """
+#     Return Euler's totient funtion phi(x) for every odd number <= n.
+    
+#     Sieve method, which based on an array of length int((n-3)/2), with map 
+#     i -> 2*i+3. Using facts:
+    
+#         (1) phi(p) = p - 1
+#         (2) phi(p^k * q) = (p^k - p^(k-1)) * phi(q), where gcd(p, q) = 1
+    
+#     For even numbers, it's very fast to get using (2) when p = 2.
+#     """
+    
+#     cdef:
+#         unsigned long long ni = n / 2 - 1 + (n & 1)
+#         np.ndarray[unsigned long long, ndim=1] sieve = np.zeros(ni, 
+#                                                            dtype=np.uint64)
+#         unsigned long long i, j, m, f, q
+    
+#     i = 0
+#     while i < ni:
+#         m = 2 * i + 3
+#         if sieve[i] == 0:
+#             sieve[i] = m - 1
+#             j = 0
+#             while (2*j+3) * m <= n:
+#                 if sieve[j]:
+#                     q = 2 * j + 3
+#                     f = m - 1
+#                     while q % m == 0:
+#                         f *= m
+#                         q //= m
+                        
+#                     if q == 1:
+#                         sieve[2*i*j+3*(i+j)+3] = f
+#                     else:
+#                         sieve[2*i*j+3*(i+j)+3] = f * sieve[q/2-1]
+#                 j += 1
+#         i += 1
+#     return sieve
+        
+# def c_pe214(long long n, short chain):
+#     cdef:
+#         np.ndarray[unsigned long long, ndim=1] phis = odd_phis_se_n(n)
+#         np.ndarray[long long, ndim=1] primes = primes_st_n(n)
+#         unsigned long long s, p
+#         unsigned long i, f, p_amount = len(primes)
+#         short j
+    
+#     for i in range(2, p_amount):
+#         p = primes[i] - 1
+#         for j in range(chain):
+#             if p == 2:
+#                 break
+            
+#             f = 1
+#             while p & 1 == 0:
+#                 f <<= 1
+#                 p >>= 1
+
+#             if f > 1:
+#                 f >>= 1
+
+#             if p == 1:
+#                 p = f
+#             else:
+#                 p = f * phis[p/2-1]
+
+#         if j == chain - 3:
+#             s += primes[i]
+#     return s
+
+def pe214(n=40000000, c=25):
+    """
+    Construct primes list and odd phis list.
+    Then check each prime with its phi chain.
+    Sum those who satisfying chain length condition.
+    """
+
+    return c_pe214(n, c)
