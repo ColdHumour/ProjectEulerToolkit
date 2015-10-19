@@ -309,3 +309,45 @@ def pe214(n=40000000, c=25):
     """
 
     return c_pe214(n, c)
+
+def pe215(width=32, height=10):
+    """
+    avail := {one-layer: [possible crack-free ones-layers]}
+    state := {current layer: possible ways to achieve current layer}
+    Put layer over layer and refresh state.
+    """
+    
+    def one_layer_combinations(i, n):
+        if n - i == 2 or n - i == 3:
+            yield [i]
+        elif n - i == 4:
+            yield [i, i+2]
+        else:
+            for m in (i+2, i+3):
+                for res in one_layer_combinations(m, n):
+                    yield [i] + res if i else res
+
+    avail = {}
+    for b in one_layer_combinations(0, width):
+        avail[tuple(b)] = []
+
+    lines = avail.keys()
+    for i,b1 in enumerate(lines):
+        for b2 in lines[i:]:
+            if not set(b1).intersection(b2):
+                avail[b1].append(b2)
+                avail[b2].append(b1)
+
+    state = dict.fromkeys(lines, 1)
+    for _ in range(height-1):
+        new_stat = {}
+        for b1,n in state.iteritems():
+            for b2 in avail[b1]:
+                if b2 in new_stat:
+                    new_stat[b2] += n
+                else:
+                    new_stat[b2] = n
+        state = new_stat
+    
+    # answer: 806844323190414
+    return sum(state.values())
