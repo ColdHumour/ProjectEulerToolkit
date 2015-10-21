@@ -351,3 +351,111 @@ def pe215(width=32, height=10):
     
     # answer: 806844323190414
     return sum(state.values())
+
+# %load_ext Cython
+
+# %%cython
+# import numpy as np
+# cimport cython
+# cimport numpy as np
+# from libc.math cimport sqrt
+
+# def isqrt(long n):
+#     cdef long sn = <long>sqrt(n)
+#     if sn * sn == n:
+#         return sn
+#     else:
+#         return 0
+    
+# def sifted_primes_st_n(long n):
+#     """Return primes list for primes < n."""
+    
+#     cdef:
+#         np.ndarray[short, ndim=1] sieve
+#         np.ndarray[long long, ndim=1] output
+#         long i, k, i2max = <long>sqrt(n)
+    
+#     sieve = np.ones(n/3 + (n%6==2), dtype=np.int16)
+#     for i in range(1, i2max/3+1):
+#         if sieve[i]:
+#             k = (3 * i + 1) | 1
+#             sieve[       k*k/3     ::2*k] = 0
+#             sieve[k*(k-2*(i&1)+4)/3::2*k] = 0
+#     output = np.r_[(3 * np.nonzero(sieve)[0][1:] + 1) | 1]
+#     return output[(output % 8 == 1) | (output % 8 == 7)]
+
+# def tonelli_shanks(long n, long p):
+#     """
+#     Solve the equation
+#         x^2 = n (mod p)
+#     Details see: http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
+#     """
+    
+#     cdef:
+#         long long p2 = (p-1)/2, r = isqrt(n)
+#         long long z, c, i, t, t2
+#         long q = p-1, s = 0
+    
+#     if r:
+#         pass
+#     elif p % 4 == 3:
+#         r = <long long>pow(n, (p2+1)/2, p)
+#     else:
+#         for z in xrange(3, p2+1):
+#             if <long long>pow(z, p2, p) == p - 1: # Euler's criterion
+#                 break
+
+#         while q & 1 == 0:
+#             q >>= 1
+#             s += 1
+
+#         c = <long long>pow(z, q, p)
+#         r = <long long>pow(n, (q+1)/2, p)
+#         t = <long long>pow(n, q, p)
+#         while t > 1:
+#             t2 = t
+#             for i in xrange(1, s):
+#                 t2 = (t2 * t2) % p
+#                 if t2 == 1:
+#                     break
+
+#             b = pow(c, 1 << (s-i-1), p)
+#             r = (r * b) % p
+#             t = (t * b * b) % p
+#             c = (b * b) % p
+#             s = i
+        
+#     if r > p2:
+#         r = p - r
+#     return r
+
+# def c_pe216(long long N):
+#     cdef:
+#         np.ndarray[short, ndim=1] sieve
+#         np.ndarray[long long, ndim=1] sps
+#         unsigned long i, d, p
+#         long long b
+    
+#     sieve = np.ones(N+1, dtype=np.int16)
+#     sps = sifted_primes_st_n(<long>sqrt(2*N*N+1))
+#     d = len(sps)
+#     for i in range(d):
+#         p = sps[i]
+#         b = tonelli_shanks((p + 1) / 2, p)
+#         sieve[p-b::p] = 0
+#         sieve[p+b::p] = 0
+#     return sieve.sum() - 2
+
+def pe216(N=50000000):
+    """
+    (2n^2 - 1) has factor p when n = k*p + b, where: 
+        (1) p is odd prime and
+        (2) 2b^2 = 1 (mod p)
+    Using Second Supplementary Law of quadratic residue, we can find that
+    2b^2 = 1 (mod p) has solution only when p = 1, 7 (mod 8)
+    Then applying Tonelli-Shanks algorithm to work out b.
+    The remaining work is just simple sieve-method.
+    """
+    
+    # answer: 5437849
+    return c_pe216(N)
