@@ -3,141 +3,55 @@
 """
 prime.py
 
-Functions using to dealing with primes related problems.
+Functions using to dealing with prime-related problems.
 Function list: 
-    P10K, p100k, p1m, p10m
-    atkin_sieve
-    isprime
-    iscoprime
-    primeDivisorDecomp
-    divisorDecomp
+    primes_list
+    is_prime
+    is_coprime
+    prime_divisor_decomp
+    all_divisors
 
 @author: Jasper Wu
 """
 
-import os
+
 import random
-from math import sqrt
-from fractions import gcd
+import numpy as np
 
-from . formulas import cprod
-from . constant import P10K, P10Kset
+from ProjectEulerToolkit.formula import cprod, gcd, sqrt
+
+try:
+    from gmpy2 import is_prime
+except:
+    is_prime = _is_prime
+
+try:
+    from ProjectEulerToolkit.ext._prime import _c_primes_list
+    primes_list = _c_primes_list
+except:
+    primes_list = _primes_list
 
 
-BASE_DIR = os.path.dirname(__file__)
+# Supplementry Implementation
+def _primes_list(n):
+    """Input n>=6, Returns a array of primes, 2 <= p < n"""
 
+    sieve = np.ones(n/3 + (n%6 == 2), dtype=np.bool)
+    for i in xrange(1, int(sqrt(n))/3+1):
+        if sieve[i]:
+            k = (3 * i + 1) | 1
+            sieve[          k * k / 3         ::2*k] = False
+            sieve[k * (k - 2 * (i&1) + 4) / 3 ::2*k] = False
+    return np.r_[2, 3, ((3 * np.nonzero(sieve)[0][1:] + 1) | 1)]
 
-def p100k():
-    file_path = os.path.join(BASE_DIR, 'p100k')
-    plist = [int(p.strip()) for p in file(file_path).readlines()]
-    return plist
-
-def p1m():
-    file_path = os.path.join(BASE_DIR, 'p1m')
-    plist = [int(p.strip()) for p in file(file_path).readlines()]
-    return plist
-
-def p10m():
-    file_path = os.path.join(BASE_DIR, 'p10m')
-    plist = [int(p.strip()) for p in file(file_path).readlines()]
-    return plist
-
-def atkin_sieve(limit=1000000):
-    """
-    Sieve of Atkin, which is a much stronger version than sieve of Eratosthenes
-    https://en.wikipedia.org/wiki/Sieve_of_Atkin
-    """
-
-    plist = [0] * limit
-
-    # n = 3x^2 + y^2 section
-    x = 3
-    for i in xrange(0, 12*int(sqrt((limit-1)/3)), 24):
-        x += i
-        y_limit = int(12*sqrt(limit-x)-36)
-        n = x + 16
-        for j in xrange(-12, y_limit+1, 72):
-            n += j
-            plist[n] = not plist[n]
-
-        n = x + 4
-        for j in xrange( 12, y_limit+1, 72):
-            n += j
-            plist[n] = not plist[n]
-
-    # n = 4x^2 + y^2 section
-    x = 0
-    for i in xrange(4, 8*int(sqrt((limit-1)/4))+4, 8):
-        x += i
-        n = x + 1
-        if x % 3:
-            for j in xrange(0, 4*int(sqrt(limit-x))-3, 8):
-                n += j
-                plist[n] = not plist[n]
-        else:
-            y_limit = 12 * int(sqrt(limit-x)) - 36
-            
-            n = x + 25
-            for j in xrange(-24, y_limit+1, 72):
-                n += j
-                plist[n] = not plist[n]
-
-            n = x + 1
-            for j in xrange( 24, y_limit+1, 72):
-                n += j
-                plist[n] = not plist[n]
-
-    # n = 3x^2 - y^2 section
-    x = 1
-    for i in xrange(3, int(sqrt(limit/2))+1, 2):
-        x += 4 * i - 4
-        n = 3 * x
-        if n > limit:
-            y = (int(sqrt(n-limit)) >> 2) << 2
-            n -= y * y
-            s = 4 * y + 4
-        else:
-            s = 4
-
-        for j in xrange(s, 4*i, 8):
-            n -= j
-            if n <= limit and n % 12 == 11:
-                plist[n] = not plist[n]
-
-    x = 0
-    for i in xrange(2, int(sqrt(limit/2))+1, 2):
-        x += 4 * i - 4
-        n = 3 * x
-
-        if n > limit:
-            y = ((int(sqrt(n-limit)) >> 2) << 2) - 1
-            n -= y * y
-            s = 4 * y + 4
-        else:
-            n -= 1
-            s = 0
-
-        for j in xrange(s, 4*i, 8):
-            n -= j
-            if n <= limit and n % 12 == 11:
-                plist[n] = not plist[n]
-
-    # eliminate squares        
-    for n in xrange(5, int(sqrt(limit))+1, 2):
-        if plist[n]:
-            for k in range(n*n, limit, n*n):
-                plist[k] = False
-
-    return [2,3] + filter(plist.__getitem__, xrange(5,limit,2))
-
-def mr_decompose(n):
+def _mr_decompose(n):
     exponentOfTwo = 0
     while n % 2 == 0:
         n /= 2
         exponentOfTwo += 1
     return exponentOfTwo, n
 
-def mr_isWitness(possibleWitness, p, exponent, remainder):
+def _mr_isWitness(possibleWitness, p, exponent, remainder):
     possibleWitness = pow(possibleWitness, remainder, p)
     if possibleWitness == 1 or possibleWitness == p - 1:
         return False
@@ -147,13 +61,13 @@ def mr_isWitness(possibleWitness, p, exponent, remainder):
             return False
     return True
 
-def aks_expand_x_1(n): 
+def _aks_expand_x_1(n): 
     c = 1
     for i in xrange(n/2 + 1):
         c *= (n-i) / (i+1)
         yield c
 
-def isprime(p, accuracy=100, how='mr'):
+def _is_prime(p, accuracy=100, how='mr'):
     """
     Miller-Rabin primality test
     https://en.wikipedia.org/wiki/Miller-Rabin_primality_test
@@ -167,23 +81,23 @@ def isprime(p, accuracy=100, how='mr'):
     
     if how == 'mr':
         numTries = 0
-        exponent, remainder = mr_decompose(p - 1)
+        exponent, remainder = _mr_decompose(p - 1)
 
         for _ in xrange(accuracy):
             possibleWitness = random.randint(2, p - 2)
-            if mr_isWitness(possibleWitness, p, exponent, remainder):
+            if _mr_isWitness(possibleWitness, p, exponent, remainder):
                 return False
         return True
     elif how == 'aks':
-        for i in aks_expand_x_1(p):
+        for i in _aks_expand_x_1(p):
             if i % p:
                 return False
         return True
 
-def iscoprime(a, b):
+def is_coprime(a, b):
     return gcd(a, b) == 1
 
-def pollard_rho(n, rand=False):
+def _pollard_rho(n, rand=False):
     """
     Pollard rho prime factorization algorithm
     https://en.wikipedia.org/wiki/Pollard's_rho_algorithm
@@ -203,7 +117,7 @@ def pollard_rho(n, rand=False):
         d = gcd(y-x, n)
     return d
         
-def primeDivisorDecomp(n, rand=False):
+def prime_divisor_decomp(n, rand=False):
     dlist, clist = [], []
     
     # 奇偶性判断
@@ -238,12 +152,12 @@ def primeDivisorDecomp(n, rand=False):
         if n == 1:
             return zip(dlist, clist)
         
-        if isprime(n):
+        if is_prime(n):
             dlist.append(n)
             clist.append(1)
             return zip(dlist, clist)
     
-        p = pollard_rho(n, rand)
+        p = _pollard_rho(n, rand)
         c = 0
         while n % p == 0:
             n /= p
@@ -251,11 +165,11 @@ def primeDivisorDecomp(n, rand=False):
         dlist.append(p)
         clist.append(c)
 
-def divisorDecomp(n, rand=False):
+def all_divisors(n, rand=False):
     if n == 1:
         return [1]
 
-    primefactors = primeDivisorDecomp(n, rand)
+    primefactors = prime_divisor_decomp(n, rand)
     d = len(primefactors)
     clist = [0] * d
     output = []
@@ -270,15 +184,3 @@ def divisorDecomp(n, rand=False):
             k += 1
             if k >= d:
                 return sorted(output)
-
-
-import numpy
-def primesfrom2to(n):
-    """ Input n>=6, Returns a array of primes, 2 <= p < n """
-    sieve = numpy.ones(n/3 + (n%6==2), dtype=numpy.bool)
-    for i in xrange(1,int(n**0.5)/3+1):
-        if sieve[i]:
-            k=3*i+1|1
-            sieve[       k*k/3     ::2*k] = False
-            sieve[k*(k-2*(i&1)+4)/3::2*k] = False
-    return numpy.r_[2,3,((3*numpy.nonzero(sieve)[0][1:]+1)|1)]

@@ -10,6 +10,7 @@ Function list:
 @author: Jasper Wu
 """
 
+
 def timepast(func):
     import time
     def _deco(*args, **kwargs):
