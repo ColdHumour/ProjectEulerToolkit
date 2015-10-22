@@ -116,7 +116,9 @@ def _pollard_rho(n, rand=False):
         y = f(y, c) % n
         d = gcd(y-x, n)
     return d
-        
+
+P10K = primes_list(10000)
+P10Kset = set(P10K)
 def prime_divisor_decomp(n, rand=False):
     dlist, clist = [], []
     
