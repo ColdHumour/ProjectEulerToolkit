@@ -50,7 +50,7 @@ from ProjectEulerToolkit.combinatoric import (
 from ProjectEulerToolkit.formula import (
     sqrt, is_square, gcd, ggcd,
     factorial, cprod,
-    sum_mod, pow, legendre_symbol,
+    sum_mod, pow_mod, legendre_symbol,
     padic, max_subarray,
 
     pythag_triple_tree,

@@ -7,7 +7,7 @@ Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, gcd, ggcd 
     factorial, cprod
-    sum_mod, pow, iter_associate
+    sum_mod, pow_mod, iter_associate
     legendre_symbol
     padic, max_subarray
 
@@ -28,11 +28,11 @@ from collections import deque
 
 try:
     from gmpy2 import is_square, factorial, sqrt, gcd
-    from gmpy2 import powmod as pow
+    from gmpy2 import powmod as pow_mod
 except:
     from math import sqrt
     from fractions import gcd
-    pow = pow
+    pow_mod = pow
     is_square = _is_square
     factorial = _factorial
 
