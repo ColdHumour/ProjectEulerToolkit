@@ -36,8 +36,8 @@ def MP(amounts):
     s, p = 0, 1
     for v in amounts:
         s += v
-        p *= factorial(v)
-    return factorial(s) / p
+        p *= int(factorial(v))
+    return int(factorial(s)) / p
 
 def multiset_permutations(multiset):
     """
@@ -104,19 +104,32 @@ def limited_combinations(choices):
             for remains in limited_combinations(choices[1:]):
                 yield [x] + remains
 
-def all_partitions(n, s, init=1):
+def all_partitions(n, s, xmin=1, xmax=None):
     """
     make n partitions of s goods, output all possible partitions
+    xmin: minimum partition size
+    xmax: maximum partition size
 
     e.g allPartition(3, 5) == [[1, 1, 3], [1, 2, 2]]
     """
 
-    if n == 1:
-        yield [s]
+    if xmax is None:
+        if n == 1:
+            yield [s]
+        else:
+            for i in range(xmin, s / n + 1):
+                for result in all_partitions(n-1, s-i, i, xmax):
+                    yield [i] + result
     else:
-        for i in range(init, s / n + 1):
-            for result in all_partitions(n-1, s-i, i):
-                yield [i] + result
+        if s > n * xmax:
+            yield None
+        elif n == 1:
+            yield [s]
+        else:
+            for i in range(max(xmin, s-(n-1)*xmax), min(s/n, xmax)+1):
+                for result in all_partitions(n-1, s-i, i, xmax):
+                    if result is not None:
+                        yield [i] + result
 
 def seq_partitions(sequence, p):
     """
