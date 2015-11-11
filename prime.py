@@ -125,7 +125,7 @@ def prime_divisor_decomp(n, rand=False):
     # 奇偶性判断
     c = 0
     while n % 2 == 0:
-        n /= 2
+        n //= 2
         c += 1
     if c:
         dlist.append(2)
@@ -135,7 +135,7 @@ def prime_divisor_decomp(n, rand=False):
     for p in iter(P10K):
         c = 0
         while n % p == 0:
-            n /= p
+            n //= p
             c += 1
         if c:
             dlist.append(p)
@@ -149,6 +149,8 @@ def prime_divisor_decomp(n, rand=False):
             clist.append(1)
             return zip(dlist, clist)
 
+    n = int(n)
+
     # 然后用Pollard rho方法生成素因子
     while 1:
         if n == 1:
@@ -158,11 +160,11 @@ def prime_divisor_decomp(n, rand=False):
             dlist.append(n)
             clist.append(1)
             return zip(dlist, clist)
-    
+        
         p = _pollard_rho(n, rand)
         c = 0
         while n % p == 0:
-            n /= p
+            n //= p
             c += 1
         dlist.append(p)
         clist.append(c)
