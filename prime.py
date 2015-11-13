@@ -27,7 +27,9 @@ except:
 
 try:
     from ProjectEulerToolkit.ext._prime import _c_primes_list
-    primes_list = _c_primes_list
+    def primes_list(n):
+        output = _c_primes_list(n)
+        return [int(x) for x in output]
 except:
     primes_list = _primes_list
 
@@ -40,14 +42,15 @@ def _primes_list(n):
     for i in xrange(1, int(sqrt(n))/3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
-            sieve[          k * k / 3         ::2*k] = False
-            sieve[k * (k - 2 * (i&1) + 4) / 3 ::2*k] = False
-    return np.r_[2, 3, ((3 * np.nonzero(sieve)[0][1:] + 1) | 1)]
+            sieve[          k * k // 3         ::2*k] = False
+            sieve[k * (k - 2 * (i&1) + 4) // 3 ::2*k] = False
+    plist = np.r_[2, 3, ((3 * np.nonzero(sieve)[0][1:] + 1) | 1)]
+    return [int(x) for x in plist]
 
 def _mr_decompose(n):
     exponentOfTwo = 0
     while n % 2 == 0:
-        n /= 2
+        n //= 2
         exponentOfTwo += 1
     return exponentOfTwo, n
 
@@ -148,8 +151,6 @@ def prime_divisor_decomp(n, rand=False):
             dlist.append(n)
             clist.append(1)
             return zip(dlist, clist)
-
-    n = int(n)
 
     # 然后用Pollard rho方法生成素因子
     while 1:
