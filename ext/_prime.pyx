@@ -5,9 +5,7 @@ _prime.pyx
 
 Cython extension of functions using to dealing with prime-related problems.
 Function list: 
-    fast_sieve
-    prime_divisor_decomp
-    all_divisors
+    _c_primes_list
 
 @author: Jasper Wu
 """
@@ -24,7 +22,7 @@ def _c_primes_list(unsigned long long n):
     
     cdef:
         cnp.ndarray[short, ndim=1] sieve = np.ones(n/3 + (n%6==2), 
-                                                  dtype=np.int16)
+                                                   dtype=np.int16)
         unsigned long long i, k
         unsigned long long imax = <unsigned long long>sqrt(n)
         
