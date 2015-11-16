@@ -41,4 +41,7 @@ except:
         import _formula
         import _prime
     else:
-        print "WARNING: Fail to build Cython extensions"
+        # change back to workdir
+        os.chdir(CUR_DIR)
+        
+        print "WARNING: Fail to build Cython extensions!"

@@ -6,15 +6,18 @@ algolibrary.py
 Interesting algorithms, but not optimal
 Function list: 
     atkin_sieve
+    is_coprime
+    power_mod
     
 @author: Jasper Wu
 """
 
 
 try:
-    from gmpy2 import sqrt
+    from gmpy2 import sqrt, gcd
 except:
     from math import sqrt
+    from fractions import gcd
 
 
 def atkin_sieve(limit=1000000):
@@ -104,3 +107,24 @@ def atkin_sieve(limit=1000000):
                 plist[k] = False
 
     return [2,3] + filter(plist.__getitem__, xrange(5,limit,2))
+
+
+def is_coprime(a, b):
+    """return whether a and b are coprime"""
+
+    return gcd(a, b) == 1
+
+def power_mod(a, b, n):
+    """return (a ** b) % n"""
+    
+    r = a % n
+    if r in (0, 1):
+        return r
+    
+    r = 1
+    while b:
+        if b % 2:
+            r = (r * a) % n
+        b /= 2
+        a = (a * a) % n
+    return r % n

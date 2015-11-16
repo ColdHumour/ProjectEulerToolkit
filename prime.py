@@ -7,7 +7,6 @@ Functions using to dealing with prime-related problems.
 Function list: 
     primes_list
     is_prime
-    is_coprime
     prime_divisor_decomp
     all_divisors
 
@@ -18,20 +17,18 @@ Function list:
 import random
 import numpy as np
 
-from ProjectEulerToolkit.formula import cprod, gcd, sqrt
+from . formula import cprod, gcd, sqrt
 
 try:
     from gmpy2 import is_prime
 except:
-    is_prime = _is_prime
+    is_prime = None
 
 try:
-    from ProjectEulerToolkit.ext._prime import _c_primes_list
-    def primes_list(n):
-        output = _c_primes_list(n)
-        return [int(x) for x in output]
+    from . ext._prime import _c_primes_list
+    primes_list = lambda n: [int(x) for x in _c_primes_list(n)]
 except:
-    primes_list = _primes_list
+    primes_list = None
 
 
 # Supplementry Implementation
@@ -46,6 +43,9 @@ def _primes_list(n):
             sieve[k * (k - 2 * (i&1) + 4) // 3 ::2*k] = False
     plist = np.r_[2, 3, ((3 * np.nonzero(sieve)[0][1:] + 1) | 1)]
     return [int(x) for x in plist]
+
+if primes_list is None:
+    primes_list = _primes_list
 
 def _mr_decompose(n):
     exponentOfTwo = 0
@@ -97,8 +97,8 @@ def _is_prime(p, accuracy=100, how='mr'):
                 return False
         return True
 
-def is_coprime(a, b):
-    return gcd(a, b) == 1
+if is_prime is None:
+    is_prime = _is_prime
 
 def _pollard_rho(n, rand=False):
     """

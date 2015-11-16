@@ -29,15 +29,11 @@ for pkg in DEPENDENCIES:
 
 
 # cython extensions
-import ProjectEulerToolkit.ext
-
-
-# useful functions in dependent packages
-from itertools import permutations, combinations, combinations_with_replacement
+import ext
 
 
 # useful functions in current package
-from ProjectEulerToolkit.combinatoric import (
+from . combinatoric import (
     C, MP,
     
     multiset_permutations, 
@@ -47,7 +43,7 @@ from ProjectEulerToolkit.combinatoric import (
     seq_partitions,
 )
 
-from ProjectEulerToolkit.formula import (
+from . formula import (
     sqrt, is_square, gcd, ggcd,
     factorial, cprod,
     sum_mod, pow_mod, legendre_symbol,
@@ -62,21 +58,24 @@ from ProjectEulerToolkit.formula import (
     continous_frac_convergent,
 )
 
-from ProjectEulerToolkit.prime import (
+from . prime import (
     primes_list,
     is_prime,
-    is_coprime,
     prime_divisor_decomp,
     all_divisors,
 )
 
+from . utils import (
+    timepast,
+    clear_cython_cache
+)
 
-import ProjectEulerToolkit.combinatoric
-import ProjectEulerToolkit.equation
-import ProjectEulerToolkit.formula
-import ProjectEulerToolkit.generator
-import ProjectEulerToolkit.prime
-import ProjectEulerToolkit.utils
+import combinatoric
+import equation
+import formula
+import generator
+import prime
+import utils
 
 
 __all__ = [

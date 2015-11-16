@@ -23,9 +23,6 @@ Function list:
 """
 
 
-from fractions import Fraction
-from collections import deque
-
 try:
     from gmpy2 import is_square, factorial, sqrt, gcd
     from gmpy2 import powmod as pow_mod
@@ -33,14 +30,14 @@ except:
     from math import sqrt
     from fractions import gcd
     pow_mod = pow
-    is_square = _is_square
-    factorial = _factorial
+    is_square = None
+    factorial = None
 
 try:
-    from ProjectEulerToolkit.ext._formula import _c_sum_mod
+    from . ext._formula import _c_sum_mod
     sum_mod = _c_sum_mod
 except:
-    sum_mod = _sum_mod
+    sum_mod = None
 
 
 # Supplementry Implementations 
@@ -49,6 +46,9 @@ def _is_square(n):
 
     s = int(sqrt(n))
     return s * s == n
+
+if is_square is None:
+    is_square = _is_square
 
 def _factorial(n):
     """return n!"""
@@ -62,6 +62,9 @@ def _factorial(n):
     for i in xrange(2, n+1):
         output *= i
     return output
+
+if factorial is None:
+    factorial = _factorial
 
 
 # Useful Functions
@@ -134,22 +137,8 @@ def _sum_mod(n):
     sm += sum(n%j for j in xrange(2, n/(i+1) + 1))
     return sm
 
-def power_mod(a, b, n):
-    """
-    return (a ** b) % n
-    """
-    
-    r = a % n
-    if r in (0, 1):
-        return r
-    
-    a, b, n, r = int(a), int(b), int(n), 1
-    while b:
-        if b % 2:
-            r = (r * a) % n
-        b /= 2
-        a = (a * a) % n
-    return r % n
+if sum_mod is None:
+    sum_mod = _sum_mod
 
 def iter_associate(f, x, n):
     """
