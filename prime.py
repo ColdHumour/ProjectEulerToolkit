@@ -118,7 +118,7 @@ def _pollard_rho(n, rand=False):
         y = f(y, c) % n
         y = f(y, c) % n
         d = gcd(y-x, n)
-    return d
+    return int(d)
 
 P10K = primes_list(10000)
 P10Kset = set(P10K)
@@ -152,6 +152,8 @@ def prime_divisor_decomp(n, rand=False):
             clist.append(1)
             return zip(dlist, clist)
 
+        n = int(n)
+
     # 然后用Pollard rho方法生成素因子
     while 1:
         if n == 1:
@@ -169,6 +171,8 @@ def prime_divisor_decomp(n, rand=False):
             c += 1
         dlist.append(p)
         clist.append(c)
+
+        n = int(n)
 
 def all_divisors(n, rand=False):
     if n == 1:

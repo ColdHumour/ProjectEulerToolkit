@@ -93,7 +93,7 @@ def limited_combinations(choices):
     Generate all combinations [x1, x2, ..., xn] which subjected to
     limited choices [[possible choices for xi] for i in 1..n]
     
-    e.g. limitedCombinations([[1, 2], [3, 4]]) == [[1, 3], [1, 4], [2, 3], [2, 4]]
+    e.g. limited_combinations([[1, 2], [3, 4]]) == [[1, 3], [1, 4], [2, 3], [2, 4]]
     """
     
     if len(choices) == 1:
@@ -110,7 +110,7 @@ def all_partitions(n, s, xmin=1, xmax=None):
     xmin: minimum partition size
     xmax: maximum partition size
 
-    e.g allPartition(3, 5) == [[1, 1, 3], [1, 2, 2]]
+    e.g all_partition(3, 5) == [[1, 1, 3], [1, 2, 2]]
     """
 
     if xmax is None:
@@ -135,7 +135,7 @@ def seq_partitions(sequence, p):
     """
     list all permutations of the sequence satisfying given partition p
 
-    e.g seqPartition([1, 2, 3], [1, 2]) == [[[1], [2, 3]], [[2], [1, 3]], [[3], [1, 2]]]
+    e.g seq_partition([1, 2, 3], [1, 2]) == [[[1], [2, 3]], [[2], [1, 3]], [[3], [1, 2]]]
     """
 
     from itertools import combinations

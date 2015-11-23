@@ -22,12 +22,12 @@ Function list:
 @author: Jasper Wu
 """
 
+from math import sqrt
 
 try:
-    from gmpy2 import is_square, factorial, sqrt, gcd
+    from gmpy2 import is_square, factorial, gcd
     from gmpy2 import powmod as pow_mod
 except:
-    from math import sqrt
     from fractions import gcd
     pow_mod = pow
     is_square = None
