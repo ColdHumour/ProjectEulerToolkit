@@ -6,7 +6,7 @@ formula.py
 Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, gcd, ggcd 
-    factorial, cprod
+    factorial, fact_mod, cprod
     sum_mod, pow_mod, iter_associate
     legendre_symbol
     padic, max_subarray
@@ -66,6 +66,19 @@ def _factorial(n):
 if factorial is None:
     factorial = _factorial
 
+def fact_mod(n, m):
+    """return n! % m"""
+
+    if n < 0:
+        raise ValueError("n in n! must be positive!")
+    if n==0 or n==1: 
+        return 1
+
+    output = 1
+    for i in xrange(2, n+1):
+        output *= i
+        output %= m
+    return output
 
 # Useful Functions
 def cprod(seq):

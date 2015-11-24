@@ -5,12 +5,15 @@ combinatoric.py
 
 Functions using to dealing with combinatorics problems.
 Function list: 
-    C, MP
+    C, C_mod, MP
     multiset_permutations, limited_combinations
     all_partitions, seq_partitions
 
 @author: Jasper Wu
 """
+
+from . prime import primes_list, euler_phi
+from . formula import fact_mod
 
 
 def C(n, k):
@@ -18,12 +21,52 @@ def C(n, k):
     if k == 0: return 1
     if k == 1: return n
 
-    x = n
+    output = n
     for i in range(n-1, n-k, -1):
-        x *= i
+        output *= i
     for i in range(2, k+1):
-        x /= i
-    return x
+        output /= i
+    return output
+
+def C_mod(n, k, m):
+    """Return C(n, k) % m"""
+    
+    if k > n/2: k = n - k
+    if k == 0: return 1
+    if k == 1: return n % m
+
+    output = fact_mod(n, m)
+    
+    x = (fact_mod(k, m) * fact_mod(n - k, m)) % m
+    if x:
+        t = euler_phi(m)
+        output *= pow(x, t-1, m)
+        output %= m
+    else:
+        plist = primes_list(n+1)
+        output = 1
+        for p in plist:
+            x = 0
+            q = p
+            while q <= n:
+                x += n // q
+                q *= p
+
+            if p <= k:
+                q = p
+                while q <= k:
+                    x -= k // q
+                    q *= p
+
+            if p <= n - k:
+                q = p
+                while q <= n - k:
+                    x -= (n - k) // q
+                    q *= p
+
+            output *= pow(p, x, m)
+            output %= m
+    return output
 
 def MP(amounts):
     """

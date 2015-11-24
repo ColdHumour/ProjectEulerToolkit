@@ -9,6 +9,7 @@ Function list:
     is_prime
     prime_divisor_decomp
     all_divisors
+    euler_phi
 
 @author: Jasper Wu
 """
@@ -193,3 +194,18 @@ def all_divisors(n, rand=False):
             k += 1
             if k >= d:
                 return sorted(output)
+
+def euler_phi(n, rand=False):
+    """
+    Return Euler's totient value of n
+    Details see: https://en.wikipedia.org/wiki/Euler's_totient_function
+    """
+
+    if n == 1:
+        return 1
+
+    primefactors = prime_divisor_decomp(n, rand)
+    phi = 1
+    for p,a in primefactors:
+        phi *= pow(p, a-1) * (p - 1)
+    return phi

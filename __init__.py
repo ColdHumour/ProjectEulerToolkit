@@ -34,7 +34,7 @@ import ext
 
 # useful functions in current package
 from . combinatoric import (
-    C, MP,
+    C, C_mod, MP,
     
     multiset_permutations, 
     limited_combinations,
@@ -45,7 +45,7 @@ from . combinatoric import (
 
 from . formula import (
     sqrt, is_square, gcd, ggcd,
-    factorial, cprod,
+    factorial, fact_mod, cprod,
     sum_mod, pow_mod, legendre_symbol,
     padic, max_subarray,
 
@@ -63,6 +63,7 @@ from . prime import (
     is_prime,
     prime_divisor_decomp,
     all_divisors,
+    euler_phi,
 )
 
 from . utils import (
