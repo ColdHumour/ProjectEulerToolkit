@@ -209,8 +209,8 @@ def generalized_pell_equation_base(d, n=1):
 
     # 9. When all z are done, then we have a set of fundmental solutions (or minimal positive solutions) which are all in different equivalent classes.
 
-    r, s = generalized_pell_equation_base_set(d, 1)[0]
-    t, u = generalized_pell_equation_base_set(d, -1)[0]
+    r, s = generalized_pell_equation_base(d, 1)[0]
+    t, u = generalized_pell_equation_base(d, -1)[0]
     
     sols = []
     for (f, m), zlist in zdict.items():
