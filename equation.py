@@ -18,7 +18,7 @@ Function list:
 import numpy as np
 
 from . formula import (
-    gcd, pow, sqrt, 
+    gcd, sqrt, 
     is_square, 
     legendre_symbol,
 )
