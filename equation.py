@@ -7,7 +7,7 @@ Functions using to solve various equations.
 Function list: 
     linear_modulo_equation
     square_modulo_prime_equation
-    generalized_pell_equation_base_set
+    generalized_pell_equation_base
     generalized_pell_equation_generator
     gauss_jordan_elimination
 
@@ -128,7 +128,7 @@ def _pqa(d, p, q):
         Y.append(a * Y[-1] + Y[-2])
         PQ.append((p, q))
 
-def generalized_pell_equation_base_set(d, n=1):
+def generalized_pell_equation_base(d, n=1):
     """
     Solve generalized Pell equation 
         x**2 - d * y**2 = n
