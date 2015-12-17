@@ -7,7 +7,8 @@ Functions using to solve various equations.
 Function list: 
     linear_modulo_equation
     square_modulo_prime_equation
-    generalized_pell_equation
+    generalized_pell_equation_base_set
+    generalized_pell_equation_generator
     gauss_jordan_elimination
 
 @author: Jasper Wu
@@ -15,6 +16,12 @@ Function list:
 
 
 import numpy as np
+
+from . formula import (
+    gcd, pow, sqrt, 
+    is_square, 
+    legendre_symbol,
+)
 
 
 def linear_modulo_equation(a, b, n):
@@ -26,8 +33,6 @@ def linear_modulo_equation(a, b, n):
     Return (smallest non-negative solution, step, n)
     """
     
-    from ProjectEulerToolkit.formula import gcd
-
     d = gcd(a, n)
     if b % d:
         raise ValueError('No Solution for ({} * x) % {} = {}!'.format(a, n, b))
@@ -63,10 +68,6 @@ def square_modulo_prime_equation(n, p):
     Using Tonelli-Shanks algorithm.
     Details see: http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
     """
-
-    from ProjectEulerToolkit.formula import (
-        pow, sqrt, is_square, legendre_symbol,
-    )
 
     if is_square(n):
         r = int(sqrt(n))
@@ -109,8 +110,6 @@ def _pqa(d, p, q):
     PQa algorithm for solving generalized Pell equation, which can be regarded as a generalized continued fraction expansion with convergent computation
     """
 
-    from ProjectEulerToolkit.formula import sqrt
-
     sd = sqrt(d)
     a, i = int((p+sd)/q), 0
     X, Y, PQ = [q, a*q - p], [0, 1], [(p, q)] 
@@ -129,14 +128,12 @@ def _pqa(d, p, q):
         Y.append(a * Y[-1] + Y[-2])
         PQ.append((p, q))
 
-def generalized_pell_equation(d, n=1, nsol=1):
+def generalized_pell_equation_base_set(d, n=1):
     """
     Solve generalized Pell equation 
         x**2 - d * y**2 = n
     Return smallest positive basic solution set, or enough solutions according to nsol
     """
-
-    from ProjectEulerToolkit.formula import sqrt
 
     if d <= 0:
         raise ValueError("D must be positive non-perfect-square integer!")
@@ -159,17 +156,8 @@ def generalized_pell_equation(d, n=1, nsol=1):
                 x, y = X[l-1], Y[l-1]
             else:
                 x, y = 0, 0
-
-        if nsol == 1:
-            return x, y
-
-        sols = [(x, y)]
-        for _ in xrange(nsol-1):
-            xk, yk = sols[-1]
-            if n == -1:
-                xk, yk = x*xk + y*yk*d, y*xk + x*yk
-            sols.append((x*xk + y*yk*d, y*xk + x*yk))
-        return sols
+    
+        return [(x, y)]        
 
     # Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
     # Using Lagrange-Matthews-Mollin (LMM) algorithm
@@ -188,7 +176,7 @@ def generalized_pell_equation(d, n=1, nsol=1):
     # Here we just use brute-search to find all value of z.
 
     f, zdict = 1, {}
-    while f < sqrt(abs(n)/2):
+    while f <= sqrt(abs(n)/2):
         if n % (f*f) == 0:
             m = n / (f*f)
             ma = abs(m)
@@ -221,8 +209,8 @@ def generalized_pell_equation(d, n=1, nsol=1):
 
     # 9. When all z are done, then we have a set of fundmental solutions (or minimal positive solutions) which are all in different equivalent classes.
 
-    r, s = generalized_pell_equation(d, 1)
-    t, u = generalized_pell_equation(d, -1)
+    r, s = generalized_pell_equation_base_set(d, 1)[0]
+    t, u = generalized_pell_equation_base_set(d, -1)[0]
     
     sols = []
     for (f, m), zlist in zdict.items():
@@ -254,15 +242,17 @@ def generalized_pell_equation(d, n=1, nsol=1):
     #     We can expand the solution set. 
 
     sols = sorted(sols)
+    return sols
 
-    if len(sols) >= nsol:
-        return sols
-    
-    to_expand = sols[:]
-    while len(sols) < nsol:
-        to_expand = [(r*x + d*s*y, s*x + r*y) for x,y in to_expand]
-        sols += to_expand
-    return sols[:nsol]
+def generalized_pell_equation_generator(d, n=1):
+    r, s = generalized_pell_equation_base_set(d, 1)[0]
+    sols = generalized_pell_equation_base_set(d, n)
+
+    while True:
+        for sol in sols:
+            yield sol
+
+        sols = [(r*x + d*s*y, s*x + r*y) for x, y in sols]
 
 def gauss_jordan_elimination(coeffs):
     """
