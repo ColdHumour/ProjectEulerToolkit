@@ -5,13 +5,14 @@ _formula.pyx
 
 Cython extension of functions implementing formulas via fast algorithms.
 Function list: 
-    _c_sum_mod, _cpower_mod
+    _c_pow
+    _c_sum_mod
+    _c_is_square_int64, _c_is_square_uint64, 
 
 @author: Jasper Wu
 """
 
 from libc.math cimport sqrt, pow
-
 
 cdef unsigned long long _c_pow(unsigned long long a, 
                                unsigned long long b, 
@@ -37,6 +38,36 @@ cdef unsigned long long _c_pow(unsigned long long a,
     r %= n
     return r
 
+def _c_is_square_int64(long long n):
+    """
+    return whether n is a perfect square
+    """
+
+    cdef:
+        long long s
+
+    if n < 0:
+        return 0
+
+    s = <long long>sqrt(n)
+    if s * s == n:
+        return 1
+    else:
+        return 0
+
+def _c_is_square_uint64(unsigned long long n):
+    """
+    return whether n is a perfect square
+    """
+
+    cdef:
+        unsigned long long s = <unsigned long long>sqrt(n)
+
+    if s * s == n:
+        return 1
+    else:
+        return 0
+    
 def _c_sum_mod(unsigned long long n):
     """
     return n%2 + n%3 + ... + n%(n-1)
