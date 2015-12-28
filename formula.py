@@ -5,7 +5,7 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
-    sqrt, is_square, gcd, ggcd 
+    sqrt, is_square, iroot, gcd, ggcd 
     factorial, fact_mod, cprod
     sum_mod, pow_mod, iter_associate
     legendre_symbol
@@ -25,7 +25,7 @@ Function list:
 from math import sqrt
 
 try:
-    from gmpy2 import is_square, factorial, gcd
+    from gmpy2 import is_square, factorial, gcd, iroot
     from gmpy2 import powmod as pow_mod
 except:
     from fractions import gcd
