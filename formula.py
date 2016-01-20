@@ -23,6 +23,7 @@ Function list:
 """
 
 from math import sqrt
+from collections import deque
 
 try:
     from gmpy2 import is_square, factorial, gcd, iroot
