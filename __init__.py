@@ -44,8 +44,8 @@ from . combinatoric import (
 )
 
 from . formula import (
-    sqrt, is_square, iroot, gcd, ggcd,
-    factorial, fact_mod, cprod,
+    sqrt, is_square, isqrt, iroot, gcd, ggcd,
+    fac, fac_mod, cprod,
     sum_mod, pow_mod, legendre_symbol,
     padic, max_subarray,
 

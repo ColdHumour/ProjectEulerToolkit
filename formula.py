@@ -6,7 +6,7 @@ formula.py
 Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, iroot, gcd, ggcd 
-    factorial, fact_mod, cprod
+    fac, fac_mod, cprod
     sum_mod, pow_mod, iter_associate
     legendre_symbol
     padic, max_subarray
@@ -26,13 +26,13 @@ from math import sqrt
 from collections import deque
 
 try:
-    from gmpy2 import is_square, factorial, gcd, iroot
+    from gmpy2 import is_square, fac, gcd, isqrt, iroot
     from gmpy2 import powmod as pow_mod
 except:
     from fractions import gcd
     pow_mod = pow
     is_square = None
-    factorial = None
+    fac = None
 
 try:
     from . ext._formula import _c_sum_mod
@@ -64,10 +64,10 @@ def _factorial(n):
         output *= i
     return output
 
-if factorial is None:
-    factorial = _factorial
+if fac is None:
+    fac = _factorial
 
-def fact_mod(n, m):
+def fac_mod(n, m):
     """return n! % m"""
 
     if n < 0:

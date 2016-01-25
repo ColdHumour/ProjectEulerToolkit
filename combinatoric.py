@@ -13,7 +13,7 @@ Function list:
 """
 
 from . prime import primes_list, euler_phi
-from . formula import fact_mod
+from . formula import fac_mod
 
 
 def C(n, k):
@@ -35,9 +35,9 @@ def C_mod(n, k, m):
     if k == 0: return 1
     if k == 1: return n % m
 
-    output = fact_mod(n, m)
+    output = fac_mod(n, m)
     
-    x = (fact_mod(k, m) * fact_mod(n - k, m)) % m
+    x = (fac_mod(k, m) * fac_mod(n - k, m)) % m
     if x:
         t = euler_phi(m)
         output *= pow(x, t-1, m)
@@ -74,13 +74,13 @@ def MP(amounts):
     amounts = [amount1, amount2, ...]
     """
 
-    from ProjectEulerToolkit.formula import factorial
+    from ProjectEulerToolkit.formula import fac
 
     s, p = 0, 1
     for v in amounts:
         s += v
-        p *= int(factorial(v))
-    return int(factorial(s)) / p
+        p *= fac(v)
+    return fac(s) / p
 
 def multiset_permutations(multiset):
     """
