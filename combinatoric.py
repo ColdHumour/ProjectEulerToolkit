@@ -4,10 +4,10 @@
 combinatoric.py
 
 Functions using to dealing with combinatorics problems.
-Function list: 
+Function list:
     C, C_mod, MP
     multiset_permutations, limited_combinations
-    all_partitions, seq_partitions
+    all_subsets, all_partitions, seq_partitions
 
 @author: Jasper Wu
 """
@@ -17,9 +17,12 @@ from . formula import fac_mod
 
 
 def C(n, k):
-    if k > n/2: k = n - k
-    if k == 0: return 1
-    if k == 1: return n
+    if k > n/2:
+        k = n - k
+    if k == 0:
+        return 1
+    if k == 1:
+        return n
 
     output = n
     for i in range(n-1, n-k, -1):
@@ -28,15 +31,19 @@ def C(n, k):
         output /= i
     return output
 
+
 def C_mod(n, k, m):
     """Return C(n, k) % m"""
-    
-    if k > n/2: k = n - k
-    if k == 0: return 1
-    if k == 1: return n % m
+
+    if k > n/2:
+        k = n - k
+    if k == 0:
+        return 1
+    if k == 1:
+        return n % m
 
     output = fac_mod(n, m)
-    
+
     x = (fac_mod(k, m) * fac_mod(n - k, m)) % m
     if x:
         t = euler_phi(m)
@@ -68,6 +75,7 @@ def C_mod(n, k, m):
             output %= m
     return output
 
+
 def MP(amounts):
     """
     Calculate number of permutations of multiset, which defined by
@@ -81,6 +89,7 @@ def MP(amounts):
         s += v
         p *= fac(v)
     return fac(s) / p
+
 
 def multiset_permutations(multiset):
     """
@@ -108,16 +117,13 @@ def multiset_permutations(multiset):
             yield multiset
             yield multiset[::-1]
     else:
-        multiset = sorted(multiset, reverse=True)
-        d = len(multiset) - 1
-        
-        E = [Node(n) for n in multiset]
-        for i,n in enumerate(E[:-1]):
+        E = [Node(n) for n in sorted(multiset, reverse=True)]
+        for i, n in enumerate(E[:-1]):
             n.to = E[i+1]
 
         head, i, afteri = E[0], E[-2], E[-1]
         yield visit(head)
-        
+
         while afteri.to or afteri.val < head.val:
             if afteri.to and i.val >= afteri.to.val:
                 beforek = afteri
@@ -131,14 +137,15 @@ def multiset_permutations(multiset):
             head, afteri = k, i.to
             yield visit(head)
 
+
 def limited_combinations(choices):
     """
     Generate all combinations [x1, x2, ..., xn] which subjected to
     limited choices [[possible choices for xi] for i in 1..n]
-    
+
     e.g. limited_combinations([[1, 2], [3, 4]]) == [[1, 3], [1, 4], [2, 3], [2, 4]]
     """
-    
+
     if len(choices) == 1:
         for x in choices[0]:
             yield [x]
@@ -147,13 +154,36 @@ def limited_combinations(choices):
             for remains in limited_combinations(choices[1:]):
                 yield [x] + remains
 
+
+def all_subsets(fullset, xmin=1, xmax=None):
+    """
+    return all subsets of the fullset, minimum and maximum set size can be specified
+    xmin: minimum subset size
+    xmax: maximum subset size
+
+    e.g. all_subsets([1, 2, 3], 1, None) = [[1], [2], [3], [1, 2], [1, 3], [2, 3], [1, 2, 3]]
+    """
+
+    from itertools import combinations
+
+    if len(fullset) < xmin:
+        raise ValueError("Minimum subset size too large!")
+
+    if xmax is None:
+        xmax = len(fullset)
+
+    for i in range(xmin, xmax+1):
+        for subset in combinations(fullset, i):
+            yield subset
+
+
 def all_partitions(n, s, xmin=1, xmax=None):
     """
-    make n partitions of s goods, output all possible partitions
+    make n partitions of s goods, return all possible partitions
     xmin: minimum partition size
     xmax: maximum partition size
 
-    e.g all_partition(3, 5) == [[1, 1, 3], [1, 2, 2]]
+    e.g. all_partition(3, 5) == [[1, 1, 3], [1, 2, 2]]
     """
 
     if xmax is None:
@@ -174,11 +204,12 @@ def all_partitions(n, s, xmin=1, xmax=None):
                     if result is not None:
                         yield [i] + result
 
+
 def seq_partitions(sequence, p):
     """
     list all permutations of the sequence satisfying given partition p
 
-    e.g seq_partition([1, 2, 3], [1, 2]) == [[[1], [2, 3]], [[2], [1, 3]], [[3], [1, 2]]]
+    e.g. seq_partition([1, 2, 3], [1, 2]) == [[[1], [2, 3]], [[2], [1, 3]], [[3], [1, 2]]]
     """
 
     from itertools import combinations

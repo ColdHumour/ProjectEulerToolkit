@@ -35,11 +35,12 @@ import ext
 # useful functions in current package
 from . combinatoric import (
     C, C_mod, MP,
-    
-    multiset_permutations, 
+
+    multiset_permutations,
     limited_combinations,
-    
-    all_partitions, 
+
+    all_subsets,
+    all_partitions,
     seq_partitions,
 )
 
@@ -53,8 +54,8 @@ from . formula import (
     co_prime_tree,
     stern_brocot_tree,
 
-    rational_continous_frac, 
-    irrational_continous_frac, 
+    rational_continous_frac,
+    irrational_continous_frac,
     continous_frac_convergent,
 )
 
