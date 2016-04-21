@@ -9,7 +9,7 @@ Dependencies:
     itertools
     collections
     cython, Cython
-    
+
     numpy: arrays and matrices
     pulp: linear and non-linear optimization
     gmpy2: integers, rationals, etc.
@@ -65,11 +65,13 @@ from . prime import (
     prime_divisor_decomp,
     all_divisors,
     euler_phi,
+    mobius,
+    mobius_list,
 )
 
 from . utils import (
     timepast,
-    clear_cython_cache
+    clear_cython_cache,
 )
 
 import combinatoric

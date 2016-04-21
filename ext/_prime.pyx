@@ -18,13 +18,13 @@ from ProjectEulerToolkit.ext._formula cimport _c_pow
 
 
 def _c_primes_list(unsigned long long n):
-    """Return primes list for primes < n."""
+    """return primes list for primes < n"""
     
     cdef:
         cnp.ndarray[short, ndim=1] sieve = np.ones(n/3 + (n%6==2), 
                                                    dtype=np.int16)
         unsigned long long i, k
-        unsigned long long imax = <unsigned long long>sqrt(n)
+        unsigned long long imax = <unsigned long long>sqrt(<double>n)
         
     for i in range(1, imax/3+1):
         if sieve[i]:
@@ -32,3 +32,19 @@ def _c_primes_list(unsigned long long n):
             sieve[       k*k/3     ::2*k] = 0
             sieve[k*(k-2*(i&1)+4)/3::2*k] = 0
     return np.r_[2, 3, (3 * np.nonzero(sieve)[0][1:] + 1) | 1]
+
+
+def _c_mobius_list(unsigned long long n):
+    """return mobius function mu(k) for 0 <= k < n"""
+
+    cdef:
+        cnp.ndarray[short, ndim=1] sieve = np.ones(n, dtype=np.int16)
+        cnp.ndarray[long long, ndim=1] plist
+        unsigned long long p
+        unsigned long long pmax = <unsigned long long>sqrt(<double>n)
+
+    plist = _c_primes_list(pmax)
+    for p in plist:
+        sieve[::p] *= -1
+        sieve[::p*p] = 0
+    return sieve
