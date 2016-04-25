@@ -111,11 +111,21 @@ def _mobius_list(n):
     """return mobius function mu(k) for 0 <= k <= n"""
 
     plist = primes_list(isqrt(n)+1)
-    mlist = np.ones(n+1, dtype=np.int16)
+    mlist = np.ones(n+1, dtype=np.int64)
 
     for p in plist:
-        mlist[::p] *= -1
+        mlist[::p] *= -p
         mlist[::p*p] = 0
+
+    for i in range(1, n+1):
+        if mlist[i]:
+            if abs(mlist[i]) < i:
+                mlist[i] *= -1
+
+            if mlist[i] > 0:
+                mlist[i] = 1
+            else:
+                mlist[i] = -1
     return mlist
 
 if mobius_list is None:
