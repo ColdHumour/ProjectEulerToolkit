@@ -17,9 +17,7 @@ from libc.math cimport sqrt, pow
 cdef unsigned long long _c_pow(unsigned long long a, 
                                unsigned long long b, 
                                unsigned long long n):
-    """
-    return (a ** b) % n, for other pyx only
-    """
+    """return (a ** b) % n, for other pyx only"""
     
     cdef unsigned long long r
 
@@ -38,10 +36,26 @@ cdef unsigned long long _c_pow(unsigned long long a,
     r %= n
     return r
 
+def _c_isqrt_int64(long long n):
+    """return int(sqrt(n))"""
+
+    cdef:
+        long long s
+
+    s = <long long>sqrt(<double>n)
+    return s
+
+def _c_isqrt_uint64(unsigned long long n):
+    """return int(sqrt(n))"""
+
+    cdef:
+        unsigned long long s
+
+    s = <unsigned long long>sqrt(<double>n)
+    return s
+
 def _c_is_square_int64(long long n):
-    """
-    return whether n is a perfect square
-    """
+    """return whether n is a perfect square"""
 
     cdef:
         long long s
@@ -49,7 +63,7 @@ def _c_is_square_int64(long long n):
     if n < 0:
         return 0
 
-    s = <long long>sqrt(n)
+    s = <long long>sqrt(<double>n)
     if s * s == n:
         return 1
     else:
@@ -61,7 +75,7 @@ def _c_is_square_uint64(unsigned long long n):
     """
 
     cdef:
-        unsigned long long s = <unsigned long long>sqrt(n)
+        unsigned long long s = <unsigned long long>sqrt(<double>n)
 
     if s * s == n:
         return 1
@@ -74,7 +88,7 @@ def _c_sum_mod(unsigned long long n):
     """
     
     cdef:
-        unsigned long long s = 0, i = 0, imax = <unsigned long long>sqrt(n+1)
+        unsigned long long s = 0, i = 0, imax = <unsigned long long>sqrt(<double>n+1)
         unsigned long long a, b, c
     
     imax = (imax + 1) / 2
