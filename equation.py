@@ -4,9 +4,10 @@
 equation.py
 
 Functions using to solve various equations.
-Function list: 
+Function list:
     linear_modulo_equation
     square_modulo_prime_equation
+    chinese_remainder
     generalized_pell_equation_base
     generalized_pell_equation_generator
     gauss_jordan_elimination
@@ -18,7 +19,7 @@ Function list:
 import numpy as np
 
 from . formula import (
-    gcd, sqrt,
+    gcd, sqrt, cprod,
     is_square,
     legendre_symbol,
 )
@@ -104,6 +105,27 @@ def square_modulo_prime_equation(n, p):
     if 2 * r + 1 > p:
         r = p - r
     return r
+
+def chinese_remainder(equation_sets):
+    """
+    return the only solution 0 <= x < (m_1 * m_2 * ... * m_r) for the set of simultaneous congruences:
+        x = a_i (mod m_i),  1 <= i <= r
+    where m_i are pairwise relatively prime
+    equation_sets must in the form [(a_1, m_1), (a2, m_2), ...]
+    """
+
+    from gmpy2 import invert
+
+    _, ms = zip(*equation_sets)
+    M = cprod(ms)
+
+    x = 0
+    for ai, mi in equation_sets:
+        u = M // mi
+        x += (ai * u * invert(u, mi)) % M
+        x %= M
+    return x
+
 
 def _pqa(d, p, q):
     """
