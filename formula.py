@@ -64,7 +64,7 @@ def _factorial(n):
         return 1
 
     output = 1
-    for i in xrange(2, n+1):
+    for i in range(2, n+1):
         output *= i
     return output
 
@@ -164,7 +164,7 @@ def _sum_mod(n):
         b = n % (n/i) if i > 1 else 1
         c = (a-b) / i + 1
         sm += b*c + i*(c - 1)*c / 2
-    sm += sum(n % j for j in xrange(2, n/(i+1) + 1))
+    sm += sum(n % j for j in range(2, n/(i+1) + 1))
     return sm
 
 if sum_mod is None:
@@ -180,7 +180,7 @@ def fac_mod(n, m):
         return 1
 
     output = 1
-    for i in xrange(2, n+1):
+    for i in range(2, n+1):
         output *= i
         output %= m
     return output
@@ -304,7 +304,7 @@ def irrational_continous_frac(d, p=0, q=1, limit=100):
 
     a = int((p + sd) / q)
     repetend, pairspq = [a], []
-    for _ in xrange(limit):
+    for _ in range(limit):
         p = Fraction(a*q - p, 1)
         q = Fraction(d - p*p, q)
         a = int((p + sd) / q)

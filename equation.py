@@ -91,7 +91,7 @@ def square_modulo_prime_equation(n, p):
         t = pow(n, q, p)
         while t > 1:
             t2 = t
-            for i in xrange(1, s):
+            for i in range(1, s):
                 t2 = (t2 * t2) % p
                 if t2 == 1:
                     break
@@ -203,7 +203,7 @@ def generalized_pell_equation_base(d, n=1):
             m = n / (f*f)
             ma = abs(m)
             mb = int(ma/2)
-            for z in xrange(-mb-(ma&1)+1, mb+1):
+            for z in range(-mb-(ma&1)+1, mb+1):
                 if z*z % abs(m) == d % abs(m):
                     if (f, m) in zdict:
                         zdict[(f, m)].append(z)

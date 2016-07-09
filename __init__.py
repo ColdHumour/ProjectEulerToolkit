@@ -29,7 +29,7 @@ for pkg in DEPENDENCIES:
 
 
 # cython extensions
-import ext
+from . import ext
 
 
 # useful functions in current package
@@ -73,13 +73,6 @@ from . utils import (
     timepast,
     clear_cython_cache,
 )
-
-import combinatoric
-import equation
-import formula
-import generator
-import prime
-import utils
 
 
 __all__ = [

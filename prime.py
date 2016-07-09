@@ -40,7 +40,7 @@ def _primes_list(n):
     """Input n>=6, Returns a array of primes, 2 <= p < n"""
 
     sieve = np.ones(n/3 + (n % 6 == 2), dtype=np.bool)
-    for i in xrange(1, int(sqrt(n))/3+1):
+    for i in range(1, int(sqrt(n))//3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
             sieve[k*k//3::2*k] = False
@@ -63,7 +63,7 @@ def _mr_isWitness(possibleWitness, p, exponent, remainder):
     possibleWitness = pow(possibleWitness, remainder, p)
     if possibleWitness == 1 or possibleWitness == p - 1:
         return False
-    for _ in xrange(exponent):
+    for _ in range(exponent):
         possibleWitness = pow(possibleWitness, 2, p)
         if possibleWitness == p - 1:
             return False
@@ -71,7 +71,7 @@ def _mr_isWitness(possibleWitness, p, exponent, remainder):
 
 def _aks_expand_x_1(n):
     c = 1
-    for i in xrange(n/2 + 1):
+    for i in range(n/2 + 1):
         c *= (n-i) / (i+1)
         yield c
 
@@ -92,7 +92,7 @@ def _is_prime(p, accuracy=100, how='mr'):
     if how == 'mr':
         exponent, remainder = _mr_decompose(p - 1)
 
-        for _ in xrange(accuracy):
+        for _ in range(accuracy):
             possibleWitness = random.randint(2, p - 2)
             if _mr_isWitness(possibleWitness, p, exponent, remainder):
                 return False

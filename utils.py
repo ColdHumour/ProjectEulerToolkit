@@ -20,7 +20,7 @@ def timepast(func):
     def _deco(*args, **kwargs):
         t = time.time()
         ret = func(*args, **kwargs)
-        print "Time consumed by {0}(): {1}s".format(func.__name__, round(time.time() - t, 2))
+        print("Time consumed by {0}(): {1}s".format(func.__name__, round(time.time() - t, 2)))
         return ret
     return _deco
 
