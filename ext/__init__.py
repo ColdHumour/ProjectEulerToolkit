@@ -15,8 +15,8 @@ import os
 import shutil
 
 try:
-    import _formula
-    import _prime
+    from . import _formula
+    from . import _prime
 except:
     CUR_DIR = os.getcwd()
     EXT_DIR = os.path.dirname(os.path.abspath(__file__))
