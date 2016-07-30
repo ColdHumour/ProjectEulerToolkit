@@ -17,6 +17,8 @@ from . formula import fac_mod
 
 
 def C(n, k):
+    if k > n:
+        return 0
     if k > n/2:
         k = n - k
     if k == 0:
@@ -28,14 +30,16 @@ def C(n, k):
     for i in range(n-1, n-k, -1):
         output *= i
     for i in range(2, k+1):
-        output /= i
+        output //= i
     return output
 
 
 def C_mod(n, k, m):
     """Return C(n, k) % m"""
 
-    if k > n/2:
+    if k > n:
+        return 0
+    if k > n//2:
         k = n - k
     if k == 0:
         return 1
@@ -88,7 +92,7 @@ def MP(amounts):
     for v in amounts:
         s += v
         p *= fac(v)
-    return fac(s) / p
+    return fac(s) // p
 
 
 def multiset_permutations(multiset):
@@ -190,7 +194,7 @@ def all_partitions(n, s, xmin=1, xmax=None):
         if n == 1:
             yield [s]
         else:
-            for i in range(xmin, s / n + 1):
+            for i in range(xmin, s // n + 1):
                 for result in all_partitions(n-1, s-i, i, xmax):
                     yield [i] + result
     else:
@@ -199,7 +203,7 @@ def all_partitions(n, s, xmin=1, xmax=None):
         elif n == 1:
             yield [s]
         else:
-            for i in range(max(xmin, s-(n-1)*xmax), min(s/n, xmax)+1):
+            for i in range(max(xmin, s-(n-1)*xmax), min(s//n, xmax)+1):
                 for result in all_partitions(n-1, s-i, i, xmax):
                     if result is not None:
                         yield [i] + result
