@@ -196,7 +196,7 @@ def iter_associate(f, x, n):
     while n:
         if n % 2:
             r = f(x, r)
-        n /= 2
+        n >>= 1
         x = f(x, x)
     return r
 
@@ -208,7 +208,7 @@ def legendre_symbol(a, p):
     Details see: http://en.wikipedia.org/wiki/Legendre_symbol
     """
 
-    ls = pow(a, (p - 1)/2, p)
+    ls = pow(a, (p - 1) >> 1, p)
     if ls == p - 1:
         return -1
     return ls

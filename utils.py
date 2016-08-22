@@ -25,7 +25,7 @@ def timepast(func):
     return _deco
 
 
-def clear_cython_cache(url="C:\\Users\\yudi.wu\\.ipython\\cython"):
+def clear_cython_cache(url="C:\\Users\\ColdHumour\\.ipython\\cython"):
     if os.path.exists(url):
         for f in os.listdir(url):
             filepath = os.path.join(url, f)

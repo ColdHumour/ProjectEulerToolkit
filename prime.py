@@ -179,24 +179,24 @@ def prime_divisor_decomp(n, rand=False):
             clist.append(c)
 
         if n == 1:
-            return zip(dlist, clist)
+            return list(zip(dlist, clist))
 
         if n in P10Kset:  # set的in操作复杂度<=O(log(n))
             dlist.append(n)
             clist.append(1)
-            return zip(dlist, clist)
+            return list(zip(dlist, clist))
 
         n = int(n)
 
     # 然后用Pollard rho方法生成素因子
     while 1:
         if n == 1:
-            return zip(dlist, clist)
+            return list(zip(dlist, clist))
 
         if is_prime(n):
             dlist.append(n)
             clist.append(1)
-            return zip(dlist, clist)
+            return list(zip(dlist, clist))
 
         p = _pollard_rho(n, rand)
         c = 0

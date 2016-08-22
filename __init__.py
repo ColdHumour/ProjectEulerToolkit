@@ -74,6 +74,8 @@ from . utils import (
     clear_cython_cache,
 )
 
+from . import equation
+
 
 __all__ = [
     'combinatoric',

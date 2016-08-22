@@ -38,14 +38,14 @@ def linear_modulo_equation(a, b, n):
     if b % d:
         raise ValueError('No Solution for ({} * x) % {} = {}!'.format(a, n, b))
 
-    aa = a / d
-    bb = b / d
-    nn = n / d
+    aa = a // d
+    bb = b // d
+    nn = n // d
 
     x0, x1, p, q = 0, 1, aa, nn
     while q != 1:
         p, q = q, p % q
-        x0, x1 = x1, x0 - p / q * x1
+        x0, x1 = x1, x0 - p // q * x1
     if (aa * x0) % nn != 1:
         x0 = -x0
     if x0 < 0:
@@ -75,7 +75,7 @@ def square_modulo_prime_equation(n, p):
     elif legendre_symbol(n, p) != 1:
         raise ValueError("n is not a quadratic residue of p!")
     elif p % 4 == 3:
-        r = pow(n, (p + 1)/4, p)
+        r = pow(n, (p + 1) >> 2, p)
     else:
         z = 1
         while legendre_symbol(z, p) != -1:
@@ -87,7 +87,7 @@ def square_modulo_prime_equation(n, p):
             s += 1
 
         c = pow(z, q, p)
-        r = pow(n, (q + 1)/2, p)
+        r = pow(n, (q + 1) >> 1, p)
         t = pow(n, q, p)
         while t > 1:
             t2 = t
@@ -137,7 +137,7 @@ def _pqa(d, p, q):
     X, Y, PQ = [q, a*q - p], [0, 1], [(p, q)]
     while 1:
         p = a*q - p
-        q = (d - p*p) / q
+        q = (d - p*p) // q
         a = int((p + sd) / q)
 
         if i == 0 and (p, q) in PQ:
@@ -198,9 +198,9 @@ def generalized_pell_equation_base(d, n=1):
     # Here we just use brute-search to find all value of z.
 
     f, zdict = 1, {}
-    while f <= sqrt(abs(n)/2):
+    while 2*f*f <= abs(n):
         if n % (f*f) == 0:
-            m = n / (f*f)
+            m = n // (f*f)
             ma = abs(m)
             mb = int(ma/2)
             for z in range(-mb-(ma&1)+1, mb+1):
