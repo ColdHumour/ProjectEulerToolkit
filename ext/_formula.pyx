@@ -28,6 +28,7 @@ cdef unsigned long long _c_pow(unsigned long long a,
     if r == 0 or r == 1:
         return r
     
+    r = 1
     while b:
         if b & 1:
             r = (r * a) % n
