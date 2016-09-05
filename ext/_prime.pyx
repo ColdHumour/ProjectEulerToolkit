@@ -35,13 +35,13 @@ def _c_primes_list(unsigned long long n):
 
 
 def _c_mobius_list(long long n):
-    """return mobius function mu(k) for 0 <= k < n"""
+    """return mobius function mu(k) for 0 <= k <= n"""
 
     cdef:
         cnp.ndarray[long long, ndim=1] sieve = np.ones(n+1, dtype=np.int64)
         cnp.ndarray[long long, ndim=1] plist
         long long p, m
-        long long pmax = <long long>sqrt(<double>n+1)
+        long long pmax = <long long>sqrt(<double>n) + 1
 
     plist = _c_primes_list(pmax)
     for p in plist:

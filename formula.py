@@ -8,7 +8,6 @@ Function list:
     sqrt, is_square, iroot, gcd, ggcd
     fac, fac_mod, cprod
     sum_mod, pow_mod, iter_associate
-    mobius, mobius_list
     legendre_symbol
     padic, max_subarray
 
