@@ -322,6 +322,8 @@ def continous_frac_convergent(cfrac):
     given continued fraction, return series of convergents
     """
 
+    from fractions import Fraction
+
     if len(cfrac) < 2:
         raise ValueError("Continued fraction must longer than 2!")
 
