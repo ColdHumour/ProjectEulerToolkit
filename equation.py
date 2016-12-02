@@ -116,7 +116,7 @@ def chinese_remainder(equation_sets):
 
     from gmpy2 import invert
 
-    _, ms = zip(*equation_sets)
+    _, ms = list(zip(*equation_sets))
     M = cprod(ms)
 
     x = 0
@@ -144,7 +144,7 @@ def _pqa(d, p, q):
             l = len(PQ) - PQ.index((p, q))
             i = 2 * len(PQ) - PQ.index((p, q))
         if len(PQ) == i:
-            return l, X[1:-1], Y[1:-1], zip(*PQ)[1][1:]
+            return l, X[1:-1], Y[1:-1], list(zip(*PQ)[1][1:])
 
         X.append(a * X[-1] + X[-2])
         Y.append(a * Y[-1] + Y[-2])
@@ -177,8 +177,7 @@ def generalized_pell_equation_base(d, n=1):
             if n == 1:
                 x, y = X[l-1], Y[l-1]
             else:
-                x, y = 0, 0
-
+                return []
         return [(x, y)]
 
     # Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
@@ -269,6 +268,9 @@ def generalized_pell_equation_base(d, n=1):
 def generalized_pell_equation_generator(d, n=1):
     r, s = generalized_pell_equation_base(d, 1)[0]
     sols = generalized_pell_equation_base(d, n)
+
+    if not sols:
+        raise ValueError("No solution for x^2 - {} y^2 = {}.".format(d, n))
 
     while True:
         for sol in sols:
