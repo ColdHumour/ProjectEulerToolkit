@@ -144,7 +144,7 @@ def _pqa(d, p, q):
             l = len(PQ) - PQ.index((p, q))
             i = 2 * len(PQ) - PQ.index((p, q))
         if len(PQ) == i:
-            return l, X[1:-1], Y[1:-1], list(zip(*PQ)[1][1:])
+            return l, X[1:-1], Y[1:-1], list(zip(*PQ))[1][1:]
 
         X.append(a * X[-1] + X[-2])
         Y.append(a * Y[-1] + Y[-2])
@@ -177,7 +177,7 @@ def generalized_pell_equation_base(d, n=1):
             if n == 1:
                 x, y = X[l-1], Y[l-1]
             else:
-                return []
+                x, y = 0, 0
         return [(x, y)]
 
     # Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
@@ -212,7 +212,7 @@ def generalized_pell_equation_base(d, n=1):
 
     f = int(sqrt(abs(n)))
     if f*f == abs(n):
-        zdict[(f, n/abs(n))] = [0]
+        zdict[(f, n//abs(n))] = [0]
 
     # 4. For each z according to each (f, m), run pqa(d, z, abs(m)).
 
@@ -237,7 +237,7 @@ def generalized_pell_equation_base(d, n=1):
     for (f, m), zlist in zdict.items():
         for z in zlist:
             l, X, Y, Q = _pqa(d, z, abs(m))
-            for i,q in enumerate(Q):
+            for i, q in enumerate(Q):
                 if q in (-1, 1):
                     x, y = X[i], Y[i]
                     diff = x**2 - d * y**2
@@ -269,7 +269,7 @@ def generalized_pell_equation_generator(d, n=1):
     r, s = generalized_pell_equation_base(d, 1)[0]
     sols = generalized_pell_equation_base(d, n)
 
-    if not sols:
+    if not sols or sols == [(0, 0)]:
         raise ValueError("No solution for x^2 - {} y^2 = {}.".format(d, n))
 
     while True:
