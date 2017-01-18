@@ -7,7 +7,7 @@ Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, iroot, gcd, ggcd
     fac, fac_mod, cprod
-    sum_mod, pow_mod, iter_associate
+    sum_mod, pow_mod, mat_pow_mod, iter_associate
     legendre_symbol
     padic, max_subarray
 
@@ -22,6 +22,7 @@ Function list:
 @author: Jasper Wu
 """
 
+import numpy as np
 from math import sqrt
 from collections import deque
 
@@ -183,6 +184,28 @@ def fac_mod(n, m):
         output *= i
         output %= m
     return output
+
+
+def mat_pow_mod(mat, n, m=0):
+    """return (mat^n) % m"""
+
+    if n < 0:
+        raise ValueError("power must be positive!")
+
+    d = len(mat)
+    res = np.eye(d, dtype=np.int64)
+    while n:
+        if n & 1:
+            if m:
+                res = np.mod(np.dot(res, mat), m)
+            else:
+                res = np.dot(res, mat)
+        if m:
+            mat = np.mod(np.dot(mat, mat), m)
+        else:
+            mat = np.dot(mat, mat)
+        n >>= 1
+    return res
 
 
 def iter_associate(f, x, n):

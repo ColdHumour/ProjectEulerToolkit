@@ -47,7 +47,7 @@ from . combinatoric import (
 from . formula import (
     sqrt, is_square, isqrt, iroot, gcd, ggcd,
     fac, fac_mod, cprod,
-    sum_mod, pow_mod, legendre_symbol,
+    sum_mod, pow_mod, mat_pow_mod, legendre_symbol,
     padic, max_subarray,
 
     pythag_triple_tree,
