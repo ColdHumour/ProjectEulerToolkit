@@ -13,7 +13,7 @@ Function list:
 """
 
 from . prime import primes_list, euler_phi
-from . formula import fac_mod
+from . formula import gcd, fac_mod
 
 
 def C(n, k):
@@ -49,7 +49,7 @@ def C_mod(n, k, m):
     output = fac_mod(n, m)
 
     x = (fac_mod(k, m) * fac_mod(n - k, m)) % m
-    if x:
+    if x and gcd(x, m) == 1:
         t = euler_phi(m)
         output *= pow(x, t-1, m)
         output %= m
