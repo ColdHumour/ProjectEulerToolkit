@@ -39,14 +39,23 @@ cdef unsigned long long c_pow_uint64(unsigned long long a, unsigned long long b,
     if r == 0 or r == 1:
         return r
 
-    r = 1
-    while b:
-        if b & 1:
-            r = (r * a) % m
-        b >>= 1
-        a = (a * a) % m
-    r %= m
-    return r
+    if b == 0:
+        return 1
+    elif b == 1:
+        return a
+    elif b == 2:
+        return (a * a) % m
+    elif b == 3:
+        return (((a * a) % m) * a) % m
+    else:
+        r = 1
+        while b:
+            if b & 1:
+                r = (r * a) % m
+            b >>= 1
+            a = (a * a) % m
+        r %= m
+        return r
 
 cdef unsigned long long c_isqrt_uint64(unsigned long long n):
     """return the nearest integer of sqrt(n), for cimport only"""

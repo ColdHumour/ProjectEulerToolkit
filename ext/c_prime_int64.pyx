@@ -7,6 +7,7 @@ Cython extension of functions using to dealing with prime-related problems.
 Function list: 
     c_primes_list_int64
     c_mobius_list_int64
+    c_factor_sieve_int64
 
 @author: Jasper Wu
 """
@@ -55,4 +56,18 @@ def c_mobius_list_int64(long long n):
                 sieve[m] = 1
             else:
                 sieve[m] = -1
+    return sieve
+
+
+def c_factor_sieve_int64(long long n):
+    """return factor sieve for 0 <= k <= n"""
+
+    cdef:
+        cnp.ndarray[long long, ndim=1] sieve = np.ones(n+1, dtype=np.int64)
+        long long p
+
+    for p in range(2, n):
+        if p * p > n:
+            break
+        sieve[p*p::p] = p
     return sieve

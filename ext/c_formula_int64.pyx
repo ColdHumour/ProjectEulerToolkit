@@ -39,14 +39,23 @@ cdef long long c_pow_int64(long long a, long long b, long long m):
     if r == 0 or r == 1:
         return r
 
-    r = 1
-    while b:
-        if b & 1:
-            r = (r * a) % m
-        b >>= 1
-        a = (a * a) % m
-    r %= m
-    return r
+    if b == 0:
+        return 1
+    elif b == 1:
+        return a
+    elif b == 2:
+        return (a * a) % m
+    elif b == 3:
+        return (((a * a) % m) * a) % m
+    else:
+        r = 1
+        while b:
+            if b & 1:
+                r = (r * a) % m
+            b >>= 1
+            a = (a * a) % m
+        r %= m
+        return r
 
 cdef long long c_isqrt_int64(long long n):
     """return the nearest integer of sqrt(n), for cimport only"""
