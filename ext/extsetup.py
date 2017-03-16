@@ -9,17 +9,16 @@ import numpy as np
 
 extensions = []
 
-EXT_FILES = ['_formula']
+EXT_FILES = ['c_formula_int64', 'c_formula_uint64']
 for f in EXT_FILES:
     extensions.append(Extension(f, [f + '.pyx']))
 
-EXT_FILES_INC = ['_prime']
+EXT_FILES_INC = ['c_prime_int64', 'c_prime_uint64']
 for f in EXT_FILES_INC:
     extensions.append(Extension(f, [f + '.pyx'],
                                 include_dirs=[np.get_include()]))
 
-
 setup(
     cmdclass={'build_ext': build_ext},
-    ext_modules = cythonize(extensions),
+    ext_modules=cythonize(extensions),
 )

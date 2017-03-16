@@ -5,7 +5,8 @@ _prime.pyx
 
 Cython extension of functions using to dealing with prime-related problems.
 Function list: 
-    _c_primes_list
+    c_primes_list_int64
+    c_mobius_list_int64
 
 @author: Jasper Wu
 """
@@ -13,37 +14,34 @@ Function list:
 import numpy as np
 cimport numpy as cnp
 
-from libc.math cimport sqrt
-from ProjectEulerToolkit.ext._formula cimport _c_pow
+from ProjectEulerToolkit.ext.c_formula_int64 cimport c_isqrt_int64
 
 
-def _c_primes_list(unsigned long long n):
+def c_primes_list_int64(long long n):
     """return primes list for primes < n"""
     
     cdef:
-        cnp.ndarray[short, ndim=1] sieve = np.ones(n/3 + (n%6==2), 
-                                                   dtype=np.int16)
-        unsigned long long i, k
-        unsigned long long imax = <unsigned long long>sqrt(<double>n)
+        cnp.ndarray[short, ndim=1] sieve = np.ones(n//3 + (n%6==2), dtype=np.int16)
+        long long i, k, imax = c_isqrt_int64(n)
         
-    for i in range(1, imax/3+1):
+    for i in range(1, imax//3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
-            sieve[       k*k/3     ::2*k] = 0
-            sieve[k*(k-2*(i&1)+4)/3::2*k] = 0
+            sieve[       k*k//3     ::2*k] = 0
+            sieve[k*(k-2*(i&1)+4)//3::2*k] = 0
     return np.r_[2, 3, (3 * np.nonzero(sieve)[0][1:] + 1) | 1]
 
 
-def _c_mobius_list(long long n):
+def c_mobius_list_int64(long long n):
     """return mobius function mu(k) for 0 <= k <= n"""
 
     cdef:
         cnp.ndarray[long long, ndim=1] sieve = np.ones(n+1, dtype=np.int64)
         cnp.ndarray[long long, ndim=1] plist
         long long p, m
-        long long pmax = <long long>sqrt(<double>n) + 1
+        long long pmax = c_isqrt_int64(n)
 
-    plist = _c_primes_list(pmax)
+    plist = c_primes_list_int64(pmax+1)
     for p in plist:
         sieve[::p] *= -p
         sieve[::p*p] = 0

@@ -297,8 +297,7 @@ def gauss_jordan_elimination(coeffs):
                 for k in range(i+1, d):
                     if abs(coefmat[k, j]) > 0.001:
                         flag = 0
-                        coefmat[k], coefmat[i] = \
-                            deepcopy(coefmat[i]), deepcopy(coefmat[k])
+                        coefmat[k], coefmat[i] = deepcopy(coefmat[i]), deepcopy(coefmat[k])
                         break
                 if flag:
                     j += 1

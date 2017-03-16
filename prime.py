@@ -27,9 +27,9 @@ except:
     is_prime = None
 
 try:
-    from . ext._prime import _c_primes_list, _c_mobius_list
-    primes_list = lambda n: [int(x) for x in _c_primes_list(n)]
-    mobius_list = _c_mobius_list
+    from . ext.c_prime_int64 import c_primes_list_int64, c_mobius_list_int64
+    primes_list = lambda n: [int(x) for x in c_primes_list_int64(n)]
+    mobius_list = c_mobius_list_int64
 except:
     primes_list = None
     mobius_list = None
@@ -39,7 +39,7 @@ except:
 def _primes_list(n):
     """Input n>=6, Returns a array of primes, 2 <= p < n"""
 
-    sieve = np.ones(n/3 + (n % 6 == 2), dtype=np.bool)
+    sieve = np.ones(n//3 + (n % 6 == 2), dtype=np.bool)
     for i in range(1, int(sqrt(n))//3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
@@ -71,8 +71,8 @@ def _mr_isWitness(possibleWitness, p, exponent, remainder):
 
 def _aks_expand_x_1(n):
     c = 1
-    for i in range(n/2 + 1):
-        c *= (n-i) / (i+1)
+    for i in range(n//2 + 1):
+        c *= (n-i) // (i+1)
         yield c
 
 def _is_prime(p, accuracy=100, how='mr'):

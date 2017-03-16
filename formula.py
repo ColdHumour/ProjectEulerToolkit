@@ -38,8 +38,8 @@ except:
     iroot = None
 
 try:
-    from . ext._formula import _c_sum_mod
-    sum_mod = _c_sum_mod
+    from . ext.c_formula_int64 import c_sum_mod_int64
+    sum_mod = c_sum_mod_int64
 except:
     sum_mod = None
 
@@ -159,12 +159,12 @@ def _sum_mod(n):
     from itertools import takewhile, count
 
     sm = i = 0
-    for i in takewhile(lambda x: n/x - n/(x+1) > 4, count(1)):
-        a = n % (n/(i+1) + 1)
-        b = n % (n/i) if i > 1 else 1
-        c = (a-b) / i + 1
-        sm += b*c + i*(c - 1)*c / 2
-    sm += sum(n % j for j in range(2, n/(i+1) + 1))
+    for i in takewhile(lambda x: n//x - n//(x+1) > 4, count(1)):
+        a = n % (n//(i+1) + 1)
+        b = n % (n//i) if i > 1 else 1
+        c = (a-b) // i + 1
+        sm += b*c + i*(c - 1)*c // 2
+    sm += sum(n % j for j in range(2, n//(i+1) + 1))
     return sm
 
 if sum_mod is None:
@@ -303,7 +303,7 @@ def rational_continous_frac(p, q=1, limit=100):
 
     p, q, cfrac = int(p), int(q), []
     while p % q:
-        cfrac.append(p/q)
+        cfrac.append(p//q)
         p, q = q, p % q
     if q:
         cfrac.append(p)

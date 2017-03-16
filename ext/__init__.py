@@ -3,10 +3,10 @@
 """
 Cython extensions
 File list:
-    _formula.pxd
-    _formula.pyx
-    _prime.pxd
-    _prime.pyx
+    c_formula_int64.pyx/pxd -> c_formula_int64.pyd
+    c_formula_uint64.pyx/pxd -> c_formula_uint64.pyd
+    c_prime_int64.pyx/pxd -> c_prime_int64.pyd
+    c_prime_uint64.pyx/pxd -> c_prime_uint64.pyd
 
 @author: Jasper Wu
 """
@@ -15,8 +15,12 @@ import os
 import shutil
 
 try:
-    from . import _formula
-    from . import _prime
+    from . import (
+        c_formula_int64,
+        c_formula_uint64,
+        c_prime_int64,
+        c_prime_uint64,
+    )
 except:
     CUR_DIR = os.getcwd()
     EXT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,8 +42,12 @@ except:
         # change back to workdir
         os.chdir(CUR_DIR)
 
-        from . import _formula
-        from . import _prime
+        from . import (
+            c_formula_int64,
+            c_formula_uint64,
+            c_prime_int64,
+            c_prime_uint64,
+        )
     else:
         # change back to workdir
         os.chdir(CUR_DIR)
