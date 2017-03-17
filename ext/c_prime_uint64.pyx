@@ -69,5 +69,6 @@ def c_factor_sieve_uint64(unsigned long long n):
     for p in range(2, n):
         if p * p > n:
             break
-        sieve[p*p::p] = p
+        if sieve[p] == 1:
+            sieve[p*p::p] = p
     return sieve

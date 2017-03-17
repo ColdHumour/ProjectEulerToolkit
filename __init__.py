@@ -67,6 +67,7 @@ from . prime import (
     euler_phi,
     mobius,
     mobius_list,
+    factor_sieve,
 )
 
 from . utils import (

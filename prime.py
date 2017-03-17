@@ -11,6 +11,7 @@ Function list:
     all_divisors
     euler_phi
     mobius, mobius_list
+    factor_sieve
 
 @author: Jasper Wu
 """
@@ -27,12 +28,14 @@ except:
     is_prime = None
 
 try:
-    from . ext.c_prime_int64 import c_primes_list_int64, c_mobius_list_int64
+    from . ext.c_prime_int64 import c_primes_list_int64, c_mobius_list_int64, c_factor_sieve_int64
     primes_list = lambda n: [int(x) for x in c_primes_list_int64(n)]
     mobius_list = c_mobius_list_int64
+    factor_sieve = c_factor_sieve_int64
 except:
     primes_list = None
     mobius_list = None
+    factor_sieve = None
 
 
 # Supplementry Implementation
@@ -258,3 +261,18 @@ def mobius(n):
         return -1
     else:
         return 1
+
+
+def _factor_sieve(n):
+    """return factor sieve <= n"""
+
+    fac = np.ones(n+1, dtype=np.int64)
+    for p in range(2, n):
+        if p * p > n:
+            break
+        if fac[p] == 1:
+            fac[p*p::p] = p
+    return fac
+
+if factor_sieve is None:
+    factor_sieve = _factor_sieve
