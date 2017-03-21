@@ -35,9 +35,9 @@ cdef unsigned long long c_pow_uint64(unsigned long long a, unsigned long long b,
     if m == 1:
         return a**b
 
-    r = a % m
-    if r == 0 or r == 1:
-        return r
+    a %= m
+    if a == 0 or a == 1:
+        return a
 
     if b == 0:
         return 1
