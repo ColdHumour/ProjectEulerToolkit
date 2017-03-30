@@ -19,7 +19,7 @@ Dependencies:
 
 
 # dependency test
-DEPENDENCIES = ['cython', 'numpy', 'pulp', 'gmpy2']
+DEPENDENCIES = ['cython', 'numpy', 'gmpy2']
 
 for pkg in DEPENDENCIES:
     try:
