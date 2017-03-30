@@ -19,6 +19,16 @@ Dependencies:
 
 
 # dependency test
+#   - cython
+#   - numpy
+#   - gmpy2
+#
+# other dependencies possibly used
+#   - scipy
+#   - sympy
+#   - pulp: https://pythonhosted.org/PuLP/
+#   - ortools: https://developers.google.com/optimization/
+
 DEPENDENCIES = ['cython', 'numpy', 'gmpy2']
 
 for pkg in DEPENDENCIES:
