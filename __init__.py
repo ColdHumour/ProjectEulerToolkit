@@ -19,17 +19,8 @@ Dependencies:
 
 
 # dependency test
-#   - cython
-#   - numpy
-#   - gmpy2
-#
-# other dependencies possibly used
-#   - scipy
-#   - sympy
-#   - pulp: https://pythonhosted.org/PuLP/
-#   - ortools: https://developers.google.com/optimization/
-
-DEPENDENCIES = ['cython', 'numpy', 'gmpy2']
+# default: numpy, scipy, matplotlib, pandas
+DEPENDENCIES = ['cython', 'gmpy2', 'ortools']
 
 for pkg in DEPENDENCIES:
     try:
@@ -82,6 +73,7 @@ from . prime import (
 
 from . utils import (
     timepast,
+    memoize,
     clear_cython_cache,
 )
 
