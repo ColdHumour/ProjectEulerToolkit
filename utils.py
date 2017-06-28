@@ -4,8 +4,9 @@
 utils.py
 
 Utility functions using to analysis and evaluate solutions
-Function list: 
+Function list:
     timepast
+    memoize
     clear_cython_cache
 
 @author: Jasper Wu
@@ -25,7 +26,21 @@ def timepast(func):
     return _deco
 
 
-def clear_cython_cache(url="C:\\Users\\ColdHumour\\.ipython\\cython"):
+def memoize(cache=None, key=lambda x: x):
+    if cache is None:
+        raise ValueError("cache must be an existed dict!")
+
+    def _deco1(func):
+        def _deco2(*args, **kw):
+            idx = key(args)
+            if idx not in cache:
+                cache[idx] = func(*args, **kw)
+            return cache[idx]
+        return _deco2
+    return _deco1
+
+
+def clear_cython_cache(url="C:\\Users\\wuyd\\.ipython\\cython"):
     if os.path.exists(url):
         for f in os.listdir(url):
             filepath = os.path.join(url, f)
