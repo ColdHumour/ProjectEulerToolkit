@@ -58,14 +58,19 @@ cdef long long c_pow_int64(long long a, long long b, long long m):
         return r
 
 cdef long long c_isqrt_int64(long long n):
-    """return the nearest integer of sqrt(n), for cimport only"""
+    """
+    return the nearest integer of sqrt(n), for cimport only
+    for algorithm, see: http://www.codecodex.com/wiki/Calculate_an_integer_square_root
+    """
+    
+
     cdef:
         long long res = 0
         long long one
 
-    if n > (1 << 32):
+    if n >= (1 << 32):
         one = 1 << 62
-    elif n > (1 << 16):
+    elif n >= (1 << 16):
         one = 1 << 30
     else:
         one = 1 << 14

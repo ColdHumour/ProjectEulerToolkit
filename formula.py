@@ -5,7 +5,7 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
-    sqrt, is_square, iroot, gcd, ggcd
+    sqrt, is_square, isqrt, iroot, gcd, ggcd
     fac, fac_mod, cprod
     sum_mod, pow_mod, mat_pow_mod, iter_associate
     legendre_symbol

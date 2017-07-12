@@ -8,20 +8,23 @@ Function list:
     timepast
     memoize
     clear_cython_cache
+    find_solution
 
 @author: Jasper Wu
 """
 
 import os
 import shutil
+import webbrowser
 
 
 def timepast(func):
     import time
+
     def _deco(*args, **kwargs):
         t = time.time()
         ret = func(*args, **kwargs)
-        print("Time consumed by {0}(): {1}s".format(func.__name__, round(time.time() - t, 2)))
+        print("Time consumed by {0}(): {1:.2f}s".format(func.__name__, time.time() - t))
         return ret
     return _deco
 
@@ -50,3 +53,11 @@ def clear_cython_cache(url="C:\\Users\\wuyd\\.ipython\\cython"):
                 shutil.rmtree(filepath)
     else:
         raise ValueError("Bad cython cache URL!")
+
+
+def find_solution(id):
+    if id % 10 == 0:
+        lid, rid = id-9, id
+    else:
+        lid, rid = id // 10 * 10 + 1, id // 10 * 10 + 10
+    webbrowser.open('http://htmlpreview.github.io/?https://github.com/ColdHumour/ProjectEulerSolutions/blob/master/Solutions%20{}-{}.html#{}'.format(lid, rid, id))
