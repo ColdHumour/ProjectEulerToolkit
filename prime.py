@@ -136,7 +136,7 @@ if mobius_list is None:
 
 
 # Useful Functions
-def _pollard_rho(n, rand=False):
+def _pollard_rho(n, rand=True):
     """
     Pollard rho prime factorization algorithm
     https://en.wikipedia.org/wiki/Pollard's_rho_algorithm
@@ -159,7 +159,7 @@ def _pollard_rho(n, rand=False):
 
 P10K = primes_list(10000)
 P10Kset = set(P10K)
-def prime_divisor_decomp(n, rand=False):
+def prime_divisor_decomp(n, rand=True):
     dlist, clist = [], []
 
     # 奇偶性判断
