@@ -10,6 +10,7 @@ Function list:
     c_isqrt_int64
     c_is_square_int64
     c_sum_mod_int64
+    c_sum_power_series_mod_int64
 
 @author: Jasper Wu
 """
@@ -120,21 +121,50 @@ cdef long long c_sum_mod_int64(long long n):
 
     return s
 
-def c_sum_mod_int64(long long n):
-    """return n%2 + n%3 + ... + n%(n-1), for cimport only"""
+cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long m):
+    """sum of x^i mod m from i=1 to n, for i = 0, 1, 2, 3"""
 
-    cdef:
-        long long s = 0, i = 0, imax = c_isqrt_int64(n+1)
-        long long a, b, c
+    cdef long long res, r
 
-    imax = (imax + 1) >> 1
-    for i in range(1, imax):
-        a = n % (n//(i+1) + 1)
-        b = n % (n//i) if i > 1 else 1
-        c = (a-b) // i + 1
-        s += b*c + i*(c-1)*c // 2
-
-    for j in range(2, n//(i+1) + 1):
-        s += n % j
-
-    return s
+    if i == 0:
+        return n
+    elif i == 1:
+        if n & 1:
+            return ((((n + 1) // 2) % m) * (n % m)) % m
+        else:
+            return (((n // 2) % m) * ((n + 1) % m)) % m
+    elif i == 2:
+        r = n % 6
+        if r == 0:
+            res = (n // 6) % m
+            res = (res * ((n + 1) % m)) % m
+            res = (res * ((2*n + 1) % m)) % m
+        elif r == 1:
+            res = n % m
+            res = (res * (((n + 1) // 2) % m)) % m
+            res = (res * (((2*n + 1) // 3) % m)) % m
+        elif r == 2:
+            res = (n // 2) % m
+            res = (res * (((n + 1) // 3) % m)) % m
+            res = (res * ((2*n + 1) % m)) % m
+        elif r == 3:
+            res = (n // 3) % m
+            res = (res * (((n + 1) // 2) % m)) % m
+            res = (res * ((2*n + 1) % m)) % m
+        elif r == 4:
+            res = (n // 2) % m
+            res = (res * ((n + 1) % m)) % m
+            res = (res * (((2*n + 1) // 3) % m)) % m
+        else:
+            res = n % m
+            res = (res * (((n + 1) // 6) % m)) % m
+            res = (res * ((2*n + 1) % m)) % m
+        return res
+    elif i == 3:
+        if n & 1:
+            res = ((((n + 1) // 2) % m) * (n % m)) % m
+        else:
+            res = (((n // 2) % m) * ((n + 1) % m)) % m
+        return (res * res) % m
+    else:
+        return 0

@@ -8,6 +8,7 @@ Function list:
     sqrt, is_square, isqrt, iroot, gcd, ggcd
     fac, fac_mod, cprod
     sum_mod, pow_mod, mat_pow_mod, iter_associate
+    sum_power_series_mod
     legendre_symbol
     padic, max_subarray
 
@@ -221,6 +222,27 @@ def iter_associate(f, x, n):
         n >>= 1
         x = f(x, x)
     return r
+
+
+def sum_power_series_mod(i, n, m):
+    """sum of x^i mod m from i=1 to n, for i = 0, 1, 2, 3"""
+
+    if i == 0:
+        return n
+    elif i == 1:
+        n %= 2 * m
+        return ((n*(n+1)) >> 1) % m
+    elif i == 2:
+        n %= 6 * m
+        m3 = 3 * m
+        res = ((n*(n+1)) >> 1) % m3
+        return ((res * ((2*n+1) % m3)) % m3) // 3
+    elif i == 3:
+        n %= 2 * m
+        res = ((n*(n+1)) >> 1) % m
+        return (res * res) % m
+    else:
+        return 0
 
 
 def legendre_symbol(a, p):

@@ -4,9 +4,7 @@
 Cython extensions
 File list:
     c_formula_int64.pyx/pxd -> c_formula_int64.pyd
-    c_formula_uint64.pyx/pxd -> c_formula_uint64.pyd
     c_prime_int64.pyx/pxd -> c_prime_int64.pyd
-    c_prime_uint64.pyx/pxd -> c_prime_uint64.pyd
 
 @author: Jasper Wu
 """
@@ -17,9 +15,7 @@ import shutil
 try:
     from . import (
         c_formula_int64,
-        c_formula_uint64,
         c_prime_int64,
-        c_prime_uint64,
     )
 except:
     CUR_DIR = os.getcwd()
@@ -44,9 +40,7 @@ except:
 
         from . import (
             c_formula_int64,
-            c_formula_uint64,
             c_prime_int64,
-            c_prime_uint64,
         )
     else:
         # change back to workdir
