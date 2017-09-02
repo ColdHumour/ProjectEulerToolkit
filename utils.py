@@ -29,18 +29,13 @@ def timepast(func):
     return _deco
 
 
-def memoize(cache=None, key=lambda x: x):
-    if cache is None:
-        raise ValueError("cache must be an existed dict!")
-
-    def _deco1(func):
-        def _deco2(*args, **kw):
-            idx = key(args)
-            if idx not in cache:
-                cache[idx] = func(*args, **kw)
-            return cache[idx]
-        return _deco2
-    return _deco1
+def memoize(func, cache={}, key=lambda x: x):
+    def _deco(*args, **kw):
+        idx = key(args)
+        if idx not in cache:
+            cache[idx] = func(*args, **kw)
+        return cache[idx]
+    return _deco
 
 
 def clear_cython_cache(url="C:\\Users\\wuyd\\.ipython\\cython"):
