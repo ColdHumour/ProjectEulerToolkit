@@ -29,12 +29,14 @@ def timepast(func):
     return _deco
 
 
-def memoize(func, cache={}, key=lambda x: x):
-    def _deco(*args, **kw):
-        idx = key(args)
-        if idx not in cache:
-            cache[idx] = func(*args, **kw)
-        return cache[idx]
+def memoize(cache={}, key=lambda x: x):
+    def _deco(func):
+        def __deco(*args, **kw):
+            idx = key(args)
+            if idx not in cache:
+                cache[idx] = func(*args, **kw)
+            return cache[idx]
+        return __deco
     return _deco
 
 
