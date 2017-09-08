@@ -177,6 +177,11 @@ cdef long long c_sum_floor_int64(long long n, long long xmin, long long xmax):
         long long nrt = c_isqrt_int64(n), res = 0
         long long real_xmin, real_xmax, a0, a1, ub, lb
 
+    if xmin > n:
+        return 0
+    if xmax > n:
+        xmax = n
+
     if xmax <= nrt:
         for x in range(xmin, xmax+1):
             res += n // x

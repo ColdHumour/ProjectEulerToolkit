@@ -251,6 +251,11 @@ def sum_floor(n, xmin, xmax):
 
     nrt = isqrt(n)
     res = 0
+    if xmin > n:
+        return 0
+    if xmax > n:
+        xmax = n
+
     if xmax <= nrt:
         for x in range(xmin, xmax+1):
             res += n // x
