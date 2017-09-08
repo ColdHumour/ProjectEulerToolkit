@@ -11,6 +11,7 @@ Function list:
     c_is_square_int64
     c_sum_mod_int64
     c_sum_power_series_mod_int64
+    c_sum_floor_int64
 
 @author: Jasper Wu
 """
@@ -168,3 +169,52 @@ cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long 
         return (res * res) % m
     else:
         return 0
+
+cdef long long c_sum_floor_int64(long long n, long long xmin, long long xmax):
+    """sum up n//x from x = xmin to xmax"""
+
+    cdef:
+        long long nrt = c_isqrt_int64(n), res = 0
+        long long real_xmin, real_xmax, a0, a1, ub, lb
+
+    if xmax <= nrt:
+        for x in range(xmin, xmax+1):
+            res += n // x
+    elif xmin >= nrt:
+        real_xmin = n // xmax
+        real_xmax = n // xmin
+        a0 = 0
+        a1 = n // real_xmin
+        for x in range(real_xmin, real_xmax+1):
+            a0 = a1
+            a1 = n // (x+1)
+            ub = a0
+            if a0 > xmax:
+                ub = xmax
+            lb = a1
+            if a1 < xmin-1:
+                lb = xmin-1
+            res += (ub - lb) * x
+    else:
+        real_xmin = n // xmax
+        if real_xmin > xmin:
+            real_xmin = xmin
+
+        a0 = 0
+        a1 = n // real_xmin
+        for x in range(real_xmin, nrt+1):
+            a0 = a1
+            a1 = n // (x+1)
+
+            if x >= xmin:
+                res += a0
+
+            if a1 < xmax:
+                ub = a0
+                if a0 > xmax:
+                    ub = xmax
+                res += (ub - a1) * x
+
+        if x == n // x:
+            res -= x
+    return res

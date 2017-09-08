@@ -19,3 +19,5 @@ cdef short c_is_square_int64(long long n)
 cdef long long c_sum_mod_int64(long long n)
 
 cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long m)
+
+cdef long long c_sum_floor_int64(long long n, long long xmin, long long xmax)

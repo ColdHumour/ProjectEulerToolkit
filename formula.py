@@ -9,6 +9,7 @@ Function list:
     fac, fac_mod, cprod
     sum_mod, pow_mod, mat_pow_mod, iter_associate
     sum_power_series_mod
+    sum_floor
     legendre_symbol
     padic, max_subarray
 
@@ -243,6 +244,48 @@ def sum_power_series_mod(i, n, m):
         return (res * res) % m
     else:
         return 0
+
+
+def sum_floor(n, xmin, xmax):
+    """sum up n//x from x = xmin to xmax"""
+
+    nrt = isqrt(n)
+    res = 0
+    if xmax <= nrt:
+        for x in range(xmin, xmax+1):
+            res += n // x
+    elif xmin >= nrt:
+        real_xmin = n // xmax
+        real_xmax = n // xmin
+        a0 = 0
+        a1 = n // real_xmin
+        for x in range(real_xmin, real_xmax+1):
+            a0 = a1
+            a1 = n // (x+1)
+            ub = a0 if a0 < xmax else xmax
+            lb = a1 if a1 >= xmin-1 else xmin-1
+            res += (ub - lb) * x
+    else:
+        real_xmin = n // xmax
+        if real_xmin > xmin:
+            real_xmin = xmin
+
+        a0 = 0
+        a1 = n // real_xmin
+        for x in range(real_xmin, nrt+1):
+            a0 = a1
+            a1 = n // (x+1)
+
+            if x >= xmin:
+                res += a0
+
+            if a1 < xmax:
+                ub = a0 if a0 < xmax else xmax
+                res += (ub - a1) * x
+
+        if x == n // x:
+            res -= x
+    return res
 
 
 def legendre_symbol(a, p):
