@@ -99,8 +99,8 @@ def square_modulo_prime_equation(n, p):
 
             b = pow(c, 1 << (s-i-1), p)
             r = (r * b) % p
-            t = (t * b * b) % p
             c = (b * b) % p
+            t = (t * c) % p
             s = i
 
     if 2 * r + 1 > p:
