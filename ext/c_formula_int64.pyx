@@ -34,6 +34,8 @@ cdef long long c_pow_int64(long long a, long long b, long long m):
 
     cdef long long r
 
+    assert b >= 0
+
     if m == 1:
         return a**b
 
