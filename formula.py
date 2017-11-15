@@ -25,11 +25,11 @@ Function list:
 """
 
 import numpy as np
-from math import sqrt
+from math import gcd, sqrt
 from collections import deque
 
 try:
-    from gmpy2 import is_square, fac, gcd, isqrt, iroot
+    from gmpy2 import is_square, fac, isqrt, iroot
     from gmpy2 import powmod as pow_mod
 except:
     from fractions import gcd
