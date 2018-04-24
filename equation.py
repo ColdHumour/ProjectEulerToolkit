@@ -125,9 +125,6 @@ def square_modulo_prime_power_equation(n, p, k):
     - http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
     - https://en.wikipedia.org/wiki/Hensel%27s_lemma
     """
-    
-    if n < 0:
-        n = p + n
 
     r = square_modulo_prime_equation(n, p)
     p_power = p
@@ -135,7 +132,10 @@ def square_modulo_prime_power_equation(n, p, k):
     while n_power < k:
         p_power_new = p_power * p
         n_power += 1
-        f = (r*r - n) % p_power_new
+        if n < 0:
+            f = (r*r - p_power_new - n) % p_power_new
+        else:
+            f = (r*r - n) % p_power_new
         df = (2 * r) % p_power_new
         r = (r - f * pow(df, p_power_new-p_power-1, p_power_new)) % p_power_new
         p_power = p_power_new
