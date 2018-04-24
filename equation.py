@@ -7,6 +7,7 @@ Functions using to solve various equations.
 Function list:
     linear_modulo_equation
     square_modulo_prime_equation
+    square_modulo_prime_power_equation
     chinese_remainder
     generalized_pell_equation_base
     generalized_pell_equation_generator
@@ -59,7 +60,7 @@ def linear_modulo_equation(a, b, n):
 def square_modulo_prime_equation(n, p):
     """
     Solve linear modular equation
-        (x^2) % n = p
+        (x^2) % p = n
     or written in modular arithmatic
          x^2 = n (mod p)
     where:
@@ -107,6 +108,40 @@ def square_modulo_prime_equation(n, p):
         r = p - r
     return r
 
+
+def square_modulo_prime_power_equation(n, p, k):
+    """
+    Solve linear modular equation
+        (x^2) % p^k = n
+    or written in modular arithmatic
+         x^2 = n (mod p^k)
+    where:
+        (1) p is an odd prime
+        (2) n is a quadratic residue of p
+    Return smallest solution a, noticing that (p^k-a) is also a solution.
+
+    Using Tonelli-Shanks algorithm and Hensel's Lift.
+    Details see:
+    - http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
+    - https://en.wikipedia.org/wiki/Hensel%27s_lemma
+    """
+    
+    if n < 0:
+        n = p + n
+
+    r = square_modulo_prime_equation(n, p)
+    p_power = p
+    n_power = 1
+    while n_power < k:
+        p_power_new = p_power * p
+        n_power += 1
+        f = (r*r - n) % p_power_new
+        df = (2 * r) % p_power_new
+        r = (r - f * pow(df, p_power_new-p_power-1, p_power_new)) % p_power_new
+        p_power = p_power_new
+    return r
+
+
 def chinese_remainder(equation_sets):
     """
     return the only solution 0 <= x < (m_1 * m_2 * ... * m_r) for the set of simultaneous congruences:
@@ -123,7 +158,7 @@ def chinese_remainder(equation_sets):
     x = 0
     for ai, mi in equation_sets:
         u = M // mi
-        x += (ai * u * invert(u, mi)) % M
+        x += (ai * u * int(invert(u, mi))) % M
         x %= M
     return x
 
