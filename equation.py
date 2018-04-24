@@ -19,6 +19,7 @@ Function list:
 
 
 import numpy as np
+from gmpy2 import invert
 
 from . formula import (
     gcd, sqrt, cprod,
@@ -150,8 +151,6 @@ def chinese_remainder(equation_sets):
     equation_sets must in the form [(a_1, m_1), (a2, m_2), ...]
     """
 
-    from gmpy2 import invert
-
     _, ms = list(zip(*equation_sets))
     M = cprod(ms)
 
@@ -165,7 +164,8 @@ def chinese_remainder(equation_sets):
 
 def _pqa(d, p, q):
     """
-    PQa algorithm for solving generalized Pell equation, which can be regarded as a generalized continued fraction expansion with convergent computation
+    PQa algorithm for solving generalized Pell equation, which can be regarded as a
+    generalized continued fraction expansion with convergent computation
     """
 
     sd = sqrt(d)
