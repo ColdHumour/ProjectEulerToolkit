@@ -64,16 +64,18 @@ def square_modulo_prime_equation(n, p):
         (x^2) % p = n
     or written in modular arithmatic
          x^2 = n (mod p)
-    where:
-        (1) p is an odd prime
-        (2) n is a quadratic residue of p
+    where n is a quadratic residue of p
     Return smallest solution a, noticing that (p-a) is also a solution.
 
     Using Tonelli-Shanks algorithm.
     Details see: http://en.wikipedia.org/wiki/Tonelli-Shanks_algorithm
     """
 
-    if is_square(n):
+    n %= p
+
+    if p == 2:
+        return n
+    elif is_square(n):
         r = int(sqrt(n))
     elif legendre_symbol(n, p) != 1:
         raise ValueError("n is not a quadratic residue of p!")
@@ -116,10 +118,8 @@ def square_modulo_prime_power_equation(n, p, k):
         (x^2) % p^k = n
     or written in modular arithmatic
          x^2 = n (mod p^k)
-    where:
-        (1) p is an odd prime
-        (2) n is a quadratic residue of p
-    Return smallest solution a, noticing that (p^k-a) is also a solution.
+    where n is a quadratic residue of p
+    Return all solutions betweem 0 and p^k-1, since there may exist more than 2 solutions.
 
     Using Tonelli-Shanks algorithm and Hensel's Lift.
     Details see:
@@ -128,19 +128,26 @@ def square_modulo_prime_power_equation(n, p, k):
     """
 
     r = square_modulo_prime_equation(n, p)
+    sols = {r, (-r) % p}
     p_power = p
     n_power = 1
     while n_power < k:
+        sols_new = set()
         p_power_new = p_power * p
         n_power += 1
-        if n < 0:
-            f = (r*r - p_power_new - n) % p_power_new
-        else:
+        for r in sols:
             f = (r*r - n) % p_power_new
-        df = (2 * r) % p_power_new
-        r = (r - f * pow(df, p_power_new-p_power-1, p_power_new)) % p_power_new
+            df = (2 * r) % p
+            if df:
+                r = (r - f * pow(df, p_power_new-p_power-1, p_power_new)) % p_power_new
+                sols_new.add(r)
+            elif f == 0:
+                while r < p_power_new:
+                    sols_new.add(r)
+                    r += p_power
         p_power = p_power_new
-    return r
+        sols = sols_new
+    return sorted(sols)
 
 
 def chinese_remainder(equation_sets):

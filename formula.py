@@ -296,11 +296,14 @@ def sum_floor(n, xmin, xmax):
 def legendre_symbol(a, p):
     """
     Legendre symbol
-    Define if a is a quadratic residue of odd prime p
+    Define if a is a quadratic residue of prime p
     Details see: http://en.wikipedia.org/wiki/Legendre_symbol
     """
 
-    ls = pow(a, (p - 1) >> 1, p)
+    if p == 2 or a % p == 0:
+        return 1
+
+    ls = pow(a % p, (p - 1) >> 1, p)
     if ls == p - 1:
         return -1
     return ls
