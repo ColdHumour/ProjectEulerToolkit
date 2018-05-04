@@ -11,8 +11,6 @@ Function list:
     chinese_remainder
     generalized_pell_equation_base
     generalized_pell_equation_generator
-    gauss_jordan_elimination
-    gauss_jordan_elimination_with_unknown_RHS
 
 @author: Jasper Wu
 """
@@ -320,96 +318,3 @@ def generalized_pell_equation_generator(d, n=1):
             yield sol
 
         sols = [(r*x + d*s*y, s*x + r*y) for x, y in sols]
-
-def gauss_jordan_elimination(coeffs):
-    """
-    Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
-    coeffs: 2D list, all elements float
-    """
-
-    from copy import deepcopy
-
-    w, d = len(coeffs[0]), len(coeffs)
-    coefmat = np.matrix(coeffs)
-
-    for i in range(d):
-        flag = 1
-        j = i
-        while flag and j < d:
-            if abs(coefmat[i, j]) < 0.001:
-                for k in range(i+1, d):
-                    if abs(coefmat[k, j]) > 0.001:
-                        flag = 0
-                        coefmat[k], coefmat[i] = deepcopy(coefmat[i]), deepcopy(coefmat[k])
-                        break
-                if flag:
-                    j += 1
-            else:
-                flag = 0
-
-        if j == d:
-            break
-
-        if coefmat[i, j] != 1:
-            coefmat[i] /= coefmat[i, j]
-
-        for k in range(i+1, d):
-            if coefmat[k, j]:
-                coefmat[k] = coefmat[k] - coefmat[k, j] * coefmat[i]
-
-    for i in range(1, d):
-        for j in range(w):
-            if abs(coefmat[i, j]) > 0.001:
-                break
-        for k in range(i):
-            if coefmat[k, j]:
-                coefmat[k] = coefmat[k] - coefmat[k, j] * coefmat[i]
-
-    return coefmat
-
-def gauss_jordan_elimination_with_unknown_RHS(coeffs):
-    """
-    Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
-    Allow RHS to be sympy.Symbol
-    coeffs: 2D list, all elements sympy.Rational or sympy.Symbol
-    """
-
-    from sympy import Symbol, Rational
-    from copy import deepcopy
-
-    w, d = len(coeffs[0]), len(coeffs)
-    coefmat = deepcopy(coeffs)
-    for i in range(d):
-        flag = 1
-        j = i
-        while flag and j < d:
-            if isinstance(coefmat[i][j], Rational) and coefmat[i][j] == 0:
-                for k in range(i+1, d):
-                    if isinstance(coefmat[i][j], Rational) and coefmat[k][j] != 0:
-                        flag = 0
-                        coefmat[k], coefmat[i] = deepcopy(coefmat[i]), deepcopy(coefmat[k])
-                        break
-                if flag:
-                    j += 1
-            else:
-                flag = 0
-
-        if j == d:
-            break
-
-        if coefmat[i][j] != 1:
-            coefmat[i] = [n / coefmat[i][j] for n in coefmat[i]]
-
-        for k in range(i+1, d):
-            if coefmat[k][j] != 0:
-                coefmat[k] = [coefmat[k][x] - coefmat[k][j] * coefmat[i][x] for x in range(w)]
-
-    for i in range(1, d):
-        for j in range(w-1):
-            if coefmat[i][j] != 0:
-                break
-        for k in range(i):
-            if coefmat[k][j]:
-                coefmat[k] = [coefmat[k][x] - coefmat[k][j] * coefmat[i][x] for x in range(w)]
-
-    return coefmat

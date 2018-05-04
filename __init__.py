@@ -10,16 +10,17 @@ Dependencies:
     collections
     cython, Cython
 
-    numpy: arrays and matrices
-    pulp: linear and non-linear optimization
-    gmpy2: integers, rationals, etc.
+    numpy, scipy: scientific computation
+    sympy: symbolic computation
+    gmpy2: number theory
+    ortools: programming and optimization
 
 @author: Jasper Wu
 """
 
 
 # dependency test
-# default: numpy, scipy, matplotlib, pandas
+# default: numpy, scipy, sympy
 DEPENDENCIES = ['cython', 'gmpy2', 'ortools']
 
 for pkg in DEPENDENCIES:
@@ -48,7 +49,7 @@ from . combinatoric import (
 from . formula import (
     sqrt, is_square, isqrt, iroot, gcd, ggcd,
     fac, fac_mod, cprod,
-    sum_mod, pow_mod, mat_pow_mod, sum_power_series_mod, sum_floor,
+    sum_mod, pow_mod, sum_power_series_mod, sum_floor,
     legendre_symbol,
     padic, max_subarray,
 
@@ -80,6 +81,7 @@ from . utils import (
 )
 
 from . import equation
+from . import linalg
 
 
 __all__ = [
@@ -87,6 +89,7 @@ __all__ = [
     'equation',
     'formula',
     'generator',
+    'linalg',
     'prime',
     'utils',
 ]
