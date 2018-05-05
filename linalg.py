@@ -5,7 +5,9 @@ linalg.py
 
 Functions implementing maths in linear algebra.
 Function list:
+    dot_mod_as_list
     mat_pow_mod
+    mat_pow_mod_as_list
     gauss_jordan_elimination
     gauss_jordan_elimination_with_unknown_RHS
     get_integer_matrix_inverse_as_list
@@ -20,6 +22,26 @@ import numpy as np
 from sympy import Symbol, Rational
 
 from . formula import gcd
+
+
+def dot_mod_as_list(A, B, m=0):
+    """matrix multiplication defined as list, avoid overflow in numpy"""
+
+    a = len(A)
+    l = len(B)
+    b = len(B[0])
+
+    C = [[0] * b for _ in range(a)]
+    for i in range(a):
+        for j in range(b):
+            cij = 0
+            for k in range(l):
+                if m:
+                    cij = (cij + A[i][k] * B[k][j]) % m
+                else:
+                    cij += A[i][k] * B[k][j]
+            C[i][j] = cij
+    return C
 
 
 def mat_pow_mod(mat, n, m=0):
@@ -43,6 +65,24 @@ def mat_pow_mod(mat, n, m=0):
         n >>= 1
     return res
 
+
+def mat_pow_mod_as_list(mat, n, m=0):
+    """return (mat^n) % m, mat is defined as list, avoid overflow in numpy"""
+
+    if n < 0:
+        raise ValueError("power must be positive!")
+
+    d = len(mat)
+    res = [[0] * d for _ in range(d)]
+    for i in range(d):
+        res[i][i] = 1
+
+    while n:
+        if n & 1:
+            res = dot_mod_as_list(res, mat, m)
+        mat = dot_mod_as_list(mat, mat, m)
+        n >>= 1
+    return res
 
 
 def gauss_jordan_elimination(coeffs):
