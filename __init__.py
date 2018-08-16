@@ -71,6 +71,7 @@ from . prime import (
     mobius,
     mobius_list,
     factor_sieve,
+    primepi,
 )
 
 from . utils import (
