@@ -62,6 +62,11 @@ from . formula import (
     continous_frac_convergent,
 )
 
+from . linalg import (
+    mat_pow_mod,
+    gauss_jordan_elimination,
+)
+
 from . prime import (
     primes_list,
     is_prime,
