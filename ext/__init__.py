@@ -4,6 +4,7 @@
 Cython extensions
 File list:
     c_formula_int64.pyx/pxd -> c_formula_int64.pyd
+    c_linalg_int64.pyx/pxd -> c_linalg_int64.pyd
     c_prime_int64.pyx/pxd -> c_prime_int64.pyd
 
 @author: Jasper Wu
@@ -15,6 +16,7 @@ import shutil
 try:
     from . import (
         c_formula_int64,
+        c_linalg_int64,
         c_prime_int64,
     )
 except:

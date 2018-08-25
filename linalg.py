@@ -8,7 +8,9 @@ Function list:
     dot_mod_as_list
     mat_pow_mod
     mat_pow_mod_as_list
+    mat_pow_sum_mod
     gauss_jordan_elimination
+    gauss_jordan_modular_elimination
     gauss_jordan_elimination_with_unknown_RHS
     get_integer_matrix_inverse_as_list
     get_integer_matrix_inverse_as_numpy_array
@@ -85,6 +87,34 @@ def mat_pow_mod_as_list(mat, n, m=0):
     return res
 
 
+def mat_sum_pow_mod(A0, Q, n, m=0):
+    """return (A0 + Q A0 + Q^2 A0 + ... + Q^n A0) % m"""
+
+    if n < 0:
+        raise ValueError("power must be positive!")
+    if n == 0:
+        return A0
+    assert len(A0) == len(Q[0])
+
+    if m:
+        A0 = A0 % m
+        Q = Q % m
+
+    d = len(Q)
+    O = np.zeros((d, d), dtype=np.int64)
+    I = np.eye(d, dtype=np.int64)
+    Q_ext = np.concatenate([np.concatenate([Q, I], axis=1), np.concatenate([O, I], axis=1)])
+    Q_ext_pow = mat_pow_mod(Q_ext, n, m)
+    I2 = np.concatenate([I, I], axis=0)
+    res = np.dot(Q_ext_pow, I2)
+    if m:
+        res %= m
+    res = np.dot(res, A0)
+    if m:
+        res %= m
+    return res[:d]
+
+
 def gauss_jordan_elimination(coeffs):
     """
     Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
@@ -128,6 +158,52 @@ def gauss_jordan_elimination(coeffs):
                 coefmat[k] = coefmat[k] - coefmat[k, j] * coefmat[i]
 
     return coefmat
+
+
+def gauss_jordan_modular_elimination(coeffs, mod):
+    """
+    modular Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
+    coeffs: 2D list, all elements integer, mod is prime
+    """
+
+    w, d = len(coeffs[0]), len(coeffs)
+    coefmat = np.matrix(coeffs) % mod
+
+    for i in range(d):
+        flag = 1
+        j = i
+        while flag and j < d:
+            if coefmat[i, j] == 0:
+                for k in range(i+1, d):
+                    if coefmat[k, j]:
+                        flag = 0
+                        coefmat[k], coefmat[i] = deepcopy(coefmat[i]), deepcopy(coefmat[k])
+                        break
+                if flag:
+                    j += 1
+            else:
+                flag = 0
+
+        if j == d:
+            break
+
+        if coefmat[i, j] != 1:
+            coefmat[i] *= pow(int(coefmat[i, j]), mod-2, mod)
+            coefmat[i] %= mod
+
+        for k in range(i+1, d):
+            if coefmat[k, j]:
+                coefmat[k] = (coefmat[k] - coefmat[k, j] * coefmat[i]) % mod
+
+    for i in range(1, d):
+        for j in range(w):
+            if coefmat[i, j]:
+                break
+        for k in range(i):
+            if coefmat[k, j]:
+                coefmat[k] = (coefmat[k] - coefmat[k, j] * coefmat[i]) % mod
+
+    return coefmat % mod
 
 
 def gauss_jordan_elimination_with_unknown_RHS(coeffs):
