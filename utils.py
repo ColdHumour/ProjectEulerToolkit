@@ -23,6 +23,7 @@ def timepast(func):
 
     def _deco(*args, **kwargs):
         t = time.time()
+        print("Func {0}() begins at: {1}".format(func.__name__, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))))
         ret = func(*args, **kwargs)
         print("Time consumed by {0}(): {1:.2f}s".format(func.__name__, time.time() - t))
         return ret
@@ -40,7 +41,8 @@ def memoize(cache={}, key=lambda x: x):
     return _deco
 
 
-def clear_cython_cache(url="C:\\Users\\ColdHumour\\.ipython\\cython"):
+def clear_cython_cache():
+    url = os.path.expanduser("~\\.ipython\\cython")
     if os.path.exists(url):
         for f in os.listdir(url):
             filepath = os.path.join(url, f)
@@ -49,12 +51,12 @@ def clear_cython_cache(url="C:\\Users\\ColdHumour\\.ipython\\cython"):
             else:
                 shutil.rmtree(filepath)
     else:
-        raise ValueError("Bad cython cache URL!")
+        raise ValueError("Cython cache not found: {}".format(url))
 
 
-def find_solution(id):
-    if id % 10 == 0:
-        lid, rid = id-9, id
-    else:
-        lid, rid = id // 10 * 10 + 1, id // 10 * 10 + 10
-    webbrowser.open('http://htmlpreview.github.io/?https://github.com/ColdHumour/ProjectEulerSolutions/blob/master/Solutions%20{}-{}.html#{}'.format(lid, rid, id))
+# def find_solution(id):
+#     if id % 10 == 0:
+#         lid, rid = id-9, id
+#     else:
+#         lid, rid = id // 10 * 10 + 1, id // 10 * 10 + 10
+#     webbrowser.open('http://htmlpreview.github.io/?https://github.com/ColdHumour/ProjectEulerSolutions/blob/master/Solutions%20{}-{}.html#{}'.format(lid, rid, id))

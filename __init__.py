@@ -83,7 +83,7 @@ from . utils import (
     timepast,
     memoize,
     clear_cython_cache,
-    find_solution,
+    # find_solution,
 )
 
 from . import equation
