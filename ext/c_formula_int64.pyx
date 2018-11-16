@@ -138,7 +138,7 @@ cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long 
     cdef long long res, r
 
     if i == 0:
-        return n
+        return n % m
     elif i == 1:
         if n & 1:
             return ((((n + 1) // 2) % m) * (n % m)) % m
