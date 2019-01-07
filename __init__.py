@@ -88,6 +88,7 @@ from . utils import (
 
 from . import equation
 from . import linalg
+from . import polynomial
 
 
 __all__ = [
@@ -96,6 +97,7 @@ __all__ = [
     'formula',
     'generator',
     'linalg',
+    'polynomial',
     'prime',
     'utils',
 ]

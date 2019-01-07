@@ -4,13 +4,19 @@
 equation.py
 
 Functions using to solve various equations.
+
 Function list:
-    linear_modulo_equation
-    square_modulo_prime_equation
-    square_modulo_prime_power_equation
-    chinese_remainder
-    generalized_pell_equation_base
-    generalized_pell_equation_generator
+- linear_modulo_equation(a, b, n)
+- square_modulo_prime_equation(n, p)
+- square_modulo_prime_power_equation(n, p, k)
+
+- chinese_remainder(equation_sets)
+
+- generalized_pell_equation_base(d, n=1)
+- generalized_pell_equation_generator(d, n=1)
+
+- berlekamp_massey_with_bound(sequence, n)
+- berlekamp_massey_with_bound_mod_p(sequence, n, p)
 
 @author: Jasper Wu
 """
@@ -24,6 +30,8 @@ from . formula import (
     is_square,
     legendre_symbol,
 )
+
+from . import polynomial as poly
 
 
 def linear_modulo_equation(a, b, n):
@@ -318,3 +326,72 @@ def generalized_pell_equation_generator(d, n=1):
             yield sol
 
         sols = [(r*x + d*s*y, s*x + r*y) for x, y in sols]
+
+
+def berlekamp_massey_with_bound(sequence, n):
+    """
+    Find minimum linear recurrence equation of sequence using Berlekamp-Massey algorithm.
+
+    Return A = [a0, a1, ..., aL(=1)] with a0*si + a1*s(i+1) + ... + aL*s(i+L) = 0 for i+L >= n.
+    
+    @sequence (np.array): sequence with at least 2*n terms
+    @n (int): dimension upper bound of the recurrence equation
+    """
+    
+    dtype = sequence.dtype
+    R0 = np.zeros(2*n+1, dtype=dtype)
+    R0[-1] = 1
+    R1 = poly.poly_truncate(sequence[:2*n], direction="right")
+    V0 = np.zeros(1, dtype=dtype)
+    V1 = np.ones(1, dtype=dtype)
+
+    while n <= len(R1) - 1:
+        Q, R = poly.poly_divmod(R0, R1)
+        V = poly.poly_add(V0, (-1) * poly.poly_mul(Q, V1))
+        V = poly.poly_truncate(V, direction="right")
+        V0, V1, R0, R1 = V1, V, R1, R
+
+    # Let V1 = [v0, v1, ..., vL], then for i > max(deg(V1), deg(R1)+1)
+    # we have v0*si + v1*s(i-1) + ... + vL*s(i-L) = 0 holds.
+    # Now just rearrange and normalize it to A = [a0, a1, ..., aL(=1)]
+    # with a0*si + a1*s(i+1) + ... + aL*s(i+L) = 0.
+
+    A = V1[::-1]
+    A = A / A[-1]
+    return A
+
+
+def berlekamp_massey_with_bound_mod_p(sequence, n, p):
+    """
+    Find minimum linear recurrence equation of sequence in Z/Zp using Berlekamp-Massey algorithm.
+
+    Return A = [a0, a1, ..., aL(=1)] with a0*si + a1*s(i+1) + ... + aL*s(i+L) = 0 for i+L >= n.
+    
+    @sequence (np.array): sequence with at least 2*n terms
+    @n (int): dimension upper bound of the recurrence equation
+    @p (int): prime number of field Z/Zp
+    """
+    
+    dtype = sequence.dtype
+    R0 = np.zeros(2*n+1, dtype=dtype)
+    R0[-1] = 1
+    R1 = poly.poly_truncate(sequence[:2*n], direction="right")
+    V0 = np.zeros(1, dtype=dtype)
+    V1 = np.ones(1, dtype=dtype)
+
+    while n <= len(R1) - 1:
+        Q, R = poly.poly_divmod_mod_p(R0, R1, p)
+        V = poly.poly_add(V0, (-1) * poly.poly_mul_mod_p(Q, V1, p)) % p
+        V = poly.poly_truncate(V, direction="right")
+        V0, V1, R0, R1 = V1, V, R1, R
+
+    # Let V1 = [v0, v1, ..., vL], then for i > max(deg(V1), deg(R1)+1)
+    # we have v0*si + v1*s(i-1) + ... + vL*s(i-L) = 0 holds.
+    # Now just rearrange and normalize it to A = [a0, a1, ..., aL(=1)]
+    # with a0*si + a1*s(i+1) + ... + aL*s(i+L) = 0.
+
+    A = V1[::-1]
+    inv = pow(int(A[-1]), p-2, p)
+    A = (A * inv) % p
+    return A
+
