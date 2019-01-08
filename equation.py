@@ -15,7 +15,9 @@ Function list:
 - generalized_pell_equation_base(d, n=1)
 - generalized_pell_equation_generator(d, n=1)
 
+- berlekamp_massey(sequence)
 - berlekamp_massey_with_bound(sequence, n)
+- berlekamp_massey_mod_p(sequence, p)
 - berlekamp_massey_with_bound_mod_p(sequence, n, p)
 
 @author: Jasper Wu
@@ -328,6 +330,44 @@ def generalized_pell_equation_generator(d, n=1):
         sols = [(r*x + d*s*y, s*x + r*y) for x, y in sols]
 
 
+def berlekamp_massey(sequence):
+    """
+    Find minimum linear recurrence equation of sequence using Berlekamp-Massey algorithm.
+
+    Return C = [c0, c1, ..., cL(=1)] with c0*si + c1*s(i+1) + ... + cL*s(i+L) = 0 for i+L >= n/2.
+    
+    @sequence (np.array)
+    """
+
+    dtype = sequence.dtype
+
+    # C = [c0, c1, c2, ...] letting c0*sn + c1*s(n-1) + ... = 0 for any n
+    C = np.ones(1, dtype=dtype)
+    B = None
+    b = 0
+
+    for n in range(len(sequence)):
+        d = 0
+        for i in range(len(C)):
+            d += C[i] * sequence[n-i]
+
+        B = np.append(0, B)  # align to n
+        if d == 0:
+            continue
+        elif b == 0:
+            B = C.copy()  # initialize
+            b = d
+        else:
+            B2 = C.copy()
+            C = poly.poly_add(C, (-1 * d / b * B))
+            if len(B) > len(B2):  # obtain shortest B
+                B = B2
+                b = d
+
+    # rearrange C as from lower terms to higher terms 
+    return C[::-1]
+
+
 def berlekamp_massey_with_bound(sequence, n):
     """
     Find minimum linear recurrence equation of sequence using Berlekamp-Massey algorithm.
@@ -359,6 +399,53 @@ def berlekamp_massey_with_bound(sequence, n):
     A = V1[::-1]
     A = A / A[-1]
     return A
+
+
+def berlekamp_massey_mod_p(sequence, p):
+    """
+    Find minimum linear recurrence equation of sequence in Z/Zp using Berlekamp-Massey algorithm.
+
+    Return C = [c0, c1, ..., cL(=1)] with c0*si + c1*s(i+1) + ... + cL*s(i+L) = 0 for i+L >= len(seq)/2.
+
+    @sequence (np.array)
+    @p (int): prime number of field Z/Zp
+    """
+
+    dtype = sequence.dtype
+
+    # C = [c0, c1, c2, ...] letting c0*sn + c1*s(n-1) + ... = 0 for any n
+    C = np.ones(1, dtype=dtype)
+    B = None
+    b = 0
+
+    for n in range(len(sequence)):
+        d = 0
+        for i in range(len(C)):
+            d += C[i] * sequence[n-i]
+            d %= p
+
+        B = np.append(0, B)  # align to n
+        if d == 0:
+            continue
+        elif b == 0:
+            B = C.copy()  # initialize
+            b = d
+        else:
+            B2 = C.copy()
+            coeff = d * pow(int(b), p-2, p) % p
+            C = poly.poly_add(C, (-1 * coeff * B) % p) % p
+            if len(B) > len(B2):  # obtain shortest B
+                B = B2
+                b = d
+
+            # d2 = 0
+            # for i in range(L):
+            #     d2 += C[i] * sequence[n-i]
+            #     d2 %= p
+            # assert d2 == 0
+                
+    # rearrange C as from lower terms to higher terms 
+    return C[::-1]
 
 
 def berlekamp_massey_with_bound_mod_p(sequence, n, p):
@@ -394,4 +481,3 @@ def berlekamp_massey_with_bound_mod_p(sequence, n, p):
     inv = pow(int(A[-1]), p-2, p)
     A = (A * inv) % p
     return A
-
