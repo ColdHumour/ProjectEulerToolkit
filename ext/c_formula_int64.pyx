@@ -9,6 +9,7 @@ Function list:
     c_pow_int64
     c_isqrt_int64
     c_is_square_int64
+    c_inv_mod_int64
     c_sum_mod_int64
     c_sum_power_series_mod_int64
     c_sum_floor_int64
@@ -110,6 +111,25 @@ cdef short c_is_square_int64(long long n):
     s = c_isqrt_int64(n)
     if s * s == n:
         return 1
+    else:
+        return 0
+
+cdef long long c_inv_mod_int64(long long n, long long m):
+    """return n^(-1) mod m using Extended Euclid Algorithm"""
+
+    cdef:
+        long long m0 = m, x0 = 0, x1 = 1
+
+    n %= m
+    if n == 0 or m <= 0:
+        return 0
+    
+    while n != 0:
+        x0, x1 = x1, x0 - m // n * x1
+        m, n = n, m % n
+
+    if m == 1:
+        return x0 % m0
     else:
         return 0
 

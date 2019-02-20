@@ -6,7 +6,7 @@ formula.py
 Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, isqrt, iroot, gcd, ggcd
-    fac, fac_mod, cprod
+    fac, fac_mod, inv_mod, cprod
     sum_mod, pow_mod, iter_associate
     sum_power_series_mod
     sum_floor
@@ -156,7 +156,7 @@ def max_subarray(array):
 
 # Modulo Functions
 def _sum_mod(n):
-    """return n%2 + n%3 + ... + n%(n-1)"""
+    """return n % 2 + n % 3 + ... + n % (n-1)"""
 
     from itertools import takewhile, count
 
@@ -171,6 +171,24 @@ def _sum_mod(n):
 
 if sum_mod is None:
     sum_mod = _sum_mod
+
+
+def inv_mod(n, m):
+    """return n^(-1) mod m using Extended Euclid Algorithm"""
+
+    n %= m
+    if n == 0 or m <= 0:
+        return 0
+    
+    m0, x0, x1 = m, 0, 1
+    while n != 0:
+        x0, x1 = x1, x0 - m // n * x1
+        m, n = n, m % n
+
+    if m == 1:
+        return x0 % m0
+    else:
+        return 0
 
 
 def fac_mod(n, m):
