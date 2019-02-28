@@ -29,9 +29,10 @@ except:
 
     if state == 0:
         # clean intermediate files
-        build = os.path.join(EXT_DIR, 'build')
-        if os.path.exists(build):
-            shutil.rmtree(build)
+        for folder in ("build", "__pycache__"):
+            folder = os.path.join(EXT_DIR, folder)
+            if os.path.exists(folder):
+                shutil.rmtree(folder)
         for f in os.listdir(EXT_DIR):
             faffix = f.split('.')
             if faffix[-1] == 'c':
