@@ -11,6 +11,7 @@ Function list:
     mat_pow_sum_mod
     gauss_jordan_elimination
     gauss_jordan_modular_elimination
+    gauss_jordan_modular_elimination_as_list
     gauss_jordan_elimination_with_unknown_RHS
     get_integer_matrix_inverse_as_list
     get_integer_matrix_inverse_as_numpy_array
@@ -23,7 +24,7 @@ from copy import deepcopy
 import numpy as np
 from sympy import Symbol, Rational
 
-from . formula import gcd
+from . formula import gcd, inv_mod
 
 
 def dot_mod_as_list(A, B, m=0):
@@ -188,7 +189,7 @@ def gauss_jordan_modular_elimination(coeffs, mod):
             break
 
         if coefmat[i, j] != 1:
-            coefmat[i] *= pow(int(coefmat[i, j]), mod-2, mod)
+            coefmat[i] *= inv_mod(coefmat[i, j], mod)
             coefmat[i] %= mod
 
         for k in range(i+1, d):
@@ -204,6 +205,54 @@ def gauss_jordan_modular_elimination(coeffs, mod):
                 coefmat[k] = (coefmat[k] - coefmat[k, j] * coefmat[i]) % mod
 
     return coefmat % mod
+
+
+def gauss_jordan_modular_elimination_as_list(coeffs, mod):
+    """
+    modular Gauss-Jordan elimination algorithm, can only be used when there are more variables than equations
+    coeffs: 2D list, all elements integer, mod is prime
+    """
+
+    w, d = len(coeffs[0]), len(coeffs)
+    coefmat = [[x % mod for x in row] for row in coeffs]
+
+    for i in range(d):
+        flag = 1
+        j = i
+        while flag and j < d:
+            if coefmat[i][j] == 0:
+                for k in range(i+1, d):
+                    if coefmat[k][j]:
+                        flag = 0
+                        coefmat[k], coefmat[i] = coefmat[i][:], coefmat[k][:]
+                        break
+                if flag:
+                    j += 1
+            else:
+                flag = 0
+
+        if j == d:
+            break
+
+        if coefmat[i][j] != 1:
+            xinv = inv_mod(coefmat[i][j], mod)
+            coefmat[i] = [x * xinv % mod for x in coefmat[i]]
+
+        for k in range(i+1, d):
+            if coefmat[k][j]:
+                x0 = coefmat[k][j]
+                coefmat[k] = [(x - x0 * coefmat[i][l]) % mod for l, x in enumerate(coefmat[k])]
+
+    for i in range(1, d):
+        for j in range(w):
+            if coefmat[i][j]:
+                break
+        for k in range(i):
+            if coefmat[k][j]:
+                x0 = coefmat[k][j]
+                coefmat[k] = [(x - x0 * coefmat[i][l]) % mod for l, x in enumerate(coefmat[k])]
+
+    return [[x % mod for x in row] for row in coefmat]
 
 
 def gauss_jordan_elimination_with_unknown_RHS(coeffs):
