@@ -5,6 +5,7 @@ linalg.py
 
 Functions implementing maths in linear algebra.
 Function list:
+    dot_mod
     dot_mod_as_list
     mat_pow_mod
     mat_pow_mod_as_list
@@ -26,6 +27,25 @@ from sympy import Symbol, Rational
 
 from . formula import gcd, inv_mod
 
+
+def dot_mod(A, B, m=0):
+    """matrix multiplication, avoid overflow in numpy"""
+
+    a = len(A)
+    l = len(B)
+    b = len(B[0])
+
+    C = np.zeros((a, b), dtype=np.int64)
+    for i in range(a):
+        for j in range(b):
+            cij = 0
+            for k in range(l):
+                if m:
+                    cij = (cij + A[i, k] * B[k, j]) % m
+                else:
+                    cij += A[i, k] * B[k, j]
+            C[i, j] = cij
+    return C
 
 def dot_mod_as_list(A, B, m=0):
     """matrix multiplication defined as list, avoid overflow in numpy"""
