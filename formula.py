@@ -5,7 +5,7 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
-    sqrt, is_square, isqrt, iroot, gcd, ggcd
+    sqrt, is_square, isqrt, iroot, gcd, ggcd, extended_gcd
     fac, fac_mod, inv_mod, cprod
     sum_mod, pow_mod, iter_associate
     sum_power_series_mod
@@ -122,6 +122,33 @@ def ggcd(seq):
             if g == 1:
                 return 1
         return g
+
+
+def extended_gcd(a, b):
+    """
+    return gcd(a, b), x, y that a*x + b*y = gcd(a, b)
+    using Extended Euclid Algorithm, where a, b > 0
+    """
+
+    assert a >= 0 and b >= 0
+
+    x = v = 0
+    y = u = 1
+    while a:
+        q = b // a
+        r = b - q * a
+        m = x - u * q
+        n = y - v * q
+
+        b = a
+        a = r
+        x = u
+        y = v
+        u = m
+        v = n
+
+    gcd = b
+    return gcd, x, y
 
 
 def padic(n, p, ntype='s'):
