@@ -47,7 +47,8 @@ from . combinatoric import (
 )
 
 from . formula import (
-    sqrt, is_square, isqrt, iroot, gcd, ggcd,
+    sqrt, is_square, isqrt, iroot,
+    gcd, ggcd, extended_gcd, lcm, llcm,
     fac, fac_mod, inv_mod, cprod,
     sum_mod, pow_mod, sum_power_series_mod, sum_floor,
     legendre_symbol,

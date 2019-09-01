@@ -5,7 +5,8 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
-    sqrt, is_square, isqrt, iroot, gcd, ggcd, extended_gcd
+    sqrt, is_square, isqrt, iroot,
+    gcd, ggcd, extended_gcd, lcm, llcm,
     fac, fac_mod, inv_mod, cprod
     sum_mod, pow_mod, iter_associate
     sum_power_series_mod
@@ -149,6 +150,30 @@ def extended_gcd(a, b):
 
     gcd = b
     return gcd, x, y
+
+
+def lcm(a, b):
+    """return the least common multiple of a and b"""
+
+    return a // gcd(a, b) * b
+
+
+def llcm(seq):
+    """
+    return the greatest common divisor (gcd) for n integers,
+    where n can larger than 2
+    """
+
+    if len(seq) < 2:
+        raise ValueError("There should be at least 2 integers!")
+    elif len(seq) == 2:
+        return lcm(seq[0], seq[1])
+    else:
+        l = lcm(seq[-2], seq[-1])
+        for n in seq[:-2]:
+            if l % n:
+                l = lcm(l, n)
+        return l
 
 
 def padic(n, p, ntype='s'):
