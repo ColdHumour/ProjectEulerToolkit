@@ -29,13 +29,12 @@ except:
 
     if state == 0:
         # clean intermediate files
-        for folder in ("build", "__pycache__"):
-            folder = os.path.join(EXT_DIR, folder)
-            if os.path.exists(folder):
-                shutil.rmtree(folder)
+        build = os.path.join(EXT_DIR, 'build')
+        if os.path.exists(build):
+            shutil.rmtree(build)
         for f in os.listdir(EXT_DIR):
             faffix = f.split('.')
-            if faffix[-1] == 'c':
+            if faffix[-1] in 'c|cpp':
                 os.remove(os.path.join(EXT_DIR, f))
 
         # change back to workdir
@@ -43,6 +42,7 @@ except:
 
         from . import (
             c_formula_int64,
+            c_linalg_int64,
             c_prime_int64,
         )
     else:

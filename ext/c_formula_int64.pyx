@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# distutils: language = c++
 
 """
 c_formula_int64.pyx
@@ -6,6 +7,7 @@ c_formula_int64.pyx
 Cython extension of functions implementing formulas via fast algorithms.
 Function list:
     c_gcd_int64
+    c_extended_gcd_int64
     c_pow_int64
     c_isqrt_int64
     c_is_square_int64
@@ -37,6 +39,31 @@ cdef long long c_gcd_int64(long long a, long long b):
         return a
     else:
         return b
+
+cdef (long long, long long, long long) c_extended_gcd_int64(long long a, long long b):
+    """
+    return gcd(a, b), x, y that a*x + b*y = gcd(a, b)
+    using Extended Euclid Algorithm, where a, b > 0
+    """
+
+    cdef long long x, y, u, v, q, r, m, n
+
+    x = v = 0
+    y = u = 1
+    while a:
+        q = b // a
+        r = b - q * a
+        m = x - u * q
+        n = y - v * q
+
+        b = a
+        a = r
+        x = u
+        y = v
+        u = m
+        v = n
+
+    return (b, x, y)
 
 cdef long long c_pow_int64(long long a, long long b, long long m):
     """return (a ** b) % m, for cimport only"""
