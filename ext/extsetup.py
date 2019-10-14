@@ -23,6 +23,11 @@ for f in EXT_FILES_INC:
     extensions.append(Extension(f, [f + '.pyx'],
                                 include_dirs=[np.get_include()]))
 
+EXT_FILES = ['cpp_formula_int64']
+for f in EXT_FILES:
+    extensions.append(Extension(f, [f + '.pyx']))
+
+
 setup(
     cmdclass={'build_ext': build_ext},
     ext_modules=cythonize(extensions),

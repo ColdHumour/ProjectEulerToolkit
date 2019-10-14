@@ -6,6 +6,7 @@ File list:
     c_formula_int64.pyx/pxd -> c_formula_int64.pyd
     c_linalg_int64.pyx/pxd -> c_linalg_int64.pyd
     c_prime_int64.pyx/pxd -> c_prime_int64.pyd
+    cpp_formula_int64.pyx/pxd -> cpp_formula_int64.pyd
 
 @author: Jasper Wu
 """
@@ -18,6 +19,7 @@ try:
         c_formula_int64,
         c_linalg_int64,
         c_prime_int64,
+        cpp_formula_int64,
     )
 except:
     CUR_DIR = os.getcwd()
@@ -44,6 +46,7 @@ except:
             c_formula_int64,
             c_linalg_int64,
             c_prime_int64,
+            cpp_formula_int64,
         )
     else:
         # change back to workdir
