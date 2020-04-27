@@ -20,13 +20,15 @@ Function list:
 cdef long long c_gcd_int64(long long a, long long b):
     """return gcd(a, b) , for cimport only"""
 
-    if a == 0 or b == 0:
-        return 1
-
     if a < 0:
         a = -a
     if b < 0:
         b = -b
+
+    if a == 0:
+        return b
+    elif b == 0:
+        return a
 
     while a and b:
         if a > b:
