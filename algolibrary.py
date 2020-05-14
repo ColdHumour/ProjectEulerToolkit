@@ -114,6 +114,7 @@ def is_coprime(a, b):
 
     return gcd(a, b) == 1
 
+
 def power_mod(a, b, n):
     """return (a ** b) % n"""
     

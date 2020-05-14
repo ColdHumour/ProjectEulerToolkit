@@ -177,29 +177,45 @@ def chinese_remainder(equation_sets):
     return x
 
 
-def _pqa(d, p, q):
+def _pqa(d, n, p, q):
     """
     PQa algorithm for solving generalized Pell equation, which can be regarded as a
     generalized continued fraction expansion with convergent computation
     """
 
     sd = sqrt(d)
-    a, i = int((p+sd)/q), 0
-    X, Y, PQ = [q, a*q - p], [0, 1], [(p, q)]
+    a = int((p+sd)/q)
+    X, Y, PQ = [q, a*q - p], [0, 1], {(p, q): 0}
+    i, t, qi = 0, 1, -1
+
     while 1:
         p = a*q - p
         q = (d - p*p) // q
         a = int((p + sd) / q)
+        if (q == -1 or q == 1) and qi == -1:
+            qi = t
 
         if i == 0 and (p, q) in PQ:
-            l = len(PQ) - PQ.index((p, q))
-            i = 2 * len(PQ) - PQ.index((p, q))
-        if len(PQ) == i:
-            return l, X[1:-1], Y[1:-1], list(zip(*PQ))[1][1:]
+            l = t - PQ[(p, q)]
+            i = 2 * t - PQ[(p, q)]
+        if i == t:
+            if n == -1 or n == 1:
+                if l & 1:
+                    r, s = X[2*l], Y[2*l]  # x1**2 - d * y1**2 = 1
+                    t, u = X[l], Y[l]  # x2**2 - d * y2**2 = -1
+                else:
+                    r, s = X[l], Y[l]  # x1**2 - d * y1**2 = 1
+                    t, u = 0, 0  # no solution to x**2 - d * y**2 = -1
+                return r, s, t, u
+            else:
+                return X[qi], Y[qi]
 
         X.append(a * X[-1] + X[-2])
         Y.append(a * Y[-1] + Y[-2])
-        PQ.append((p, q))
+        if (p, q) not in PQ:
+            PQ[(p, q)] = t
+        t += 1
+
 
 def generalized_pell_equation_base(d, n=1):
     """
@@ -217,19 +233,14 @@ def generalized_pell_equation_base(d, n=1):
     # Classical Pell Equation: x**2 - d * y**2 = 1 (or -1)
     # Using continued fraction expansion of d to solve
 
-    if abs(n) == 1:
-        l, X, Y, Q = _pqa(d, 0, 1)
-        if l & 1:
-            if n == 1:
-                x, y = X[2*l-1], Y[2*l-1]
-            else:
-                x, y = X[l-1], Y[l-1]
+    r, s, t, u = _pqa(d, 1, 0, 1)
+    if n == 1:
+        return [(r, s)]
+    if n == -1:
+        if t or u:
+            return [(t, u)]
         else:
-            if n == 1:
-                x, y = X[l-1], Y[l-1]
-            else:
-                x, y = 0, 0
-        return [(x, y)]
+            return []
 
     # Generalized Pell Equation: x**2 - d * y**2 = n (n != 0)
     # Using Lagrange-Matthews-Mollin (LMM) algorithm
@@ -281,34 +292,27 @@ def generalized_pell_equation_base(d, n=1):
 
     # 9. When all z are done, then we have a set of fundmental solutions (or minimal positive solutions) which are all in different equivalent classes.
 
-    r, s = generalized_pell_equation_base(d, 1)[0]
-    t, u = generalized_pell_equation_base(d, -1)[0]
-
     sols = []
     for (f, m), zlist in zdict.items():
         for z in zlist:
-            l, X, Y, Q = _pqa(d, z, abs(m))
-            for i, q in enumerate(Q):
-                if q in (-1, 1):
-                    x, y = X[i], Y[i]
-                    diff = x**2 - d * y**2
-                    if diff == m:
-                        xg, yg = f*x, f*y
-                        while xg < 0 or yg < 0:
-                            if xg < 0 and yg < 0:
-                                xg, yg = -xg, -yg
-                            else:
-                                xg, yg = r*xg + d*s*yg, s*xg + r*yg
-                        sols.append((xg, yg))
-                    elif t and u and diff == -m:
-                        xg, yg = f*(t*x + d*u*y), f*(u*x + t*y)
-                        while xg < 0 or yg < 0:
-                            if xg < 0 and yg < 0:
-                                xg, yg = -xg, -yg
-                            else:
-                                xg, yg = r*xg + d*s*yg, s*xg + r*yg
-                        sols.append((xg, yg))
-                    break
+            x, y = _pqa(d, n, z, abs(m))
+            diff = x**2 - d * y**2
+            if diff == m:
+                xg, yg = f*x, f*y
+                while xg < 0 or yg < 0:
+                    if xg < 0 and yg < 0:
+                        xg, yg = -xg, -yg
+                    else:
+                        xg, yg = r*xg + d*s*yg, s*xg + r*yg
+                sols.append((xg, yg))
+            elif (t or u) and diff == -m:
+                xg, yg = f*(t*x + d*u*y), f*(u*x + t*y)
+                while xg < 0 or yg < 0:
+                    if xg < 0 and yg < 0:
+                        xg, yg = -xg, -yg
+                    else:
+                        xg, yg = r*xg + d*s*yg, s*xg + r*yg
+                sols.append((xg, yg))
 
     # 10. Let (r, s) be the minimal positive solution of x**2 - d * y**2 = 1.
     #     We can expand the solution set.
@@ -316,11 +320,15 @@ def generalized_pell_equation_base(d, n=1):
     sols = sorted(sols)
     return sols
 
+
 def generalized_pell_equation_generator(d, n=1):
     r, s = generalized_pell_equation_base(d, 1)[0]
-    sols = generalized_pell_equation_base(d, n)
+    if n == 1:
+        sols = [(r, s)]
+    else:
+        sols = generalized_pell_equation_base(d, n)
 
-    if not sols or sols == [(0, 0)]:
+    if not sols:
         raise ValueError("No solution for x^2 - {} y^2 = {}.".format(d, n))
 
     while True:
