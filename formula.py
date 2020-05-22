@@ -30,8 +30,11 @@ from math import gcd, sqrt
 from collections import deque
 
 try:
-    from gmpy2 import is_square, fac, isqrt, iroot
-    from gmpy2 import powmod as pow_mod
+    from gmpy2 import is_square, iroot
+    from gmpy2 import isqrt, fac, powmod as _isqrt, _fac, _powmod
+    isqrt = lambda x: int(_isqrt(int(x)))
+    fac = lambda x: int(_fac(int(x)))
+    pow_mod = lambda x, y, m: int(_powmod(int(x), int(y), int(m)))
 except:
     from fractions import gcd
     pow_mod = pow
