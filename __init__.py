@@ -61,6 +61,9 @@ from . formula import (
     rational_continous_frac,
     irrational_continous_frac,
     continous_frac_convergent,
+
+    best_rational_approx,
+    find_closest_lattice_point_to_line,
 )
 
 from . linalg import (

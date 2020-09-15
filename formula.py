@@ -18,9 +18,12 @@ Function list:
     co_prime_tree
     stern_brocot_tree
 
-    rational_continous_frac,
-    irrational_continous_frac,
+    rational_continous_frac
+    irrational_continous_frac
     continous_frac_convergent
+
+    best_rational_approx
+    find_closest_lattice_point_to_line
 
 @author: Jasper Wu
 """
@@ -36,7 +39,6 @@ try:
     fac = lambda x: int(_fac(int(x)))
     pow_mod = lambda x, y, m: int(_powmod(int(x), int(y), int(m)))
 except:
-    from fractions import gcd
     pow_mod = pow
     is_square = None
     fac = None
@@ -482,3 +484,69 @@ def continous_frac_convergent(cfrac):
         q0, q1 = q1, a*q1 + q0
         cvg.append(Fraction(p1, q1))
     return cvg
+
+
+# Approximation
+def best_rational_approx(D, N):
+    """
+    get best lower and upper rational approximation of sqrt(D) and denominator no larger than N
+    use features of Stern-Brocot Tree and Farey Sequence
+    return (a, b, c, d), where a/b < sqrt{D} < c/d 
+    """
+
+    a, b, c, d = 0, 1, 1, 0
+    while a + c <= N:
+        if (b + d) * (b + d) * D > (a + c) * (a + c):
+            a += c
+            b += d
+        else:
+            c += a
+            d += b
+    return (a, b, c, d)
+
+
+def find_closest_lattice_point_to_line(A, B, C, x_min, x_max):
+    """
+    find the closest lattice point (x, y) that closest to Ax + By + C = 0
+    which is equivalent to minimize |Ax + By + C|
+    return x
+    """    
+    
+    if x_min >= x_max or A == 0:
+        return x_min
+    if B == 0:
+        x = -(-(-2*C // A) // 2)
+        if x < xmin:
+            x = xmin
+        elif x > xmax:
+            x = xmax
+        return x
+    if A < 0:
+        A, C = -A, -C
+    if B < 0:
+        B = -B
+    if A >= B:
+        A %= B
+        if A == 0:
+            return x_min
+
+    y_min = -(A * (2*x_max + 1) + 2*C) // (2*B) + 1
+    y_max = -(A * (2*x_min - 1) + 2*C) // (2*B)
+    y = find_closest_lattice_point_to_line(B, A, C, y_min, y_max)
+    x = -(-(-(2*B*y + 2*C) // A) // 2)
+    if x < x_min:
+        x = x_min
+    elif x > x_max:
+        x = xmax
+    
+    d = abs(A*x + B*y + C)
+
+    dd = abs(A*x_min + B*(y_max+1) + C)
+    if dd < d:
+        dd = d
+        x = x_min
+
+    dd = abs(A*x_max + B*(y_min-1) + C)
+    if dd < d:
+        x = x_max
+    return x
