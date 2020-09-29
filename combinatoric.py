@@ -17,7 +17,7 @@ from . formula import gcd, fac_mod
 
 
 def C(n, k):
-    if k > n:
+    if n < 0 or k < 0 or k > n:
         return 0
     if k > n/2:
         k = n - k
@@ -37,7 +37,7 @@ def C(n, k):
 def C_mod(n, k, m):
     """Return C(n, k) % m"""
 
-    if k > n:
+    if n < 0 or k < 0 or k > n:
         return 0
     if k > n//2:
         k = n - k
