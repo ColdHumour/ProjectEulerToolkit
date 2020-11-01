@@ -17,7 +17,9 @@ Function list:
 @author: Jasper Wu
 """
 
-cdef long long c_gcd_int64(long long a, long long b):
+from cpp_types cimport int64
+
+cdef int64 c_gcd_int64(int64 a, int64 b):
     """return gcd(a, b) , for cimport only"""
 
     if a < 0:
@@ -40,10 +42,10 @@ cdef long long c_gcd_int64(long long a, long long b):
     else:
         return b
 
-cdef long long c_pow_int64(long long a, long long b, long long m):
+cdef int64 c_pow_int64(int64 a, int64 b, int64 m):
     """return (a ** b) % m, for cimport only"""
 
-    cdef long long r
+    cdef int64 r
 
     assert b >= 0
 
@@ -72,7 +74,7 @@ cdef long long c_pow_int64(long long a, long long b, long long m):
         r %= m
         return r
 
-cdef long long c_isqrt_int64(long long n):
+cdef int64 c_isqrt_int64(int64 n):
     """
     return the nearest integer of sqrt(n), for cimport only
     for algorithm, see: http://www.codecodex.com/wiki/Calculate_an_integer_square_root
@@ -80,8 +82,8 @@ cdef long long c_isqrt_int64(long long n):
     
 
     cdef:
-        long long res = 0
-        long long one
+        int64 res = 0
+        int64 one
 
     if n >= (1 << 32):
         one = 1 << 62
@@ -101,11 +103,11 @@ cdef long long c_isqrt_int64(long long n):
         one >>= 2
     return res
 
-cdef short c_is_square_int64(long long n):
+cdef short c_is_square_int64(int64 n):
     """return whether n is a perfect square, for cimport only"""
 
     cdef:
-        long long s
+        int64 s
 
     if n < 0:
         return 0
@@ -116,11 +118,11 @@ cdef short c_is_square_int64(long long n):
     else:
         return 0
 
-cdef long long c_inv_mod_int64(long long n, long long m):
+cdef int64 c_inv_mod_int64(int64 n, int64 m):
     """return n^(-1) mod m using Extended Euclid Algorithm"""
 
     cdef:
-        long long m0 = m, x0 = 0, x1 = 1
+        int64 m0 = m, x0 = 0, x1 = 1
 
     n %= m
     if n == 0 or m <= 0:
@@ -135,12 +137,12 @@ cdef long long c_inv_mod_int64(long long n, long long m):
     else:
         return 0
 
-cdef long long c_sum_mod_int64(long long n):
+cdef int64 c_sum_mod_int64(int64 n):
     """return n%2 + n%3 + ... + n%(n-1), for cimport only"""
 
     cdef:
-        long long s = 0, i = 0, imax = c_isqrt_int64(n+1)
-        long long a, b, c
+        int64 s = 0, i = 0, imax = c_isqrt_int64(n+1)
+        int64 a, b, c
 
     imax = (imax + 1) >> 1
     for i in range(1, imax):
@@ -154,10 +156,10 @@ cdef long long c_sum_mod_int64(long long n):
 
     return s
 
-cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long m):
+cdef int64 c_sum_power_series_mod_int64(int64 i, int64 n, int64 m):
     """sum of x^i mod m from i=1 to n, for i = 0, 1, 2, 3"""
 
-    cdef long long res, r
+    cdef int64 res, r
 
     if i == 0:
         return n % m
@@ -202,12 +204,12 @@ cdef long long c_sum_power_series_mod_int64(long long i, long long n, long long 
     else:
         return 0
 
-cdef long long c_sum_floor_int64(long long n, long long xmin, long long xmax):
+cdef int64 c_sum_floor_int64(int64 n, int64 xmin, int64 xmax):
     """sum up n//x from x = xmin to xmax"""
 
     cdef:
-        long long nrt = c_isqrt_int64(n), res = 0
-        long long real_xmin, real_xmax, a0, a1, ub, lb
+        int64 nrt = c_isqrt_int64(n), res = 0
+        int64 real_xmin, real_xmax, a0, a1, ub, lb
 
     if xmin > n:
         return 0

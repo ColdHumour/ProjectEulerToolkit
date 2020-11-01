@@ -20,18 +20,21 @@ try:
         c_linalg_int64,
         c_prime_int64,
         cpp_formula_int64,
+        simple_bigint,
     )
 except:
     CUR_DIR = os.getcwd()
     EXT_DIR = os.path.dirname(os.path.abspath(__file__))
 
     # build cython extensions
-    os.chdir(EXT_DIR)
-    state = os.system('python extsetup.py build_ext -i --compiler=msvc')
+    # the build command is executed at CUR_DIR, thus extsetup.py path must be hardcoded
+    # ~/build directory will also created at CUR_DIR, but .c and .cpp files are created
+    # at the same level of extsetup.py
+    state = os.system('python ProjectEulerToolkit/ext/extsetup.py build_ext -i --compiler=msvc')
 
     if state == 0:
         # clean intermediate files
-        build = os.path.join(EXT_DIR, 'build')
+        build = os.path.join(CUR_DIR, 'build')
         if os.path.exists(build):
             shutil.rmtree(build)
         for f in os.listdir(EXT_DIR):
@@ -39,17 +42,12 @@ except:
             if faffix[-1] in 'c|cpp':
                 os.remove(os.path.join(EXT_DIR, f))
 
-        # change back to workdir
-        os.chdir(CUR_DIR)
-
         from . import (
             c_formula_int64,
             c_linalg_int64,
             c_prime_int64,
             cpp_formula_int64,
+            simple_bigint,
         )
     else:
-        # change back to workdir
-        os.chdir(CUR_DIR)
-
         print("WARNING: Fail to build Cython extensions!")

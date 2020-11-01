@@ -9,6 +9,6 @@ Declaration file for cpp_formula_int64.pyx, functions can be only accessed by py
 @author: Jasper Wu
 """
 
-from libcpp.vector cimport vector
+from ProjectEulerToolkit.ext.cpp_types cimport int64, lvec
 
-cdef vector[long long] cpp_extended_gcd_int64(long long a, long long b)
+cdef lvec cpp_extended_gcd_int64(int64 a, int64 b)

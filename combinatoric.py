@@ -8,9 +8,12 @@ Function list:
     C, C_mod, MP
     multiset_permutations, limited_combinations
     all_subsets, all_partitions, seq_partitions
+    composite_perm, inverse_perm, rank_perm, unrank_perm
 
 @author: Jasper Wu
 """
+
+import numpy as np
 
 from . prime import primes_list, euler_phi
 from . formula import gcd, fac_mod
@@ -232,3 +235,54 @@ def seq_partitions(sequence, p):
             newseq = [ele for ele in sequence if ele not in subp]
             output += [[list(subp)] + s for s in seq_partitions(newseq, p[1:])]
         return output
+
+
+def composite_perm(perm1, perm2, *other_perms):
+    """composite two or more perms"""
+
+    perm = perm2[perm1]
+    for other_perm in other_perms:
+        perm = other_perm[perm]
+    return perm.copy()
+
+
+def inverse_perm(perm):
+    """
+    find inverse of a permuation in bijection form, return np.array
+    e.g. inverse([1, 2, 3, 0]) = [3, 0, 1, 2]
+    """
+
+    n = len(perm)
+    inv = np.zeros(n, dtype=np.short)
+    for i in range(n):
+        inv[perm[i]] = i
+    return inv
+
+
+def rank_perm(perm):
+    """map perm to a unique integer between 0 and n!-1"""
+
+    inv = inverse_perm(perm)
+    perm = perm.copy()
+
+    slist = []
+    for i in range(len(perm)-1, 0, -1):
+        s = perm[i]
+        perm[i], perm[inv[i]] = perm[inv[i]], perm[i]
+        inv[s], inv[i] = inv[i], inv[s]
+        slist.append(s)
+
+    r = 0
+    for i, s in enumerate(slist[::-1]):
+        r = int(s) + (i+2)*r
+    return r
+
+
+def unrank_perm(r, n):
+    """resolve proper perm from 0 to n-1 with rank r"""
+
+    perm = np.arange(n, dtype=np.short)
+    for i in range(n-1, -1, -1):
+        r, q = divmod(r, i+1)
+        perm[i], perm[q] = perm[q], perm[i]
+    return perm

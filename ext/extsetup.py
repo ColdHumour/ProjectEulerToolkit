@@ -9,14 +9,19 @@ import numpy as np
 
 extensions = []
 
-EXT_FILES = ['c_formula_int64', 'cpp_formula_int64']
+EXT_FILES = ['c_formula_int64', 'cpp_formula_int64', 'simple_bigint']
 for f in EXT_FILES:
-    extensions.append(Extension(f, [f + '.pyx']))
+    # first parameter is the path of pyd file generated at
+    # the second paramter is the path of pyx file relative to cwd
+    extensions.append(Extension("ProjectEulerToolkit.ext.{}".format(f),
+                                ["ProjectEulerToolkit/ext/{}.pyx".format(f)]))
 
 EXT_FILES_INC = ['c_linalg_int64', 'c_prime_int64']
 for f in EXT_FILES_INC:
-    extensions.append(Extension(f, [f + '.pyx'],
-                                include_dirs=[np.get_include()]))
+    extensions.append(Extension("ProjectEulerToolkit.ext.{}".format(f),
+                                ["ProjectEulerToolkit/ext/{}.pyx".format(f)],
+                                include_dirs=[np.get_include()],
+                                define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")]))
 
 setup(
     cmdclass={'build_ext': build_ext},

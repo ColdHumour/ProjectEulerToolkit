@@ -44,6 +44,11 @@ from . combinatoric import (
     all_subsets,
     all_partitions,
     seq_partitions,
+
+    composite_perm,
+    inverse_perm,
+    rank_perm,
+    unrank_perm,
 )
 
 from . formula import (

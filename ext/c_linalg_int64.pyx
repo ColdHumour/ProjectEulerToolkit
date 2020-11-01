@@ -14,9 +14,10 @@ Function list:
 
 import numpy as np
 cimport numpy as np
+from cpp_types cimport int64
 
-ctypedef long long int64
 ctypedef np.ndarray arr
+
 
 cpdef arr[int64, ndim=2] c_dot_mod_int64(arr[int64, ndim=2] A, arr[int64, ndim=2] B, int64 MOD):
     cdef:
@@ -33,6 +34,7 @@ cpdef arr[int64, ndim=2] c_dot_mod_int64(arr[int64, ndim=2] A, arr[int64, ndim=2
             for k in range(m):
                 C[i, j] = (C[i, j] + A[i, k] * B[k, j]) % MOD
     return C
+
 
 cpdef arr[int64, ndim=2] c_mat_pow_mod_int64(arr[int64, ndim=2] mat, int64 n, int64 m=0):
     """return (mat^n) % m"""
@@ -54,13 +56,14 @@ cpdef arr[int64, ndim=2] c_mat_pow_mod_int64(arr[int64, ndim=2] mat, int64 n, in
         n >>= 1
     return res
 
+
 cpdef arr[int64, ndim=2] c_mat_sum_pow_mod_int64(arr[int64, ndim=2] A0, arr[int64, ndim=2] Q, int64 n, int64 m=0):
     """return (A0 + Q A0 + Q^2 A0 + ... + Q^n A0) % m"""
 
     cdef:
         short d = len(Q)
         arr[int64, ndim=2] O, I, Q_ext, Q_ext_pow, I2, res
-    
+
     if n == 0:
         return A0
 
@@ -76,6 +79,6 @@ cpdef arr[int64, ndim=2] c_mat_sum_pow_mod_int64(arr[int64, ndim=2] A0, arr[int6
     if m:
         res = c_dot_mod_int64(c_dot_mod_int64(Q_ext_pow, I2, m), A0, m)
     else:
-        res = np.dot(np.dot(Q_ext_pow, I2), A0) 
+        res = np.dot(np.dot(Q_ext_pow, I2), A0)
 
     return res[:d]
