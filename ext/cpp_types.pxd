@@ -18,6 +18,7 @@ from libcpp.vector cimport vector
 ctypedef long long int64
 ctypedef pair[int64, int64] lpair
 ctypedef cset[int64] lset
+ctypedef vector[bool] bvec
 ctypedef vector[int64] lvec
 
 ctypedef lpair sbi  # simple big integer

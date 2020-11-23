@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-_prime.pyx
+c_prime_int64.pyx
 
 Cython extension of functions using to dealing with prime-related problems.
 Function list: 

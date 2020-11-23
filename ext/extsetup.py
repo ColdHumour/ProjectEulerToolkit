@@ -9,7 +9,7 @@ import numpy as np
 
 extensions = []
 
-EXT_FILES = ['c_formula_int64', 'cpp_formula_int64', 'simple_bigint']
+EXT_FILES = ['c_formula_int64', 'cpp_formula_int64', 'cpp_prime_int64', 'simple_bigint']
 for f in EXT_FILES:
     # first parameter is the path of pyd file generated at
     # the second paramter is the path of pyx file relative to cwd

@@ -20,6 +20,7 @@ try:
         c_linalg_int64,
         c_prime_int64,
         cpp_formula_int64,
+        cpp_prime_int64,
         simple_bigint,
     )
 except:
@@ -47,6 +48,7 @@ except:
             c_linalg_int64,
             c_prime_int64,
             cpp_formula_int64,
+            cpp_prime_int64,
             simple_bigint,
         )
     else:

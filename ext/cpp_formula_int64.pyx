@@ -38,8 +38,10 @@ cdef lvec cpp_extended_gcd_int64(int64 a, int64 b):
         u = m
         v = n
 
-    output = lvec(3)  # don't know why lvec() will raise syntax error
-    output[0] = b
-    output[1] = x
-    output[2] = y
+    output = lvec()  # don't know why lvec() will raise syntax error
+    output.push_back(b)
+    output.push_back(x)
+    output.push_back(y)
+    # output[1] = x
+    # output[2] = y
     return output
