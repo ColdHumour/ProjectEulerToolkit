@@ -3,10 +3,13 @@
 """
 Cython extensions
 File list:
+    cpp_types.pxd
     c_formula_int64.pyx/pxd -> c_formula_int64.pyd
     c_linalg_int64.pyx/pxd -> c_linalg_int64.pyd
     c_prime_int64.pyx/pxd -> c_prime_int64.pyd
     cpp_formula_int64.pyx/pxd -> cpp_formula_int64.pyd
+    cpp_prime_int64.pyx/pxd -> cpp_prime_int64.pyd
+    simple_bigint.pyx/pxd -> simple_bigint.pyd
 
 @author: Jasper Wu
 """
@@ -26,6 +29,12 @@ try:
 except:
     CUR_DIR = os.getcwd()
     EXT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    # remove .pyd files since building process is for all files
+    for f in os.listdir(EXT_DIR):
+        faffix = f.split('.')
+        if faffix[-1] in 'pyd':
+            os.remove(os.path.join(EXT_DIR, f))
 
     # build cython extensions
     # the build command is executed at CUR_DIR, thus extsetup.py path must be hardcoded
