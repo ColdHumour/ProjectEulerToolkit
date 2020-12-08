@@ -34,7 +34,7 @@ from collections import deque
 
 try:
     from gmpy2 import is_square, iroot
-    from gmpy2 import isqrt, fac, powmod as _isqrt, _fac, _powmod
+    from gmpy2 import isqrt as _isqrt, fac as _fac, powmod as _powmod
     isqrt = lambda x: int(_isqrt(int(x)))
     fac = lambda x: int(_fac(int(x)))
     pow_mod = lambda x, y, m: int(_powmod(int(x), int(y), int(m)))
@@ -93,7 +93,13 @@ def _iroot(n, m):
     """return integer m-th root of n, and whether n is a perfect power"""
 
     r = int(n**(1./m))
-    return r, r**m == n
+    check = (r + 1)**m
+    if check == n:
+        return r + 1, True
+    elif check < n:
+        return r + 1, False
+    else:
+        return r, r**m == n
 
 if iroot is None:
     iroot = _iroot
