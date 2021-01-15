@@ -16,8 +16,6 @@ Function list:
 @author: Jasper Wu
 """
 
-from cpp_types cimport bool, int64, sbi
-
 cdef int64 MAXINT = 2**63 - 1
 
 

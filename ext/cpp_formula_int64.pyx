@@ -11,8 +11,6 @@ Function list:
 @author: Jasper Wu
 """
 
-from cpp_types cimport int64, lvec
-
 cdef lvec cpp_extended_gcd_int64(int64 a, int64 b):
     """
     return gcd(a, b), x, y that a*x + b*y = gcd(a, b)

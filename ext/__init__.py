@@ -33,7 +33,7 @@ except:
     # remove .pyd files since building process is for all files
     for f in os.listdir(EXT_DIR):
         faffix = f.split('.')
-        if faffix[-1] in 'pyd':
+        if faffix[-1] == 'pyd':
             os.remove(os.path.join(EXT_DIR, f))
 
     # build cython extensions

@@ -17,8 +17,6 @@ Function list:
 @author: Jasper Wu
 """
 
-from cpp_types cimport int64
-
 cdef int64 c_gcd_int64(int64 a, int64 b):
     """return gcd(a, b) , for cimport only"""
 
