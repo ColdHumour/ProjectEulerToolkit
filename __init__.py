@@ -21,7 +21,7 @@ Dependencies:
 
 # dependency test
 # default: numpy, scipy, sympy
-DEPENDENCIES = ['cython', 'gmpy2', 'ortools']
+DEPENDENCIES = ['gmpy2']  # 'cython', 'ortools'
 
 for pkg in DEPENDENCIES:
     try:

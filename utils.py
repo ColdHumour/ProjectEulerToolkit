@@ -14,13 +14,14 @@ Function list:
 """
 
 import os
+import functools
 import shutil
-import webbrowser
+import time
+# import webbrowser
 
 
 def timepast(func):
-    import time
-
+    @functools.wraps(func)
     def _deco(*args, **kwargs):
         t = time.time()
         print("Func {0}() begins at: {1}".format(func.__name__, time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))))
@@ -31,11 +32,12 @@ def timepast(func):
 
 
 def memoize(cache={}, key=lambda x: x):
+    @functools.wraps(func)
     def _deco(func):
-        def __deco(*args, **kw):
+        def __deco(*args, **kwargs):
             idx = key(args)
             if idx not in cache:
-                cache[idx] = func(*args, **kw)
+                cache[idx] = func(*args, **kwargs)
             return cache[idx]
         return __deco
     return _deco
