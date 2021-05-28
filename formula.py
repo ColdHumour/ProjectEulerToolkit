@@ -5,13 +5,14 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
+    add_mod, mul_mod,
     sqrt, is_square, isqrt, iroot,
     gcd, ggcd, extended_gcd, lcm, llcm,
-    fac, fac_mod, inv_mod, cprod
-    sum_mod, pow_mod, iter_associate
-    sum_power_series_mod
-    sum_floor
-    legendre_symbol
+    fac, fac_mod, inv_mod, cprod,
+    pow_mod, iter_associate,
+    sum_over_mod, sum_floor,
+    sum_power_series_mod,
+    legendre_symbol,
     padic, max_subarray
 
     pythag_triple_tree
@@ -428,7 +429,7 @@ def stern_brocot_tree():
 
 
 # Continuous Fraction Functions
-def rational_continous_frac(p, q=1, limit=100):
+def rational_continous_frac(p, q=1):
     """
     return continued fraction expansion of rational number p / q
     """

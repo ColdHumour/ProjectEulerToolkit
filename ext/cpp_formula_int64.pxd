@@ -11,4 +11,8 @@ Declaration file for cpp_formula_int64.pyx, functions can be only accessed by py
 
 from ProjectEulerToolkit.ext.cpp_types cimport int64, lvec
 
-cdef lvec cpp_extended_gcd_int64(int64 a, int64 b)
+cdef lvec extended_gcd(int64 a, int64 b)
+
+cdef lvec tabulate_fac_mod(int64 n, int64 MOD)
+
+cdef lvec tabulate_fac_inv(lvec &fac, int64 MOD)
