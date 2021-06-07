@@ -12,13 +12,13 @@ from ProjectEulerToolkit.ext.cpp_types cimport int64
 
 cdef int64 c_gcd_int64(int64 a, int64 b)
 
-cdef int64 c_add_mod_int64(int64 a0, int64 a1, int64 a2=?, int64 a3=?,
-                           int64 a4=?, int64 a5=?, int64 a6=?, int64 a7=?,
-                           int64 a8=?, int64 a9=?, int64 MOD=?)
+cdef int64 c_add_mod_int64(int64 MOD, int64 a0, int64 a1, int64 a2=*, int64 a3=*,
+                           int64 a4=*, int64 a5=*, int64 a6=*, int64 a7=*,
+                           int64 a8=*, int64 a9=*)
 
-cdef int64 c_mul_mod_int64(int64 a0, int64 a1, int64 a2=?, int64 a3=?,
-                           int64 a4=?, int64 a5=?, int64 a6=?, int64 a7=?,
-                           int64 a8=?, int64 a9=?, int64 MOD=?)
+cdef int64 c_mul_mod_int64(int64 MOD, int64 a0, int64 a1, int64 a2=*, int64 a3=*,
+                           int64 a4=*, int64 a5=*, int64 a6=*, int64 a7=*,
+                           int64 a8=*, int64 a9=*)
 
 cdef int64 c_pow_int64(int64 a, int64 b, int64 m)
 

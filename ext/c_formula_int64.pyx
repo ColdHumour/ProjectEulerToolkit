@@ -43,9 +43,9 @@ cdef int64 c_gcd_int64(int64 a, int64 b):
     else:
         return b
 
-cdef int64 c_add_mod_int64(int64 a0, int64 a1, int64 a2=0, int64 a3=0,
+cdef int64 c_add_mod_int64(int64 MOD, int64 a0, int64 a1, int64 a2=0, int64 a3=0,
                            int64 a4=0, int64 a5=0, int64 a6=0, int64 a7=0,
-                           int64 a8=0, int64 a9=0, int64 MOD=0):
+                           int64 a8=0, int64 a9=0):
     """(a0 + a1 +  ... + a9) % MOD"""
 
     if a0 <= -MOD or a0 >= MOD:
@@ -106,9 +106,9 @@ cdef int64 c_add_mod_int64(int64 a0, int64 a1, int64 a2=0, int64 a3=0,
             a0 -= MOD
     return a0
 
-cdef int64 c_mul_mod_int64(int64 a0, int64 a1, int64 a2=1, int64 a3=1,
+cdef int64 c_mul_mod_int64(int64 MOD, int64 a0, int64 a1, int64 a2=1, int64 a3=1,
                            int64 a4=1, int64 a5=1, int64 a6=1, int64 a7=1,
-                           int64 a8=1, int64 a9=1, int64 MOD=0):
+                           int64 a8=1, int64 a9=1):
     """(a0 * a1 *  ... * a9) % MOD"""
 
     if a0 <= -MOD or a0 >= MOD:

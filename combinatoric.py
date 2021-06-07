@@ -16,7 +16,8 @@ Function list:
 import numpy as np
 
 from . prime import primes_list, euler_phi
-from . formula import gcd, fac_mod
+from . formula import gcd
+from . modulo import fac_mod
 
 
 def C(n, k):

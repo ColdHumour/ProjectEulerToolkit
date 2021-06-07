@@ -54,9 +54,7 @@ from . combinatoric import (
 from . formula import (
     sqrt, is_square, isqrt, iroot,
     gcd, ggcd, extended_gcd, lcm, llcm,
-    fac, fac_mod, inv_mod, cprod,
-    sum_mod, pow_mod, sum_power_series_mod, sum_floor,
-    legendre_symbol,
+    sum_floor, legendre_symbol,
     padic, max_subarray,
 
     pythag_triple_tree,
@@ -74,6 +72,16 @@ from . formula import (
 from . linalg import (
     mat_pow_mod,
     gauss_jordan_elimination,
+)
+
+from . modulo import (
+    add_mod, cprod, mul_mod, pow_mod,
+    fac, fac_mod, inv_mod,
+    sum_over_mod, sum_power_series_mod,
+    tabulate_inv_mod,
+    tabulate_fac_mod, tabulate_fac_inv,
+    tabulate_bernoulli_mod,
+    faulhaber_mod_coefs,
 )
 
 from . prime import (

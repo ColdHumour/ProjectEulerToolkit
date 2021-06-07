@@ -13,6 +13,7 @@ Function list:
     mobius, mobius_list
     factor_sieve
     primepi
+    tabulate_primepi
 
 @author: Jasper Wu
 """
@@ -21,7 +22,8 @@ Function list:
 import random
 import numpy as np
 
-from . formula import cprod, gcd, sqrt, isqrt
+from . formula import gcd, sqrt, isqrt
+from . modulo import cprod
 
 try:
     from gmpy2 import is_prime
@@ -41,8 +43,9 @@ except:
 
 # Supplementry Implementation
 def _primes_list(n):
-    """Input n>=6, Returns a array of primes, 2 <= p < n"""
+    """Input n>=6, Returns a array of primes, 2 <= p <= n"""
 
+    n += 1
     sieve = np.ones(n//3 + (n % 6 == 2), dtype=np.bool)
     for i in range(1, isqrt(n)//3+1):
         if sieve[i]:
@@ -389,3 +392,8 @@ def primepi(x):
         p = q
 
     return res
+
+
+def tabulate_primepi(x):
+    pass
+

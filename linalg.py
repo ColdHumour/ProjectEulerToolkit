@@ -25,7 +25,8 @@ from copy import deepcopy
 import numpy as np
 from sympy import Symbol, Rational
 
-from . formula import gcd, inv_mod
+from . formula import gcd
+from . modulo import inv_mod
 
 
 def dot_mod(A, B, m=0):

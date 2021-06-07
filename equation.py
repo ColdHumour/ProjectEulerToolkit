@@ -27,11 +27,8 @@ Function list:
 import numpy as np
 from gmpy2 import invert
 
-from . formula import (
-    gcd, sqrt, cprod,
-    is_square,
-    legendre_symbol,
-)
+from . formula import gcd, sqrt, is_square, legendre_symbol
+from . modulo import cprod
 
 from . import polynomial as poly
 

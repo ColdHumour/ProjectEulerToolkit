@@ -65,6 +65,6 @@ cdef lvec tabulate_fac_inv(lvec &fac, int64 MOD):
         int64 m
         lvec facinv = lvec(fac.size(), 1)
 
-    for m in range(2, fac.size()+1):
+    for m in range(2, fac.size()):
         facinv[m] = inv(fac[m], MOD)
-    return fac
+    return facinv

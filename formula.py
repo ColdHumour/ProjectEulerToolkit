@@ -5,13 +5,9 @@ formula.py
 
 Functions implementing formulas via fast algorithms.
 Function list:
-    add_mod, mul_mod,
     sqrt, is_square, isqrt, iroot,
     gcd, ggcd, extended_gcd, lcm, llcm,
-    fac, fac_mod, inv_mod, cprod,
-    pow_mod, iter_associate,
-    sum_over_mod, sum_floor,
-    sum_power_series_mod,
+    sum_floor,
     legendre_symbol,
     padic, max_subarray
 
@@ -29,28 +25,16 @@ Function list:
 @author: Jasper Wu
 """
 
-import numpy as np
 from math import gcd, sqrt
 from collections import deque
 
 try:
     from gmpy2 import is_square, iroot
-    from gmpy2 import isqrt as _isqrt, fac as _fac, powmod as _powmod
     isqrt = lambda x: int(_isqrt(int(x)))
-    fac = lambda x: int(_fac(int(x)))
-    pow_mod = lambda x, y, m: int(_powmod(int(x), int(y), int(m)))
 except:
-    pow_mod = pow
     is_square = None
-    fac = None
     isqrt = None
     iroot = None
-
-try:
-    from . ext.c_formula_int64 import c_sum_mod_int64
-    sum_mod = c_sum_mod_int64
-except:
-    sum_mod = None
 
 
 # Supplementry Implementations
@@ -62,23 +46,6 @@ def _is_square(n):
 
 if is_square is None:
     is_square = _is_square
-
-
-def _factorial(n):
-    """return n!"""
-
-    if n < 0:
-        raise ValueError("n in n! must be positive!")
-    if n == 0 or n == 1:
-        return 1
-
-    output = 1
-    for i in range(2, n+1):
-        output *= i
-    return output
-
-if fac is None:
-    fac = _factorial
 
 
 def _isqrt(n):
@@ -104,16 +71,6 @@ def _iroot(n, m):
 
 if iroot is None:
     iroot = _iroot
-
-
-# Useful Functions
-def cprod(seq):
-    """return seq[0] * seq[1] * ... * seq[-1]"""
-
-    output = 1
-    for i in iter(seq):
-        output *= i
-    return output
 
 
 def ggcd(seq):
@@ -216,94 +173,6 @@ def max_subarray(array):
         max_ending_here = max(0, max_ending_here + x)
         max_so_far = max(max_so_far, max_ending_here)
     return max_so_far
-
-
-# Modulo Functions
-def _sum_mod(n):
-    """return n % 2 + n % 3 + ... + n % (n-1)"""
-
-    from itertools import takewhile, count
-
-    sm = i = 0
-    for i in takewhile(lambda x: n//x - n//(x+1) > 4, count(1)):
-        a = n % (n//(i+1) + 1)
-        b = n % (n//i) if i > 1 else 1
-        c = (a-b) // i + 1
-        sm += b*c + i*(c - 1)*c // 2
-    sm += sum(n % j for j in range(2, n//(i+1) + 1))
-    return sm
-
-if sum_mod is None:
-    sum_mod = _sum_mod
-
-
-def inv_mod(n, m):
-    """return n^(-1) mod m using Extended Euclid Algorithm"""
-
-    n %= m
-    if n == 0 or m <= 0:
-        return 0
-    
-    m0, x0, x1 = m, 0, 1
-    while n != 0:
-        x0, x1 = x1, x0 - m // n * x1
-        m, n = n, m % n
-
-    if m == 1:
-        return x0 % m0
-    else:
-        return 0
-
-
-def fac_mod(n, m):
-    """return n! % m"""
-
-    if n < 0:
-        raise ValueError("n in n! must be positive!")
-    if n == 0 or n == 1:
-        return 1
-
-    output = 1
-    for i in range(2, n+1):
-        output *= i
-        output %= m
-    return output
-
-
-def iter_associate(f, x, n):
-    """
-    f is a bivariable function following associate law, namely f(a, f(b, c)) = f(f(a, b), c)
-    return doing f iteratively for n times with identical input x, namely f(f(...f(x, x)..., x), x)
-    """
-
-    n, r = n - 1, x
-    while n:
-        if n % 2:
-            r = f(x, r)
-        n >>= 1
-        x = f(x, x)
-    return r
-
-
-def sum_power_series_mod(i, n, m):
-    """sum of x^i mod m from i=1 to n, for i = 0, 1, 2, 3"""
-
-    if i == 0:
-        return n
-    elif i == 1:
-        n %= 2 * m
-        return ((n*(n+1)) >> 1) % m
-    elif i == 2:
-        n %= 6 * m
-        m3 = 3 * m
-        res = ((n*(n+1)) >> 1) % m3
-        return ((res * ((2*n+1) % m3)) % m3) // 3
-    elif i == 3:
-        n %= 2 * m
-        res = ((n*(n+1)) >> 1) % m
-        return (res * res) % m
-    else:
-        return 0
 
 
 def sum_floor(n, xmin, xmax):
