@@ -54,7 +54,8 @@ from . combinatoric import (
 from . formula import (
     sqrt, is_square, isqrt, iroot,
     gcd, ggcd, extended_gcd, lcm, llcm,
-    sum_floor, legendre_symbol,
+    sum_floor, generate_integer_quotients,
+    legendre_symbol,
     padic, max_subarray,
 
     pythag_triple_tree,
@@ -94,6 +95,7 @@ from . prime import (
     mobius_list,
     factor_sieve,
     primepi,
+    tabulate_primepi,
 )
 
 from . utils import (

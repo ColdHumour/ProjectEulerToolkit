@@ -7,7 +7,7 @@ Functions implementing formulas via fast algorithms.
 Function list:
     sqrt, is_square, isqrt, iroot,
     gcd, ggcd, extended_gcd, lcm, llcm,
-    sum_floor,
+    sum_floor, generate_integer_quotients,
     legendre_symbol,
     padic, max_subarray
 
@@ -220,6 +220,20 @@ def sum_floor(n, xmin, xmax):
         if x == n // x:
             res -= x
     return res
+
+
+def generate_integer_quotients(n):
+    """return list of all n//x, sorted descendingly"""
+
+    iqs = []
+    for m in range(1, isqrt(n)+1):
+        iqs.append(n // m)
+
+    if m != n // m:
+        iqs.append(m)
+
+    iqs += list(range(m-1, 0, -1))
+    return iqs
 
 
 def legendre_symbol(a, p):

@@ -119,7 +119,7 @@ cdef int64 get_mertens(int64 n, int64 MOD, int64 L, lvec &Mvec, llmap &Mcache):
         lvec Mvec = get_mertens_vec(L)
         llmap Mcache = llmap()
     """
-    
+
     cdef:
         int64 nrt, b0, b1, d, r, res
 

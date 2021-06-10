@@ -394,6 +394,32 @@ def primepi(x):
     return res
 
 
-def tabulate_primepi(x):
-    pass
+def tabulate_primepi(N, primes=None):
+    """
+    tabulate pi(x) for all integer quotients x = N // m
+    with space complexity O(x^1/2) and time complexity O(x^3/4)
+    """
 
+    Nrt = isqrt(N)
+    if primes is None:
+        primes = primes_list(Nrt)
+
+    iqs = []
+    for n in range(1, Nrt+1):
+        iqs.append(N // n)
+    if N // Nrt != Nrt:
+        iqs.append(Nrt)
+    iqs += list(range(Nrt-1, 0, -1))
+
+    phi = {n: n-1 for n in iqs}
+    for p in primes:
+        if p * p > N:
+            break
+
+        for n in iqs:
+            if n >= p * p:
+                phi[n] -= phi[n//p] - phi[p-1]
+            else:
+                break
+
+    return phi
