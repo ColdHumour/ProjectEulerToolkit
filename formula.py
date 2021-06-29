@@ -9,7 +9,8 @@ Function list:
     gcd, ggcd, extended_gcd, lcm, llcm,
     sum_floor, generate_integer_quotients,
     legendre_symbol,
-    padic, max_subarray
+    padic, max_subarray,
+    mex,
 
     pythag_triple_tree
     co_prime_tree
@@ -173,6 +174,15 @@ def max_subarray(array):
         max_ending_here = max(0, max_ending_here + x)
         max_so_far = max(max_so_far, max_ending_here)
     return max_so_far
+
+
+def mex(gvalues):
+    """return mex(g1, g2, ...), gvalues is list or set, set is better"""
+
+    n = 0
+    while n in gvalues:
+        n += 1
+    return n
 
 
 def sum_floor(n, xmin, xmax):

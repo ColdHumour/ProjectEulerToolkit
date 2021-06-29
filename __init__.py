@@ -57,6 +57,7 @@ from . formula import (
     sum_floor, generate_integer_quotients,
     legendre_symbol,
     padic, max_subarray,
+    mex,
 
     pythag_triple_tree,
     co_prime_tree,
