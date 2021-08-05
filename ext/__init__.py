@@ -8,6 +8,7 @@ File list:
     c_linalg_int64.pyx/pxd -> c_linalg_int64.pyd
     c_prime_int64.pyx/pxd -> c_prime_int64.pyd
     cpp_formula_int64.pyx/pxd -> cpp_formula_int64.pyd
+    cpp_polynomial_int64.pyx/pxd -> cpp_polynomial_int64.pyd
     cpp_prime_int64.pyx/pxd -> cpp_prime_int64.pyd
     simple_bigint.pyx/pxd -> simple_bigint.pyd
 
@@ -15,6 +16,7 @@ File list:
 """
 
 import os
+import sys
 import shutil
 
 try:
@@ -23,6 +25,7 @@ try:
         c_linalg_int64,
         c_prime_int64,
         cpp_formula_int64,
+        cpp_polynomial_int64,
         cpp_prime_int64,
         simple_bigint,
     )

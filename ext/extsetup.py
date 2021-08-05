@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from importlib import import_module
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
@@ -9,10 +10,8 @@ import numpy as np
 
 extensions = []
 
-EXT_FILES = ['c_formula_int64', 'cpp_formula_int64', 'cpp_prime_int64', 'simple_bigint']
+EXT_FILES = ['c_formula_int64', 'cpp_formula_int64', 'cpp_polynomial_int64', 'cpp_prime_int64', 'simple_bigint']
 for f in EXT_FILES:
-    # first parameter is the path of pyd file generated at
-    # the second paramter is the path of pyx file relative to cwd
     extensions.append(Extension("ProjectEulerToolkit.ext.{}".format(f),
                                 ["ProjectEulerToolkit/ext/{}.pyx".format(f)]))
 
