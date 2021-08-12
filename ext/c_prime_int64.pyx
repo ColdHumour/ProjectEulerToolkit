@@ -22,12 +22,16 @@ ctypedef np.ndarray arr
 
 
 cpdef arr[short, ndim=1] c_primes_list_int64(int64 n):
-    """return primes list for primes < n"""
+    """return primes list for primes <= n"""
     
     cdef:
-        arr[short, ndim=1] sieve = np.ones(n//3 + (n%6==2), dtype=np.int16)
-        int64 i, k, imax = c_isqrt_int64(n)
-        
+        arr[short, ndim=1] sieve
+        int64 i, k, imax
+
+    n += 1
+    sieve = np.ones(n//3 + (n%6==2), dtype=np.int16)
+    imax = c_isqrt_int64(n)
+
     for i in range(1, imax//3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
@@ -63,7 +67,10 @@ cpdef arr[int64, ndim=1] c_mobius_list_int64(int64 n):
 
 
 cpdef arr[int64, ndim=1] c_factor_sieve_int64(int64 n):
-    """return factor sieve for 0 <= k <= n"""
+    """factor_sieve(n)
+
+    return factor sieve for 0 <= k <= n in numpy.array
+    """
 
     cdef:
         arr[int64, ndim=1] sieve = np.ones(n+1, dtype=np.int64)

@@ -9,15 +9,16 @@ Function list:
     multiset_permutations, limited_combinations
     all_subsets, all_partitions, seq_partitions
     composite_perm, inverse_perm, rank_perm, unrank_perm
+    cycle_index_mod_p, merge_cycle_index_mod_p
 
 @author: Jasper Wu
 """
 
 import numpy as np
 
-from . prime import primes_list, euler_phi
+from . prime import primes_list, euler_phi, all_divisors
 from . formula import gcd
-from . modulo import fac_mod
+from . modulo import inv_mod, fac_mod, tabulate_fac_mod, tabulate_fac_inv
 
 
 def C(n, k):
@@ -287,3 +288,99 @@ def unrank_perm(r, n):
         r, q = divmod(r, i+1)
         perm[i], perm[q] = perm[q], perm[i]
     return perm
+
+
+def cycle_index_mod_p(gtype, n, MOD):
+    """
+    get cycle index of permutation/cyclic/dihedral groups, with parameters mod p
+    return [(param, ((cycle length, exponent), ...)), ...]
+
+    gtype (S/C/D): permutation/cyclic/dihedral group
+    n (int): order
+    MOD (int): prime number to modulo
+    """
+
+    if gtype == "S":
+        facs = tabulate_fac_mod(n, MOD)
+        facinv = tabulate_fac_inv(facs, MOD)
+        def binom(n, i):
+            return (facs[n] * facinv[i] % MOD) * facinv[n-i] % MOD
+
+        states = [[[], n, 1]]  # [term, remaining length, coeff]
+        cycle_index = []  # (term, coeff)
+        for i in range(n, 0, -1):
+            states_new = states[:]
+            for term, l, c in states:
+                l_new = l
+                c0_new = c
+                e = 0
+                while l_new >= i:
+                    e += 1
+                    term_new = term + [(i, e)]
+                    c0_new = c0_new * binom(l_new, i) % MOD
+                    l_new -= i
+                    c_new = (c0_new * facinv[e] % MOD) * pow(facs[i-1], e, MOD) % MOD
+                    if l_new:
+                        states_new.append([term_new, l_new, c_new])
+                    else:
+                        cycle_index.append((tuple(sorted(term_new)), c_new * facinv[n] % MOD))
+            states = states_new
+    elif gtype == "C":
+        cycle_index = []  # (term, coeff)
+        ninv = inv_mod(n, MOD)
+        for d in all_divisors(n):
+            cycle_index.append((((d, n // d),), euler_phi(d) * ninv % MOD))
+    elif gtype == "D":
+        if n <= 2:
+            return cycle_index_mod_p("C", n, MOD)
+
+        inv2 = inv_mod(2, MOD)
+        cycle_index = {}
+        for term, coeff in cycle_index_mod_p("C", n, MOD):
+            cycle_index[term] = coeff * inv2 % MOD
+
+        if n & 1:
+            cycle_index[((1, 1), (2, (n-1)//2))] = inv2
+        else:
+            cycle_index[((1, 2), (2, (n-2)//2))] = inv2 * inv2 % MOD
+            cycle_index[((2, n//2),)] += inv2 * inv2 % MOD
+            if cycle_index[((2, n//2),)] >= MOD:
+                cycle_index[((2, n//2),)] -= MOD
+        cycle_index = [(term, coeff) for term, coeff in cycle_index.items()]
+
+    cycle_index.sort(key=lambda x: sum(xx[1] for xx in x[0]), reverse=True)
+    return cycle_index
+
+
+def merge_cycle_index_mod_p(cycle_index_1, cycle_index_2, MOD):
+    """
+    merge cycle index of Z(G1) and Z(G2) to get Z(G1 * G2), with parameters mod p
+    return [(param, ((cycle length, exponent), ...)), ...]
+    """
+
+    cycle_index_3 = {}
+    for term1, c1 in cycle_index_1:
+        for term2, c2 in cycle_index_2:
+            term = {}
+            for l1, e1 in term1:
+                for l2, e2 in term2:
+                    g = gcd(l1, l2)
+                    l = l1 * l2 // g
+                    e = e1 * e2 * g
+                    if l in term:
+                        term[l] += e
+                    else:
+                        term[l] = e
+
+            term = tuple((l, term[l]) for l in sorted(term))
+            c = c1 * c2 % MOD
+            if term in cycle_index_3:
+                cycle_index_3[term] += c
+                if cycle_index_3[term] >= MOD:
+                    cycle_index_3[term] -= MOD
+            else:
+                cycle_index_3[term] = c
+
+    cycle_index_3 = [(term, coeff) for term, coeff in cycle_index_3.items()]
+    cycle_index_3.sort(key=lambda x: sum(xx[1] for xx in x[0]), reverse=True)
+    return cycle_index_3

@@ -23,9 +23,9 @@ import numpy as np
 def poly_truncate(poly, direction="left"):
     """
     truncate zero terms on left or right
-    
-    @poly (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
-    @direction (str): left or right, left is for lower powers, right is for higher terms
+
+    poly (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    direction (str): left or right, left is for lower powers, right is for higher terms
     """
 
     if direction == "left":
@@ -44,7 +44,7 @@ def poly_add(poly1, poly2):
     """
     poly1 + poly2
     
-    @poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
     """
 
     l1 = len(poly1)
@@ -62,7 +62,7 @@ def poly_mul(poly1, poly2):
     """
     poly1 * poly2
     
-    @poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
     """
 
     l1 = len(poly1)
@@ -81,7 +81,7 @@ def poly_divmod(poly1, poly2):
     """
     poly1 / poly2, poly1 % poly2
     
-    @poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
     """
 
     l1 = len(poly1)
@@ -102,7 +102,7 @@ def poly_mul_mod_p(poly1, poly2, p):
     """
     (poly1 * poly2) % p
     
-    @poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
     """
 
     l1 = len(poly1)
@@ -121,7 +121,7 @@ def poly_divmod_mod_p(poly1, poly2, p):
     """
     poly1 / poly2, poly1 % poly2 in Z/Zp
     
-    @poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    poly1, poly2 (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
     """
 
     l1 = len(poly1)
@@ -144,9 +144,9 @@ def poly_Zp_pow_mod(poly, n, polymod, p):
     """
     poly^n % polymod in Z/Zp
     
-    @poly, polymod (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
-    @n (int): power
-    @p (int): prime number of field Z/Zp
+    poly, polymod (np.array): polynomial coefficients, representing sum_i poly[i] * x^i
+    n (int): power
+    p (int): prime number of field Z/Zp
     """
 
     res = np.ones(1, dtype=poly.dtype)

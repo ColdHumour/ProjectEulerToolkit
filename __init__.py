@@ -4,12 +4,6 @@
 Project Euler Toolkit
 
 Dependencies:
-    shutil
-    fractions
-    itertools
-    collections
-    cython, Cython
-
     numpy, scipy: scientific computation
     sympy: symbolic computation
     gmpy2: number theory
@@ -20,8 +14,8 @@ Dependencies:
 
 
 # dependency test
-# default: numpy, scipy, sympy
-DEPENDENCIES = ['gmpy2']  # 'cython', 'ortools'
+# default: numpy, scipy, sympy, cython
+DEPENDENCIES = ['gmpy2']  # 'ortools'
 
 for pkg in DEPENDENCIES:
     try:
@@ -49,6 +43,9 @@ from . combinatoric import (
     inverse_perm,
     rank_perm,
     unrank_perm,
+
+    cycle_index_mod_p,
+    merge_cycle_index_mod_p,
 )
 
 from . formula import (
@@ -106,6 +103,7 @@ from . utils import (
     # find_solution,
 )
 
+from . import datastructure
 from . import equation
 from . import linalg
 from . import polynomial
@@ -113,6 +111,7 @@ from . import polynomial
 
 __all__ = [
     'combinatoric',
+    "datastructure",
     'equation',
     'formula',
     'generator',

@@ -7,6 +7,8 @@ cpp_formula_int64.pyx
 Cython extension of functions implementing formulas via fast algorithms and c++ containers.
 Function list:
     extended_gcd
+    tabulate_fac_mod
+    tabulate_fac_inv
 
 @author: Jasper Wu
 """
