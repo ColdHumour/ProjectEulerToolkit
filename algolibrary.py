@@ -8,6 +8,7 @@ Function list:
     atkin_sieve
     is_coprime
     power_mod
+    iroot
     
 @author: Jasper Wu
 """
@@ -129,3 +130,28 @@ def power_mod(a, b, n):
         b /= 2
         a = (a * a) % n
     return r % n
+
+
+def iroot(n, m):
+    """return integer m-th root of n"""
+
+    if n < 2:
+        return n
+
+    c = 2
+    d = 1
+    while c < n:
+        c <<= 1
+        d += 1
+        if d >= m:
+            break
+    if d < m:
+        return 1
+
+    m1 = m - 1
+    c = 1
+    d = (m1 * c + n // (c ** m1)) // m
+    e = (m1 * d + n // (d ** m1)) // m
+    while c != d and c != e:
+        c, d, e = d, e, (m1 * e + n // (e ** m1)) // m
+    return d if d < e else e
