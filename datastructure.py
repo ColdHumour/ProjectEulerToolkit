@@ -112,7 +112,7 @@ class DisjointSet:
     def __init__(self, data):
         self.data = data
         self.parent = {k: k for k in data}
-        self.rank = {k: 0 for k in data}
+        self.group = {k: {k, } for k in data}
 
     def find(self, k):
         if self.parent[k] != k:
@@ -123,18 +123,11 @@ class DisjointSet:
         x = self.find(a)
         y = self.find(b)
         if x != y:
-            if self.rank[x] > self.rank[y]:
+            if len(self.group[x]) > len(self.group[y]):
                 self.parent[y] = x
-            elif self.rank[x] < self.rank[y]:
-                self.parent[x] = y
+                self.group[x] |= self.group[y]
+                del self.group[y]
             else:
                 self.parent[x] = y
-                self.rank[y] = self.rank[y] + 1
-
-    def show_structure(self):
-        sets = {}
-        for a, x in self.parent.items():
-            if x not in sets:
-                sets[x] = set()
-            sets[x].add(a)
-        return sets.values()
+                self.group[y] |= self.group[x]
+                del self.group[x]
