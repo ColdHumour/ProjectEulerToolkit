@@ -36,7 +36,11 @@ def add_mod(MOD, *args):
 
     s = 0
     for n in args:
-        s = (s + n) % MOD
+        if n < 0 or n >= MOD:
+            n %= MOD
+        s += n
+        if s >= MOD:
+            s -= MOD
     return s
 
 
