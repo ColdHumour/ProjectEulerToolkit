@@ -21,6 +21,7 @@ Function list:
     continous_frac_convergent
 
     best_rational_approx
+    best_rational_approx_for_log
     find_closest_lattice_point_to_line
 
 @author: Jasper Wu
@@ -403,6 +404,40 @@ def best_rational_approx(D, N):
             c += a
             d += b
     return (a, b, c, d)
+
+
+def best_rational_approx_for_log(a, b, n=10):
+    """
+    generate first n best rational approximations for log_b(a)
+    according to the semiconvergents of its continued fraction expression
+    """
+
+    a = float(a)
+    b = float(b)
+
+    p0 = 1
+    q0 = 0
+    i = 0
+    while a >= b:
+        a /= b
+        i += 1
+    a, b = b, a
+    p1 = i
+    q1 = 1
+    output = [(p1, q1)]
+
+    while b > 1 and len(output) < n:
+        i = 0
+        while a >= b:
+            a /= b
+            i += 1
+            output.append((p1*i+p0, q1*i+q0))
+
+        a, b = b, a
+        p0, q0 = p1, q1
+        p1, q1 = output[-1]
+
+    return output
 
 
 def find_closest_lattice_point_to_line(A, B, C, x_min, x_max):

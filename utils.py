@@ -100,10 +100,8 @@ def generate_catalogue_draft(module):
                 print_func_info(name, func)
 
 
-def find_keyword_in_solutions(keyword):
-    keyword = keyword.lower()
-
-    folder = r"E:\Project Euler\ProjectEulerSolutions"
+def find_keyword_in_solutions(keyword, folder=r"E:\Project Euler\ProjectEulerSolutions"):
+    keyword = keyword.lower()    
     solutions = [file for file in os.listdir(folder) if file.endswith("ipynb")]
 
     check = []
