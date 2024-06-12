@@ -46,7 +46,7 @@ def _primes_list(n):
     """Input n>=6, Returns a array of primes, 2 <= p <= n"""
 
     n += 1
-    sieve = np.ones(n//3 + (n % 6 == 2), dtype=np.bool)
+    sieve = np.ones(n//3 + (n % 6 == 2), dtype=np.bool_)
     for i in range(1, isqrt(n)//3+1):
         if sieve[i]:
             k = (3 * i + 1) | 1
@@ -293,8 +293,8 @@ def primepi(x):
     ub = x // y
 
     primes = primes_list(x_sqrt+1)
-    mudelta = np.ones((2, y+1), dtype=np.int)  # [mu, smallest prime factor]
-    pi_list = np.ones((3, ub+1), dtype=np.int) # [pi, fenwick tree of phi, sieved-or-not for phi]
+    mudelta = np.ones((2, y+1), dtype=np.int32)  # [mu, smallest prime factor]
+    pi_list = np.ones((3, ub+1), dtype=np.int32) # [pi, fenwick tree of phi, sieved-or-not for phi]
 
     # tool functions for Fenwick Tree
     def add(i, val, fenwick):
