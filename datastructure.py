@@ -8,6 +8,7 @@ Classes representing different data structure.
 Function list:
 - IntQuadIrr(D)
 - DisjointSet(data)
+- FenwickTree(data, MOD)
 
 @author: Jasper Wu
 """
@@ -131,3 +132,28 @@ class DisjointSet:
                 self.parent[x] = y
                 self.group[y] |= self.group[x]
                 del self.group[x]
+
+
+class FenwickTree:
+    def __init__(self, data, MOD=0):
+        self.data = data
+        self.N = len(data)
+        self.M = MOD
+
+    def add(self, i, val):
+        """sum from index 1 to i based on Fenwick tree"""
+        while i <= self.N: 
+            self.data[i] += val
+            if self.M and self.data[i] >= self.M:
+                self.data[i] -= self.M
+            i += i & -i
+        return 1
+
+    def sum_range(self, i):
+        s = 0
+        while i:
+            s += self.data[i]
+            if self.M and s >= self.M:
+                s -= self.M
+            i -= i & -i
+        return s
