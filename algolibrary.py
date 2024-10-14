@@ -127,7 +127,7 @@ def power_mod(a, b, n):
     while b:
         if b % 2:
             r = (r * a) % n
-        b /= 2
+        b //= 2
         a = (a * a) % n
     return r % n
 

@@ -13,6 +13,9 @@ Function list:
 @author: Jasper Wu
 """
 
+import numpy as np
+
+
 class _IntQuadIrrBase:
     """class of a + b * sqrt(D)"""
 
