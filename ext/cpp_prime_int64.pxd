@@ -20,6 +20,8 @@ cdef struct desc:
 
 cdef lvec get_primes(int64 N)
 
+cdef lvec get_factor_sieve(int64 N)
+
 cdef lvec get_mobius_vec(int64 N)
 
 cdef lvec get_mertens_vec(int64 N)

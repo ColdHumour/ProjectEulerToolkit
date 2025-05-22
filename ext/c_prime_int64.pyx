@@ -15,8 +15,8 @@ Function list:
 import numpy as np
 cimport numpy as np
 
-from cpp_types cimport int64
-from c_formula_int64 cimport c_isqrt_int64
+from ProjectEulerToolkit.ext.cpp_types cimport int64
+from ProjectEulerToolkit.ext.c_formula_int64 cimport c_isqrt_int64
 
 ctypedef np.ndarray arr
 

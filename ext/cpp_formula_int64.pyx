@@ -13,7 +13,7 @@ Function list:
 @author: Jasper Wu
 """
 
-from c_formula_int64 cimport c_inv_mod_int64 as inv
+from ProjectEulerToolkit.ext.c_formula_int64 cimport c_inv_mod_int64 as inv
 
 
 cdef lvec extended_gcd(int64 a, int64 b):

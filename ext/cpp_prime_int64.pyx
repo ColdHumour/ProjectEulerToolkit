@@ -7,6 +7,7 @@ cpp_prime_int64.pyx
 Cython extension of functions implementing primes related algorithms and c++ containers.
 Function list:
     get_primes(int64 N)
+    get_factor_sieve(int64 N)
 
     get_mobius_vec(int64 N)
     get_mertens_vec(int64 N)
@@ -21,7 +22,7 @@ Function list:
 
 from libcpp.vector cimport vector as vec
 
-from c_formula_int64 cimport c_isqrt_int64 as isqrt
+from ProjectEulerToolkit.ext.c_formula_int64 cimport c_isqrt_int64 as isqrt
 
 
 cdef lvec get_primes(int64 N):
@@ -45,6 +46,24 @@ cdef lvec get_primes(int64 N):
             if n % p == 0:
                 break
     return primes
+
+
+cdef lvec get_factor_sieve(int64 N):
+    """factor sieve for 0 <= k <= N"""
+
+    cdef:
+        lvec sieve = lvec(N+1, 1)
+        int64 p, m
+
+    for p in range(2, N):
+        if p * p > N:
+            break
+        if sieve[p] == 1:
+            m = p * p
+            while m <= N:
+                sieve[m] = p
+                m += p
+    return sieve
 
 
 cdef lvec get_mobius_vec(int64 N):
