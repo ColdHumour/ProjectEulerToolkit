@@ -15,6 +15,7 @@ Function list:
     pythag_triple_tree
     co_prime_tree
     stern_brocot_tree
+    farey_sequence
 
     rational_continous_frac
     irrational_continous_frac
@@ -320,6 +321,25 @@ def stern_brocot_tree():
         sbt += [sbt[0] + sbt[1], sbt[1]]
         sbt += [sbt[1] + sbt[2], sbt[2]]
         yield (sbt.popleft(), sbt.popleft())
+
+
+def farey_sequence(n):
+    """Generate Farey sequence such with denominators not exceeding n"""
+
+    seq = []
+    a, b = 0, 1
+    c, d = 1, n
+    seq.append((a, b))
+    while c <= n:
+        seq.append((c, d))
+        k = (n + b) // d
+        e = k * c - a
+        f = k * d - b
+        a, b = c, d
+        c, d = e, f
+
+    seq = seq[:-1] + [(y, x) for x, y in seq[::-1]]
+    return seq
 
 
 # Continuous Fraction Functions
