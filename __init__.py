@@ -59,6 +59,7 @@ from . formula import (
     pythag_triple_tree,
     co_prime_tree,
     stern_brocot_tree,
+    farey_sequence,
 
     rational_continous_frac,
     irrational_continous_frac,
