@@ -1,34 +1,66 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal EnableExtensions EnableDelayedExpansion
 
-:: 请在这里修改为您自己的命令前缀（示例为 echo）
+:: Always search in the folder containing this batch file.
+cd /d "%~dp0"
+
+:: Change this command prefix if needed.
 set "prefix=jupyter nbconvert --to html --template classic"
 
-:: 提示用户输入匹配文本
-set /p "pattern=请输入要匹配的文本: "
-if "%pattern%"=="" (
-    echo 错误：未输入任何文本。
-    exit /b 1
-)
+:: Search for a file whose name contains 0.i by default.
+set "defaultPattern=0.i"
+set "pattern=!defaultPattern!"
 
-:: 搜索当前目录下文件名包含 pattern 的文件（排除文件夹）
-:: dir /b /a-d 仅列出文件名，不显示额外信息；*%pattern%* 实现包含匹配
-:: 使用 for /f 循环捕获输出，因为 dir 默认按名字升序排序，第一个即为所需文件
+:: Search files in this folder; the first result is selected alphabetically.
 set "found="
-for /f "delims=" %%i in ('dir /b /a-d "*%pattern%*" 2^>nul') do (
+for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*" 2^>nul') do (
     set "found=%%i"
-    goto :found_one
+    goto :default_found
 )
 
-:found_one
-if "%found%"=="" (
-    echo 未找到任何文件名包含 "%pattern%" 的文件。
+:default_found
+if not defined found (
+    echo No file containing "!defaultPattern!" was found.
+    goto :manual_input
+)
+
+echo Default match: "!found!"
+choice /c YN /n /m "Use this file? [Y/N] "
+if errorlevel 2 goto :manual_input
+if errorlevel 1 goto :run
+
+:manual_input
+set "pattern="
+set /p "pattern=Enter a keyword to match a file: "
+if not defined pattern (
+    echo No keyword entered.
     exit /b 1
 )
 
-echo 找到的第一个文件: "%found%"
+set "found="
+for /f "delims=" %%i in ('dir /b /a-d "*!pattern!*" 2^>nul') do (
+    set "found=%%i"
+    goto :manual_found
+)
 
-:: 拼接命令并执行（自动为文件名添加双引号，以支持空格等特殊字符）
-%prefix% "%found%"
+:manual_found
+if not defined found (
+    echo No file containing "!pattern!" was found.
+    exit /b 1
+)
+
+echo Found: "!found!"
+choice /c YN /n /m "Use this file? [Y/N] "
+if errorlevel 2 (
+    echo Cancelled.
+    exit /b 1
+)
+
+:: Run the conversion command with the selected file.
+:run
+%prefix% "!found!"
+echo.
+echo Press any key to exit...
+pause >nul
 
 endlocal

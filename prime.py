@@ -150,7 +150,7 @@ def _pollard_rho(n, rand=True):
     if not rand:
         x, c = 1, 1
     else:
-        x, c = random.randrange(2, 1e6), random.randrange(2, 1e6)
+        x, c = random.randrange(2, 10**6), random.randrange(2, 10**6)
 
     y, d = x, 1
     while d == 1 and d != n:
